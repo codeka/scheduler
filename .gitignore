@@ -1,6 +1,7 @@
 
 # Angular / NPM files
 /web/dist
+/web/.angular
 
 # Node
 /web/node_modules
