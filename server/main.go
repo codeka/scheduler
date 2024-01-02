@@ -33,7 +33,6 @@ func main() {
 	router := gin.Default()
 
 	//datadir := os.Getenv("DATA_DIR")
-
 	router.GET("/venues", getVenues)
 
 	router.Run("localhost:8080")
