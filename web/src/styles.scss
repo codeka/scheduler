@@ -1,4 +1,10 @@
 
+html, body { height: 100%; }
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
 h1, h2, h3, h4, h5, h6 {
   margin: 0 0;
 }
@@ -14,3 +20,4 @@ p {
 .material-symbols-outlined {
   font-variation-settings: 'fill' 0, 'wght' 400, 'grad' 0, 'opsz' 24
 }
+
