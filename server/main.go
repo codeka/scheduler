@@ -1,39 +1,40 @@
 package main
 
 import (
-	"net/http"
+	"log"
+	"os"
+	"time"
 
+	"com.codeka/scheduler/server/api"
+	"com.codeka/scheduler/server/store"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	_ "modernc.org/sqlite"
 )
 
-type Venue struct {
-	// ShortName is the short, globally unique, name for this venue. It's user-readable and typically known to the
-	// people who attend. For example, "Silicon Valley Buddhist Center" is often shortened to "SVBC".
-	ShortName string `json:"shortName"`
-
-	// The full name of the venue, for example, "Silicon Valley Buddhist Center".
-	FullName string `json:"fullName"`
-
-	// Address is the street address of the center.
-	Address string `json:"address"`
-}
-
-// TODO: load this from a file or something?
-var venues = []Venue{
-	{ShortName: "SVBC", FullName: "Silicon Valley Buddhist Center", Address: "123 Fake St, Santa Clara, CA, 95050"},
-	{ShortName: "SFBC", FullName: "San Francisco Buddhist Center", Address: "123 Fake St, San Francisco, CA, 91234"},
-}
-
-func getVenues(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, venues)
-}
-
 func main() {
+	log.SetFlags(log.Lshortfile | log.LstdFlags)
+
 	router := gin.Default()
+	if os.Getenv("DEBUG") != "" {
+		// Allow requests from other domains in debug mode (in particular, the angular stuff will be
+		// running on a different domain in debug mode).
+		router.Use(cors.New(cors.Config{
+			AllowOrigins:     []string{"*"},
+			AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+			AllowHeaders:     []string{"Origin"},
+			ExposeHeaders:    []string{"Content-Length"},
+			AllowCredentials: true,
+			MaxAge:           12 * time.Hour,
+		}))
+	}
 
-	//datadir := os.Getenv("DATA_DIR")
-	router.GET("/venues", getVenues)
+	datadir := os.Getenv("DATA_DIR")
+	if err := store.Init(datadir); err != nil {
+		panic(err)
+	}
+	if err := api.Setup(router); err != nil {
+		panic(err)
+	}
 
-	router.Run("localhost:8080")
+	log.Fatal(router.Run("localhost:8080"))
 }

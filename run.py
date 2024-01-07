@@ -47,14 +47,13 @@ class ServerMonitor(LoggingEventHandler):
 
   def dispatch(self, event):
     self.is_modified = True
-    print(event)
 
 
 def runServer():
   print(f"{bcolors.BLUE}Building server...{bcolors.ENDC}")
   cmd = ["go", "build", "-o", os.path.join(args.datadir, serverExeName)]
   cwd = os.path.join(rootDir, "server")
-  p = subprocess.Popen(cmd, cwd=cwd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+  p = subprocess.Popen(cmd, cwd=cwd)
   p.wait()
   if p.returncode != 0:
     return None
@@ -63,6 +62,7 @@ def runServer():
   cmd = [os.path.join(args.datadir, serverExeName)]
   env = os.environ.copy()
   env['DATA_DIR'] = args.datadir
+  env['DEBUG'] = '1'
   return subprocess.Popen(cmd, cwd=cwd, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
 
@@ -149,8 +149,11 @@ try:
         print(f"{bcolors.RED}Build failed!{bcolors.ENDC}")
         # Note: we'll stay running, waiting for you to edit the server files again.
     if not serverThread.is_alive():
-      serverProcess.wait()
-      print(f"{bcolors.YELLOW}Server exited with code {serverProcess.returncode}, exiting.{bcolors.ENDC}")
+      if serverProcess:
+        serverProcess.wait()
+        print(f"{bcolors.YELLOW}Server exited with code {serverProcess.returncode}, exiting.{bcolors.ENDC}")
+      else:
+        print(f"{bcolors.YELLOW}Server failed to compile, exiting.{bcolors.ENDC}")
       break
 except KeyboardInterrupt:
   print(f"{bcolors.BLUE}Exiting...{bcolors.ENDC}")
