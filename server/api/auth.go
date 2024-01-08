@@ -19,9 +19,24 @@ type ConfirmationSentResponse struct {
 	destination string
 }
 
-var ConfirmationCodeLetters = []rune("0123456789")
+type VerifyConfirmationRequest struct {
+	ConfirmationCode string `json:"confirmationCode"`
 
-const ConfirmationCodeSize = 6
+	// TODO: should we include the email/phone you were trying to confirm? Maybe not?
+}
+
+type VerifyConfirmationResponse struct {
+	User      *User  `json:"user"`
+	SecretKey string `json:"secretKey"`
+}
+
+var (
+	ConfirmationCodeLetters = []rune("0123456789")
+	ConfirmationCodeSize    = 6
+
+	SecretLetters = []rune("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+	SecretSize    = 64
+)
 
 // randomSequence returns a random sequence of length n from the given letters
 func randomSequence(n int, letters []rune) (string, error) {
@@ -77,6 +92,8 @@ func HandleSendConfirmation(c *gin.Context) {
 		return
 	}
 
+	// TODO: make sure this code is not already assigned to someone else.
+
 	if isEmail {
 		// Assume it's an email, try to send the email.
 		log.Printf("TODO: send email with code %s", code)
@@ -93,8 +110,50 @@ func HandleSendConfirmation(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
+// HandleVerifyConfirmation handles requests to /_/auth/verify-confirmation. After we've sent you a confirmation code,
+// we need to verify that you received it. Once you have, we confirm your login to a proper login and send you the
+// secret key that you can use to validate subsequent requests.
+func HandleVerifyConfirmation(c *gin.Context) {
+	var req VerifyConfirmationRequest
+	if err := c.BindJSON(&req); err != nil {
+		// TODO: handle the error
+		return
+	}
+
+	resp := VerifyConfirmationResponse{}
+
+	if user, err := store.GetUserByConfirmationCode(req.ConfirmationCode); err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	} else {
+		resp.User = MakeUser(user)
+	}
+
+	if resp.User == nil {
+		// They've entered an invalid confirmation code. Let them know.
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+
+	var err error
+	resp.SecretKey, err = randomSequence(SecretSize, SecretLetters)
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	err = store.SaveSecret(resp.User.ID, req.ConfirmationCode, resp.SecretKey)
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, resp)
+}
+
 func setupAuth(g *gin.Engine) error {
 	g.POST("_/auth/send-confirmation", HandleSendConfirmation)
+	g.POST("_/auth/verify-confirmation", HandleVerifyConfirmation)
 
 	return nil
 }

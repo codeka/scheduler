@@ -13,6 +13,6 @@ export class ConfirmComponent {
   constructor(private auth: AuthService, private router: Router) {}
 
   onConfirm() {
-    // TODO
+    this.auth.verifyConfirmation(this.code)
   }
 }

@@ -4,7 +4,7 @@ import { User } from "./model";
 import { HttpClient } from "@angular/common/http";
 
 import { ENV } from '../env/environment';
-import { firstValueFrom } from "rxjs";
+import { firstValueFrom, map } from "rxjs";
 
 // When sending the confirmation, this will let you know if we sent it to an email address or a phone number.
 export enum SendDestination {
@@ -16,8 +16,17 @@ interface ConfirmationSendRequest {
   emailOrPhone: string
 }
 
-export interface ConfirmationSentResponse {
+interface ConfirmationSentResponse {
   destination: SendDestination
+}
+
+interface VerifyConfirmationRequest {
+  confirmationCode: string
+}
+
+interface VerifyConfirmationResponse {
+  user: User
+  secretKey: string
 }
 
 @Injectable()
@@ -39,5 +48,25 @@ export class AuthService {
     return firstValueFrom(
         this.http.post<ConfirmationSentResponse>(ENV.backend + "/_/auth/send-confirmation", req)
       );
+  }
+
+  // Verifies that the confirmation is correct. If it is, we save the secret and all subsequent requests (even from
+  // different browser sessions) will use it. Returns a boolean success as a promise
+  verifyConfirmation(code: string): Promise<Boolean> {
+    const req: VerifyConfirmationRequest = {
+      confirmationCode: code
+    };
+    return firstValueFrom(
+      this.http.post<VerifyConfirmationResponse>(ENV.backend + "/_/auth/verify-confirmation", req)
+          .pipe(map((resp) => {
+            if (resp.user.id > 0) {
+              console.log("got user: " + JSON.stringify(resp.user));
+              localStorage.setItem("secretKey", resp.secretKey);
+              return true;
+            } else {
+              return false;
+            }
+          }))
+    )
   }
 }

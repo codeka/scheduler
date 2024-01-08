@@ -25,9 +25,8 @@ func GetUserByEmail(email string) (*User, error) {
 
 	if rows.Next() {
 		return makeUser(rows)
-	} else {
-		return nil, nil
 	}
+	return nil, nil
 }
 
 // GetUserByPhone returns the User with the given phone number. If the user doesn't exit, returns a nil User and nil
@@ -41,9 +40,27 @@ func GetUserByPhone(phone string) (*User, error) {
 
 	if rows.Next() {
 		return makeUser(rows)
-	} else {
-		return nil, nil
 	}
+	return nil, nil
+}
+
+// GetUserByConfirmationCode returns the User that matches the given confirmation code.
+func GetUserByConfirmationCode(code string) (*User, error) {
+	rows, err := db.Query(`
+			SELECT id, name, email, phone
+			FROM users INNER JOIN	user_logins
+		    ON users.id = user_id
+			WHERE confirmation_code = ?`,
+		code)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	if rows.Next() {
+		return makeUser(rows)
+	}
+	return nil, nil
 }
 
 // CreateUserLogin creates a new user login with the given confirmation code for the given user.
@@ -52,4 +69,26 @@ func CreateUserLogin(user *User, code string) error {
 		"INSERT INTO user_logins (user_id, confirmation_code, last_seen) VALUES (?, ?, JULIANDAY())",
 		user.ID, code)
 	return err
+}
+
+func SaveSecret(id int64, confirmationCode string, secret string) error {
+	res, err := db.Exec(`
+	  UPDATE user_logins SET
+		  secret_key = ?,
+			confirmation_code = '',
+			last_seen = JULIANDAY()
+		WHERE user_id = ?
+		  AND confirmation_code = ?`,
+		secret, id, confirmationCode)
+	if err != nil {
+		return err
+	}
+	n, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if n <= 0 {
+		return fmt.Errorf("no rows updated, wrong confirmation code?")
+	}
+	return nil
 }
