@@ -1,7 +1,10 @@
 import { NgModule, inject } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivateFn, Router, RouterModule, RouterStateSnapshot, Routes, UrlSegmentGroup, UrlTree } from '@angular/router';
+import { ActivatedRouteSnapshot, CanActivateFn, Router, RouterModule, RouterStateSnapshot, Routes } from '@angular/router';
 import { WeekComponent } from './sched/week.component';
+
+import { ConfirmComponent } from './auth/confirm.component';
 import { LoginComponent } from './auth/login.component';
+
 import { AuthService } from './services/auth.service';
 
 const loggedInActivate: CanActivateFn = () => {
@@ -22,6 +25,7 @@ const defaultRouteActivate: CanActivateFn = (route: ActivatedRouteSnapshot, stat
 const routes: Routes = [
   // Login can match any time.
   { path: 'login', component: LoginComponent },
+  { path: 'login/confirm', component: ConfirmComponent },
 
   // Most paths will only match if you're logged in.
   { path: 'week', canActivate: [loggedInActivate], component: WeekComponent },

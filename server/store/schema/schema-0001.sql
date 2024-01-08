@@ -18,7 +18,7 @@ INSERT INTO venue (name, short_name, address) VALUES ('Sample Center', 'SMPL', '
 
 -- Users are the people who can sign up to help shifts.
 CREATE TABLE users (
-  id NUMBER PRIMARY KEY,
+  id INTEGER PRIMARY KEY,
   name TEXT,
   email TEXT,
   phone TEXT
@@ -48,5 +48,5 @@ CREATE TABLE user_logins (
   -- the confirmation code back again.
   secret_key TEXT,
   -- The last time we saw this login. 
-  last_login NUMBER
+  last_seen NUMBER
 );

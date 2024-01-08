@@ -17,5 +17,5 @@ func HandleInit(c *gin.Context) {
 
 	// TODO: check if they have a cookie, and if they do, try to load the user.
 
-	c.IndentedJSON(http.StatusOK, resp)
+	c.JSON(http.StatusOK, resp)
 }

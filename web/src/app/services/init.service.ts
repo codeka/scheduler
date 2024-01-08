@@ -1,6 +1,9 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { firstValueFrom, tap } from "rxjs";
+
+import { ENV } from '../env/environment';
+
 import { User } from "./model";
 
 interface InitResponse {
@@ -19,12 +22,9 @@ export class InitService {
   resolve() {
     return (): Promise<any> =>
     firstValueFrom(
-      this.http.get<InitResponse>("http://localhost:8080/_/init")
+      this.http.get<InitResponse>(ENV.backend + "/_/init")
           .pipe(tap((resp: InitResponse) => {
             this.initResponse = resp
-
-            // TODO(dean): remove this log:
-            console.log("Got response for init request: " + this.initResponse);
           }))
     );
   }

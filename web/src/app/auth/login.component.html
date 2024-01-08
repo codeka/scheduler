@@ -7,10 +7,10 @@
     <p>To log in, enter your email address or phone number below.</p>
     <mat-form-field>
       <mat-label>Email or phone number</mat-label>
-      <input matInput required>
+      <input matInput required [(ngModel)]="emailOrPhone">
     </mat-form-field>
   </mat-card-content>
   <mat-card-actions>
-    <button mat-button>Log in</button>
+    <button mat-button (click)="onLogin()">Log in</button>
   </mat-card-actions>
 </mat-card>
