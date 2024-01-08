@@ -1,6 +1,7 @@
 import { APP_INITIALIZER, NgModule } from '@angular/core';
-import { provideHttpClient } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptors } from '@angular/common/http';
 
+import { AuthInterceptor } from './auth.interceptor';
 import { AuthService } from './auth.service';
 import { InitService } from './init.service';
 
@@ -8,7 +9,9 @@ import { InitService } from './init.service';
   declarations: [],
   imports: [],
   providers: [
-    provideHttpClient(),
+    provideHttpClient(
+      withInterceptors([AuthInterceptor]),
+    ),
     {
       provide: APP_INITIALIZER,
       useFactory: (init: InitService) => init.resolve(),

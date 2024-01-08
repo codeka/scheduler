@@ -61,7 +61,12 @@ export class AuthService {
           .pipe(map((resp) => {
             if (resp.user.id > 0) {
               console.log("got user: " + JSON.stringify(resp.user));
+
+              // Save the secret key so we can authenticate ourselves later. And save the user so we know we're
+              // logged in.
               localStorage.setItem("secretKey", resp.secretKey);
+              this.user = resp.user;
+
               return true;
             } else {
               return false;

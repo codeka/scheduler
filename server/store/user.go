@@ -63,6 +63,25 @@ func GetUserByConfirmationCode(code string) (*User, error) {
 	return nil, nil
 }
 
+// GetUserBySecret returns the User that matches the given secret key.
+func GetUserBySecret(secretKey string) (*User, error) {
+	rows, err := db.Query(`
+			SELECT id, name, email, phone
+			FROM users INNER JOIN	user_logins
+		    ON users.id = user_id
+			WHERE secret_key = ?`,
+		secretKey)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	if rows.Next() {
+		return makeUser(rows)
+	}
+	return nil, nil
+}
+
 // CreateUserLogin creates a new user login with the given confirmation code for the given user.
 func CreateUserLogin(user *User, code string) error {
 	_, err := db.Exec(

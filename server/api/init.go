@@ -15,7 +15,10 @@ type InitResponse struct {
 func HandleInit(c *gin.Context) {
 	var resp = InitResponse{}
 
-	// TODO: check if they have a cookie, and if they do, try to load the user.
+	user, _ := LoadUser(c)
+	if user != nil {
+		resp.User = user
+	}
 
 	c.JSON(http.StatusOK, resp)
 }

@@ -13,6 +13,10 @@ export class ConfirmComponent {
   constructor(private auth: AuthService, private router: Router) {}
 
   onConfirm() {
-    this.auth.verifyConfirmation(this.code)
+    this.auth.verifyConfirmation(this.code).then((success: Boolean) => {
+      this.router.navigate(["/"]);
+    }, (error) => {
+      // TODO:L handle error.
+    });
   }
 }
