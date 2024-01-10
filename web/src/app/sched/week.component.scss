@@ -1,0 +1,16 @@
+
+div.container {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  row-gap: 8pt;
+}
+
+div.container div.day-of-week {
+  flex: 1;
+}
+
+div.day-of-week {
+  border: solid 1px red;
+}

@@ -29,7 +29,10 @@ func LoadUser(c *gin.Context) (*User, error) {
 func Setup(g *gin.Engine) error {
 	g.GET("_/init", HandleInit)
 	if err := setupAuth(g); err != nil {
-		return nil
+		return err
+	}
+	if err := setupEvents(g); err != nil {
+		return err
 	}
 
 	return nil

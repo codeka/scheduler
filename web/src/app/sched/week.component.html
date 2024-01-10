@@ -1,1 +1,6 @@
 <p>weekly view</p>
+<div class="container">
+  <div class="day-of-week" *ngFor="let entry of days | async | keyvalue : dontSort">
+    <h1>{{entry.key}} = {{entry.value}}</h1>
+  </div>
+</div>

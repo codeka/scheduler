@@ -50,3 +50,19 @@ CREATE TABLE user_logins (
   -- The last time we saw this login. 
   last_seen NUMBER
 );
+
+CREATE TABLE events (
+  id INTEGER PRIMARY KEY,
+  title TEXT,
+  description TEXT,
+  -- TODO: add other properties, e.g. colors, somewhere to add agenda/links etc?
+
+  -- We store the date, start time and end time as strings. Events can only begin and end of the same day (i.e. we
+  -- do not support overnight events). Date and times are stored in sqlite date() and time() formats.
+  date TEXT,
+  start_time TEXT,
+  end_time TEXT
+);
+
+-- TODO add groups
+-- TODO add shifts

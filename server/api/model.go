@@ -1,6 +1,8 @@
 package api
 
 import (
+	"time"
+
 	"com.codeka/scheduler/server/store"
 )
 
@@ -22,5 +24,27 @@ func MakeUser(user *store.User) *User {
 		Name:  user.Name,
 		Mail:  user.Mail,
 		Phone: user.Phone,
+	}
+}
+
+type Event struct {
+	ID          int64     `json:"id"`
+	Title       string    `json:"title"`
+	Description string    `json:"description"`
+	StartTime   time.Time `json:"startTime"`
+	EndTime     time.Time `json:"endTime"`
+}
+
+func MakeEvent(event *store.Event) *Event {
+	if event == nil {
+		return nil
+	}
+
+	return &Event{
+		ID:          event.ID,
+		Title:       event.Title,
+		Description: event.Description,
+		StartTime:   event.StartTime,
+		EndTime:     event.EndTime,
 	}
 }
