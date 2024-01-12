@@ -1,7 +1,41 @@
-<p>weekly view</p>
-<div class="container">
-  <div class="day-of-week"
-      *ngFor="let entry of days | async | keyvalue : dontSort">
-    <span>{{entry.key}} = (TBD)</span>
+
+<div class="content">
+  <div class="sidebar">
+    <p>TODO: a monthly view</p>
+    <p>TODO: filtering options?</p>
+    <p>TODO: a link to settings, etc?</p>
+  </div>
+  <div class="maincontent">
+    <mat-toolbar class="header">
+      <button mat-stroked-button id="today-btn">Today</button>
+      <button mat-icon-button><mat-icon>chevron_left</mat-icon></button>
+      <button mat-icon-button><mat-icon>chevron_right</mat-icon></button>
+      <h1 *ngIf="firstDay.getMonth() != lastDay.getMonth(); else sameMonth">
+        {{firstDay.toLocaleString('default', { month: 'long' })}} - {{lastDay.toLocaleString('default', { month: 'long' })}}  {{firstDay.getFullYear()}}
+      </h1>
+      <ng-template #sameMonth><h1>
+        {{firstDay.toLocaleString('default', { month: 'long' })}} {{firstDay.getFullYear()}}
+      </h1></ng-template>
+    </mat-toolbar>
+    <div class="container">
+      <div class="hours">
+        <div class="hour-of-day hour-title"
+            *ngFor="let hour of hours">
+          {{hourStr(hour)}}
+        </div>
+      </div>
+      <div class="day-of-week"
+        *ngFor="let entry of days | async | keyvalue : dontSort">
+        <h2>{{entry.key.toLocaleString('default', { weekday: 'long' })}}</h2>
+        <div class="border">
+          <h3>{{entry.key.getDate()}}</h3>
+          <div class="events">
+            <div class="hour-of-day hour-line"
+                *ngFor="let hour of hours">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

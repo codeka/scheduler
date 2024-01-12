@@ -1,16 +1,84 @@
 
-div.container {
+div.content {
   display: flex;
   flex-flow: row nowrap;
-  justify-content: space-between;
-  align-items: flex-start;
+}
+
+div.sidebar {
+  flex-basis: 250pt;
+}
+
+div.maincontent {
+  flex: 1;
+}
+
+div.container {
+  flex: 1;
+  display: flex;
+  flex-flow: row nowrap;
+  align-content: stretch;
+  align-items: stretch;
   row-gap: 8pt;
+}
+
+#today-btn {
+  margin-right: 8pt;
+}
+
+h1 {
+  padding-left: 8pt;
+  display: inline;
+  font-size: 20pt;
+}
+
+h2 {
+  font-size: 12pt;
+  font-weight: normal;
+  text-align: center;
+  height: 22pt;
+  margin: 0;
+}
+
+h3 {
+  font-size: 18pt;
+  text-align: center;
+  height: 22pt;
+  margin: 0;
+}
+
+div.hours {
+  margin-top: 52pt;
+}
+
+.hour-of-day {
+  height: 60px;
+}
+
+.hour-title {
+  text-align: right;
+  margin-right: 4pt;
+}
+
+div.events {
+  display: relative;
+  border: solid 1px transparent;
+}
+
+.hour-line {
+  display: relative;
+  border-top: dotted 1px #ccc;
+  height: 51px;
+  margin-top: 8px;
 }
 
 div.container div.day-of-week {
   flex: 1;
 }
 
-div.day-of-week {
-  border: solid 1px red;
+div.day-of-week div.events {
+  margin-top: 8pt;
+}
+
+div.day-of-week div.border {
+  border-left: solid 1px black;
 }
