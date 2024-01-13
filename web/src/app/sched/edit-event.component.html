@@ -14,14 +14,23 @@
         <mat-label>Event description</mat-label>
         <textarea matInput></textarea>
       </mat-form-field>
-      <mat-form-field>
-        <mat-label>Event date</mat-label>
-        <input matInput [matDatepicker]="picker">
-        <mat-hint>MM/DD/YYYY</mat-hint>
-        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-datepicker #picker></mat-datepicker>
-      </mat-form-field>
-      <igx-time-picker></igx-time-picker>
+      <div class="horz">
+        <mat-form-field>
+          <mat-label>Event date</mat-label>
+          <input matInput [matDatepicker]="picker">
+          <mat-hint>MM/DD/YYYY</mat-hint>
+          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+        <igx-time-picker>
+          <label igxLabel>Start time</label>
+          <igx-hint>HH:MM tt</igx-hint>
+        </igx-time-picker>
+        <igx-time-picker>
+          <label igxLabel>End time</label>
+          <igx-hint>HH:MM tt</igx-hint>
+        </igx-time-picker>
+      </div>
     </div>
 
     <mat-card-actions>

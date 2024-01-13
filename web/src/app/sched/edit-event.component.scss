@@ -14,3 +14,12 @@ div.fields {
 div.fields mat-form-field.full-width {
   align-self: stretch;
 }
+
+div.fields div.horz {
+  display: flex;
+  flex-direction: row;
+}
+
+igx-time-picker {
+  margin-left: 20pt;
+}
