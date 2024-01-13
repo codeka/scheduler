@@ -16,6 +16,8 @@
       <ng-template #sameMonth><h1>
         {{firstDay.toLocaleString('default', { month: 'long' })}} {{firstDay.getFullYear()}}
       </h1></ng-template>
+      <div class="spacer"></div>
+      <button mat-raised-button *ngIf="auth.isInRole('EVENT_MANAGER')" (click)="onCreateEvent()"><mat-icon>event</mat-icon>Create Event</button>
     </mat-toolbar>
     <div class="container">
       <div class="hours">

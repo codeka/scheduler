@@ -1,0 +1,33 @@
+
+<mat-card id="edit-event-card">
+  <mat-card-header>
+    <mat-card-title>Edit event (todo: or create?)</mat-card-title>
+  </mat-card-header>
+
+  <form #f="ngForm" (ngSubmit)="onSave(f)" novalidate>
+    <div class="fields">
+      <mat-form-field class="full-width">
+        <mat-label>Event name</mat-label>
+        <input matInput />
+      </mat-form-field>
+      <mat-form-field class="full-width">
+        <mat-label>Event description</mat-label>
+        <textarea matInput></textarea>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Event date</mat-label>
+        <input matInput [matDatepicker]="picker">
+        <mat-hint>MM/DD/YYYY</mat-hint>
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+      <igx-time-picker></igx-time-picker>
+    </div>
+
+    <mat-card-actions>
+      <div class="spacer"></div>
+      <button mat-button>SAVE EVENT</button>
+      <button mat-button>CANCEL</button>
+    </mat-card-actions>
+  </form>
+</mat-card>

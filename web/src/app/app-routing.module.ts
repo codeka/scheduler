@@ -6,9 +6,14 @@ import { ConfirmComponent } from './auth/confirm.component';
 import { LoginComponent } from './auth/login.component';
 
 import { AuthService } from './services/auth.service';
+import { EditEventComponent } from './sched/edit-event.component';
 
 const loggedInActivate: CanActivateFn = () => {
   return inject(AuthService).isLoggedIn();
+};
+
+const isEventManagerActivate: CanActivateFn = () => {
+  return inject(AuthService).isInRole('EVENT_MANAGER');
 };
 
 const defaultRouteActivate: CanActivateFn = (route: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
@@ -30,6 +35,9 @@ const routes: Routes = [
   // Most paths will only match if you're logged in.
   { path: 'week', canActivate: [loggedInActivate], component: WeekComponent },
   { path: 'week/:year/:month/:day', canActivate: [loggedInActivate], component: WeekComponent },
+
+  // Paths for event managers.
+  { path: 'edit-event', canActivate: [isEventManagerActivate], component: EditEventComponent },
 
   // The default matcher, redirects to /week if logged in, or /login otherwise. We just put WeekComponent here, but
   // defaultRouteActive always redirects, so it's just a dummy.

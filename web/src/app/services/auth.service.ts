@@ -44,14 +44,18 @@ export class AuthService {
   // Returns true if the currently-logged in user is in the given role.
   isInRole(role: string): boolean {
     if (!this.isLoggedIn()) {
+      console.log("not logged in")
       return false;
     }
 
-    for (const userRole in this.user?.roles) {
+    for (const userRole of this.user?.roles || []) {
+      console.log("checking if " + role + " == " + userRole)
       if (role == userRole) {
+        console.log("yep");
         return true;
       }
     }
+    console.log("nup")
     return false;
   }
 

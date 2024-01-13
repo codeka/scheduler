@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, map } from 'rxjs';
 import { Event } from '../services/model';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'week',
@@ -17,7 +18,7 @@ export class WeekComponent {
 
   hours: Array<number> = [];
 
-  constructor(private route: ActivatedRoute) {
+  constructor(private route: ActivatedRoute, private router: Router, public auth: AuthService) {
     this.date =
         this.route.params
             .pipe(map((p) => new Date(parseInt(p["year"]), parseInt(p["month"]) - 1, parseInt(p["day"]))))
@@ -76,6 +77,10 @@ export class WeekComponent {
     } else {
       return (hour - 12) + " pm";
     }
+  }
+
+  onCreateEvent() {
+    this.router.navigate(['edit-event']);
   }
 }
 

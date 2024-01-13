@@ -19,9 +19,10 @@ import { AppComponent } from './app.component';
   ],
   imports: [
     AppRoutingModule, AuthModule, BrowserModule, BrowserAnimationsModule, MatButtonModule, MatIconModule,
-    MatToolbarModule, ServicesModule, SchedModule,
+    MatToolbarModule, ServicesModule, SchedModule
   ],
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}
