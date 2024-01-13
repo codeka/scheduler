@@ -1,12 +1,13 @@
 
-<mat-toolbar class="header" color="primary">
+<!-- Toolbar -->
+<div class="toolbar" role="banner">
   <img height="40" alt="Logo" src="/assets/img/logo.svg" />
-  Scheduler &bull; {{venue.name}}
-  <div class="spacer"></div>
-  <h1 *ngIf="user">
-    {{user.name}}
-  </h1>
-</mat-toolbar>
+  <span>Scheduler &bull; Silicon Valley Buddhist Center</span>
+    <div class="spacer"></div>
+    <a id="contact" href="mailto:dean@codeka.com">
+      <span class="material-symbols-outlined">mail</span> Contact
+    </a>
+</div>
 
 <div class="content" role="main">
   <router-outlet></router-outlet>

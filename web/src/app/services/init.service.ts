@@ -4,11 +4,10 @@ import { firstValueFrom, tap } from "rxjs";
 
 import { ENV } from '../env/environment';
 
-import { User, Venue } from "./model";
+import { User } from "./model";
 
 interface InitResponse {
   user: User
-  venue: Venue
 }
 
 // InitService runs when the app starts up. You can use this to get access to the data we get from the init request.
@@ -33,9 +32,5 @@ export class InitService {
   // Gets the User that we resolved to in the init request. Might be null if we are not logged in.
   user(): User|undefined {
     return this.initResponse?.user
-  }
-
-  venue(): Venue {
-    return this.initResponse?.venue || { name: "", shortName: "", address: ""}
   }
 }

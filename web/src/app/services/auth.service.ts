@@ -41,20 +41,6 @@ export class AuthService {
     return Boolean(this.user)
   }
 
-  // Returns true if the currently-logged in user is in the given role.
-  isInRole(role: string): boolean {
-    if (!this.isLoggedIn()) {
-      return false;
-    }
-
-    for (const userRole in this.user?.roles) {
-      if (role == userRole) {
-        return true;
-      }
-    }
-    return false;
-  }
-
   sendConfirmationCode(emailOrPhone: string): Promise<ConfirmationSentResponse> {
     const req: ConfirmationSendRequest = {
       emailOrPhone: emailOrPhone

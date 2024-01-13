@@ -22,10 +22,8 @@ func LoadUser(c *gin.Context) (*User, error) {
 		return nil, err
 	}
 
-	// TODO: load up groups, etc.
-	roles, err := store.GetUserRoles(user.ID)
-
-	return MakeUser(user, roles), nil
+	// TODO: load up roles, groups, etc.
+	return MakeUser(user), nil
 }
 
 func Setup(g *gin.Engine) error {

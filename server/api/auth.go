@@ -122,19 +122,12 @@ func HandleVerifyConfirmation(c *gin.Context) {
 
 	resp := VerifyConfirmationResponse{}
 
-	user, err := store.GetUserByConfirmationCode(req.ConfirmationCode)
-	if err != nil {
+	if user, err := store.GetUserByConfirmationCode(req.ConfirmationCode); err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 		return
+	} else {
+		resp.User = MakeUser(user)
 	}
-
-	roles, err := store.GetUserRoles(user.ID)
-	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
-		return
-	}
-
-	resp.User = MakeUser(user, roles)
 
 	if resp.User == nil {
 		// They've entered an invalid confirmation code. Let them know.
@@ -142,6 +135,7 @@ func HandleVerifyConfirmation(c *gin.Context) {
 		return
 	}
 
+	var err error
 	resp.SecretKey, err = randomSequence(SecretSize, SecretLetters)
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)

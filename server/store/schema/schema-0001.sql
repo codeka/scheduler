@@ -31,11 +31,9 @@ CREATE TABLE user_roles (
   -- TODO: group-specific roles? e.g. you could be a "shift manager" for SSG group
 );
 
--- Create the initial user (me). Given them all the roles.
+-- Create the initial user (me).
 INSERT INTO users (name, email, phone) VALUES ('Dean Harding', 'dean@codeka.com', '');
 INSERT INTO user_roles(user_id, role_name) SELECT id, 'ADMIN' FROM users;
-INSERT INTO user_roles(user_id, role_name) SELECT id, 'EVENT_MANAGER' FROM users;
-INSERT INTO user_roles(user_id, role_name) SELECT id, 'SHIFT_MANAGER' FROM users;
 
 -- "Logging in" basically just means you know the secret key from this table. The process goes like this:
 -- 1. Enter your email address or phone number
