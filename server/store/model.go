@@ -2,6 +2,12 @@ package store
 
 import "time"
 
+type Venue struct {
+	ShortName string
+	Name      string
+	Address   string
+}
+
 type User struct {
 	ID    int64
 	Name  string
