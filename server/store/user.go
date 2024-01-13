@@ -82,6 +82,25 @@ func GetUserBySecret(secretKey string) (*User, error) {
 	return nil, nil
 }
 
+// GetUserRoles returns the roles the given user belongs to.
+func GetUserRoles(id int64) ([]string, error) {
+	rows, err := db.Query("SELECT role_name FROM user_roles WHERE user_id = ?", id)
+	if err != nil {
+		return []string{}, err
+	}
+	defer rows.Close()
+
+	var roles []string
+	for rows.Next() {
+		var role string
+		if err := rows.Scan(&role); err != nil {
+			continue
+		}
+		roles = append(roles, role)
+	}
+	return roles, nil
+}
+
 // CreateUserLogin creates a new user login with the given confirmation code for the given user.
 func CreateUserLogin(user *User, code string) error {
 	_, err := db.Exec(
