@@ -94,8 +94,10 @@ def runClient():
   print(f"{bcolors.BLUE}Running web site...{bcolors.ENDC}")
   cmd = ["ng", "serve"]
   cwd = os.path.join(rootDir, "web")
-  # TODO: on Linux, I don't think shell=True is what we want (because kill will not work)
-  return subprocess.Popen(cmd, cwd=cwd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+  is_windows = False
+  if os.name == 'nt':
+    is_windows = True
+  return subprocess.Popen(cmd, cwd=cwd, shell=is_windows, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
 
 def clientThreadProc(p):
