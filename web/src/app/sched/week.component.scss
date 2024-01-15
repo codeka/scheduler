@@ -1,3 +1,4 @@
+@import '@angular/material/theming';
 
 div.content {
   display: flex;
@@ -50,31 +51,23 @@ div.hours {
   margin-top: 52pt;
 }
 
-.hour-of-day {
-  height: 60px;
-}
-
 .hour-title {
   text-align: right;
   margin-right: 4pt;
+  height: 20pt;
+  line-height: 20pt;
+  margin-bottom: 30pt;
 }
 
 div.events {
   position: relative;
-  border: solid 1px transparent;
 }
 
 .hour-line {
   position: relative;
-  border-top: dotted 1px #ccc;
-  height: 51px;
-  margin-top: 8px;
-}
-
-div.events .event {
-  position: absolute;
-  width: 100%;
-  border: solid 1px blue;
+  border-bottom: dotted 0.5pt #ccc;
+  height: 9.5pt;
+  margin-bottom: 40pt;
 }
 
 div.container div.day-of-week {
@@ -87,6 +80,16 @@ div.day-of-week div.events {
 
 div.day-of-week div.border {
   border-left: solid 1px black;
+}
+
+div.events .event {
+  position: absolute;
+  left: 4pt;
+  right: 8pt;
+  border-radius: 4pt;
+  border: solid 2pt blue;
+  padding: 0 4pt;
+  background-color: mix(blue, white, 20%);
 }
 
 div.event-name {
