@@ -60,7 +60,7 @@ func SaveEvent(event *Event) error {
 		return fmt.Errorf("start and end date should be the same")
 	}
 
-	date := event.StartTime.Format(time.DateOnly)
+	date := event.Date.Format(time.DateOnly)
 	startTime := event.StartTime.Format(time.TimeOnly)
 	endTime := event.EndTime.Format(time.TimeOnly)
 

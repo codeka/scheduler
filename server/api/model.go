@@ -30,11 +30,15 @@ func MakeUser(user *store.User, roles []string) *User {
 }
 
 type Event struct {
-	ID          int64     `json:"id"`
-	Title       string    `json:"title"`
-	Description string    `json:"description"`
-	StartTime   time.Time `json:"startTime"`
-	EndTime     time.Time `json:"endTime"`
+	ID          int64  `json:"id"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	// JSON date/times are always in UTC, which is not what we want. We manually format all date/times as
+	// yyyy-mm-dd for dates, hh:mm:ss for times, with no timezone information. Events do no span multiple days, the
+	// start and ent time all fall on the same date.
+	Date      string `json:"date"`
+	StartTime string `json:"startTime"`
+	EndTime   string `json:"endTime"`
 }
 
 func MakeEvent(event *store.Event) *Event {
@@ -46,17 +50,32 @@ func MakeEvent(event *store.Event) *Event {
 		ID:          event.ID,
 		Title:       event.Title,
 		Description: event.Description,
-		StartTime:   event.StartTime,
-		EndTime:     event.EndTime,
+		Date:        event.Date.Format(time.DateOnly),
+		StartTime:   event.StartTime.Format(time.TimeOnly),
+		EndTime:     event.EndTime.Format(time.TimeOnly),
 	}
 }
 
-func EventToStore(event *Event) *store.Event {
+func EventToStore(event *Event) (*store.Event, error) {
+	dt, err := time.Parse(time.DateOnly, event.Date)
+	if err != nil {
+		return nil, err
+	}
+	startTime, err := time.Parse(time.TimeOnly, event.StartTime)
+	if err != nil {
+		return nil, err
+	}
+	endTime, err := time.Parse(time.TimeOnly, event.EndTime)
+	if err != nil {
+		return nil, err
+	}
+
 	return &store.Event{
 		ID:          event.ID,
 		Title:       event.Title,
 		Description: event.Description,
-		StartTime:   event.StartTime,
-		EndTime:     event.EndTime,
-	}
+		Date:        dt,
+		StartTime:   startTime,
+		EndTime:     endTime,
+	}, nil
 }

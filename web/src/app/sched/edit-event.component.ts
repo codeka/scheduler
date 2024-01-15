@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Event } from '../services/model';
 import { EventsService } from '../services/events.service';
 import { Router } from '@angular/router';
+import { dateToString, timeToString } from '../util/date.util';
 
 @Component({
   selector: 'edit-event',
@@ -25,19 +26,14 @@ export class EditEventComponent {
   onSave() {
     const startTime = new Date(this.form.value.startTime);
     const endTime = new Date(this.form.value.endTime);
-    startTime.setFullYear(this.form.value.date.getFullYear());
-    startTime.setMonth(this.form.value.date.getMonth());
-    startTime.setDate(this.form.value.date.getDate());
-    endTime.setFullYear(this.form.value.date.getFullYear());
-    endTime.setMonth(this.form.value.date.getMonth());
-    endTime.setDate(this.form.value.date.getDate());
 
     const event: Event = {
       id: 0, // TODO: if it's an existing event, reuse the ID.
       title: this.form.value.title,
       description: this.form.value.description,
-      startTime: startTime,
-      endTime: endTime,
+      date: dateToString(this.form.value.date),
+      startTime: timeToString(startTime),
+      endTime: timeToString(endTime),
     }
 
     this.events.saveEvent(event)

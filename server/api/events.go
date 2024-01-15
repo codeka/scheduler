@@ -46,13 +46,18 @@ func HandleEventsGet(c *gin.Context) {
 
 // HandleEventsPosts handles POST requests to /_/events. We save the event you've posted to the data store.
 func HandleEventsPost(c *gin.Context) {
-	var event Event
-	if err := c.BindJSON(&event); err != nil {
+	var e Event
+	if err := c.BindJSON(&e); err != nil {
+		c.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
+	event, err := EventToStore(&e)
+	if err != nil {
 		c.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
 
-	if err := store.SaveEvent(EventToStore(&event)); err != nil {
+	if err := store.SaveEvent(event); err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
