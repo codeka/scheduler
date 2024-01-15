@@ -4,6 +4,7 @@ import { Observable, map } from 'rxjs';
 import { Event } from '../services/model';
 import { AuthService } from '../services/auth.service';
 import { dateToString } from '../util/date.util';
+import { EventsService } from '../services/events.service';
 
 @Component({
   selector: 'week',
@@ -18,8 +19,10 @@ export class WeekComponent {
   lastDay: Date;
 
   hours: Array<number> = [];
+  events: Array<Event> = [];
 
-  constructor(private route: ActivatedRoute, private router: Router, public auth: AuthService) {
+  constructor(private route: ActivatedRoute, private router: Router, public auth: AuthService,
+              private eventsService: EventsService) {
     this.date =
         this.route.params
             .pipe(map((p) => {
@@ -44,7 +47,6 @@ export class WeekComponent {
     this.lastDay = new Date();
 
     this.days = this.date.pipe(map((date) => {
-      console.log("date changed!: " + date);
       // The first and last hour we'll display. This is just the default. If there are any events that start/end before
       // or after this, we'll adjust accordingly.
       var firstHour = 7;
@@ -61,15 +63,19 @@ export class WeekComponent {
           this.lastDay = today;
         }
 
-        // TODO: fetch events
-
         days.set(today, new Array<Event>());
       }
 
-      this.hours = [];
+      var hours = [];
       for (var i = firstHour; i <= lastHour; i++) {
-        this.hours.push(i);
+        hours.push(i);
       }
+      this.hours = hours;
+
+      this.eventsService.getEvents(this.firstDay, this.lastDay)
+          .then((events) => {
+            this.events = events;
+          });
 
       return days;
     }));

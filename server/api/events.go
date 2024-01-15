@@ -18,20 +18,20 @@ type EventsResponse struct {
 func HandleEventsGet(c *gin.Context) {
 	resp := EventsResponse{}
 
-	if c.Query("dateFrom") != "" && c.Query("dateTo") != "" {
-		dateFrom, err := time.Parse(time.DateOnly, c.Query("dateFrom"))
+	if c.Query("startDate") != "" && c.Query("endDate") != "" {
+		startDate, err := time.Parse(time.DateOnly, c.Query("startDate"))
 		if err != nil {
 			c.AbortWithError(http.StatusBadRequest, err)
 			return
 		}
 
-		dateTo, err := time.Parse(time.DateOnly, c.Query("dateTo"))
+		endDate, err := time.Parse(time.DateOnly, c.Query("endDate"))
 		if err != nil {
 			c.AbortWithError(http.StatusBadRequest, err)
 			return
 		}
 
-		events, err := store.GetEventsInDateRange(dateFrom, dateTo)
+		events, err := store.GetEventsInDateRange(startDate, endDate)
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return
