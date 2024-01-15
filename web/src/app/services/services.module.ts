@@ -4,6 +4,7 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { AuthInterceptor } from './auth.interceptor';
 import { AuthService } from './auth.service';
 import { InitService } from './init.service';
+import { EventsService } from './events.service';
 
 @NgModule({
   declarations: [],
@@ -19,6 +20,7 @@ import { InitService } from './init.service';
       deps: [InitService],
     },
     AuthService,
+    EventsService,
     InitService,
   ],
   bootstrap: [AuthService, InitService]

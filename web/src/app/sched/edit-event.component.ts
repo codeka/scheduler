@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Observable, map } from 'rxjs';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Event } from '../services/model';
-import { AuthService } from '../services/auth.service';
-import { NgForm } from '@angular/forms';
+import { EventsService } from '../services/events.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'edit-event',
@@ -11,10 +10,41 @@ import { NgForm } from '@angular/forms';
   styleUrls: ['./edit-event.component.scss']
 })
 export class EditEventComponent {
-  constructor() {}
+  form: FormGroup
 
-  onSave(f: NgForm) {
+  constructor(private events: EventsService, private formBuilder: FormBuilder, private router: Router) {
+    this.form = this.formBuilder.group({
+      title: ['', Validators.required],
+      description: [''],
+      date: [new Date(), Validators.required],
+      startTime: [new Date(1, 1, 1, 10, 0, 0), Validators.required],
+      endTime: [new Date(1, 1, 1, 11, 0, 0), Validators.required],
+    });
+  }
 
+  onSave() {
+    const startTime = new Date(this.form.value.startTime);
+    const endTime = new Date(this.form.value.endTime);
+    startTime.setFullYear(this.form.value.date.getFullYear());
+    startTime.setMonth(this.form.value.date.getMonth());
+    startTime.setDate(this.form.value.date.getDate());
+    endTime.setFullYear(this.form.value.date.getFullYear());
+    endTime.setMonth(this.form.value.date.getMonth());
+    endTime.setDate(this.form.value.date.getDate());
+
+    const event: Event = {
+      id: 0, // TODO: if it's an existing event, reuse the ID.
+      title: this.form.value.title,
+      description: this.form.value.description,
+      startTime: startTime,
+      endTime: endTime,
+    }
+
+    this.events.saveEvent(event)
+      .then(() => {
+        // TODO: navigate to the day/week/whatever this event is on.
+        this.router.navigate(["/week/2024/01/09"])
+      })
   }
 }
 

@@ -50,3 +50,13 @@ func MakeEvent(event *store.Event) *Event {
 		EndTime:     event.EndTime,
 	}
 }
+
+func EventToStore(event *Event) *store.Event {
+	return &store.Event{
+		ID:          event.ID,
+		Title:       event.Title,
+		Description: event.Description,
+		StartTime:   event.StartTime,
+		EndTime:     event.EndTime,
+	}
+}

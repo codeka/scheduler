@@ -12,10 +12,10 @@ type EventsResponse struct {
 	Events []*Event `json:"events"`
 }
 
-// HandleEvents handles requests to /_/events. It returns the events in the data store, filtered by various query
+// HandleEventsGet handles requests to /_/events. It returns the events in the data store, filtered by various query
 // parameters, including:
 // ?dateFrom={}&dateTo={} - between the given date ranges
-func HandleEvents(c *gin.Context) {
+func HandleEventsGet(c *gin.Context) {
 	resp := EventsResponse{}
 
 	if c.Query("dateFrom") != "" && c.Query("dateTo") != "" {
@@ -44,8 +44,25 @@ func HandleEvents(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
+// HandleEventsPosts handles POST requests to /_/events. We save the event you've posted to the data store.
+func HandleEventsPost(c *gin.Context) {
+	var event Event
+	if err := c.BindJSON(&event); err != nil {
+		c.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
+
+	if err := store.SaveEvent(EventToStore(&event)); err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	c.AbortWithStatus(http.StatusOK)
+}
+
 func setupEvents(g *gin.Engine) error {
-	g.GET("_/events", HandleEvents)
+	g.GET("_/events", HandleEventsGet)
+	g.POST("_/events", HandleEventsPost)
 
 	return nil
 }

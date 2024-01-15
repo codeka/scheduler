@@ -4,29 +4,29 @@
     <mat-card-title>Edit event (todo: or create?)</mat-card-title>
   </mat-card-header>
 
-  <form #f="ngForm" (ngSubmit)="onSave(f)" novalidate>
+  <form [formGroup]="form" (ngSubmit)="onSave()" novalidate>
     <div class="fields">
       <mat-form-field class="full-width">
         <mat-label>Event name</mat-label>
-        <input matInput />
+        <input matInput formControlName="title" />
       </mat-form-field>
       <mat-form-field class="full-width">
         <mat-label>Event description</mat-label>
-        <textarea matInput></textarea>
+        <textarea matInput formControlName="description"></textarea>
       </mat-form-field>
       <div class="horz">
         <mat-form-field>
           <mat-label>Event date</mat-label>
-          <input matInput [matDatepicker]="picker">
+          <input matInput [matDatepicker]="picker" formControlName="date">
           <mat-hint>MM/DD/YYYY</mat-hint>
           <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
           <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>
-        <igx-time-picker>
+        <igx-time-picker formControlName="startTime">
           <label igxLabel>Start time</label>
           <igx-hint>HH:MM tt</igx-hint>
         </igx-time-picker>
-        <igx-time-picker>
+        <igx-time-picker formControlName="endTime">
           <label igxLabel>End time</label>
           <igx-hint>HH:MM tt</igx-hint>
         </igx-time-picker>
@@ -35,7 +35,7 @@
 
     <mat-card-actions>
       <div class="spacer"></div>
-      <button mat-button>SAVE EVENT</button>
+      <button mat-button type="submit">SAVE EVENT</button>
       <button mat-button>CANCEL</button>
     </mat-card-actions>
   </form>

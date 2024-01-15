@@ -52,3 +52,27 @@ func GetEventsInDateRange(dateFrom, dateTo time.Time) ([]*Event, error) {
 	}
 	return events, nil
 }
+
+func SaveEvent(event *Event) error {
+	startYear, startMonth, startDay := event.StartTime.Date()
+	endYear, endMonth, endDay := event.EndTime.Date()
+	if startYear != endYear || startMonth != endMonth || startDay != endDay {
+		return fmt.Errorf("start and end date should be the same")
+	}
+
+	date := event.StartTime.Format(time.DateOnly)
+	startTime := event.StartTime.Format(time.TimeOnly)
+	endTime := event.EndTime.Format(time.TimeOnly)
+
+	if event.ID == 0 {
+		_, err := db.Exec(`
+			INSERT INTO events
+			  (title, description, date, start_time, end_time)
+			VALUES
+			  (?, ?, ?, ?, ?)`,
+			event.Title, event.Description, date, startTime, endTime)
+		return err
+	}
+	// TODO: implement update
+	return fmt.Errorf("not implemented yet")
+}
