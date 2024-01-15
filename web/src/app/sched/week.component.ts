@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, map } from 'rxjs';
 import { Event } from '../services/model';
 import { AuthService } from '../services/auth.service';
-import { dateToString } from '../util/date.util';
+import { dateToString, stringToDate, stringToTime } from '../util/date.util';
 import { EventsService } from '../services/events.service';
 
 @Component({
@@ -86,6 +86,33 @@ export class WeekComponent {
     return 0;
   }
 
+  eventsForDate(dt: Date): Array<Event> {
+    const dateEvents = new Array<Event>();
+    for (const event of this.events) {
+      if (stringToDate(event.date).getDate() == dt.getDate()) {
+        dateEvents.push(event)
+      }
+    }
+    return dateEvents
+  }
+
+  // Returns the y-coordinate of the given time, assuming each hour is hourHeight pixels tall, and we start from
+  // this.firstHour.
+  eventTop(event: Event, hourHeight: number): string {
+    const time = stringToTime(event.startTime);
+    console.log("event.title=" + event.title + " startTime=" + event.startTime);
+    return ((time.getHours() - this.hours[0]) * hourHeight) + "pt";
+  }
+
+  // Returns the height, in pixels, of an event with the given start and end time.
+  timeHeight(startTimeStr: string, endTimeStr: string, hourHeight: number): string {
+    const startTime = stringToTime(startTimeStr);
+    const endTime = stringToTime(endTimeStr);
+    return Math.round(
+      ((endTime.getHours() + (endTime.getMinutes() / 60.0)) - (startTime.getHours() + (startTime.getMinutes() / 60.0)))
+      * hourHeight) + "pt";
+  }
+
   // Helper to convert an int hour (like 13) to a string (like "1 pm")
   hourStr(hour: number) {
     if (hour < 12) {
@@ -95,6 +122,36 @@ export class WeekComponent {
     } else {
       return (hour - 12) + " pm";
     }
+  }
+
+  // Returns a string that represents the time the given event runs (e.g. "8-9:30am" or "11:30am-12:30pm", etc).
+  eventTimeStr(event: Event): string {
+    const startTime = stringToTime(event.startTime);
+    const endTime = stringToTime(event.endTime);
+
+    var str = "" + startTime.getHours();
+    if (startTime.getMinutes() != 0) {
+      str += ":" + ("0" + startTime.getMinutes()).slice(-2);
+    }
+    if (startTime.getHours() < 12 && endTime.getHours() >= 12) {
+      str += "am";
+    }
+    str += "-";
+    if (endTime.getHours() > 12) {
+      str += "" + (endTime.getHours() - 12);
+    } else {
+      str += "" + endTime.getHours();
+    }
+    if (endTime.getMinutes() != 0) {
+      str += ":" + ("0" + endTime.getMinutes()).slice(-2);
+    }
+    if (endTime.getHours() < 12) {
+      str += "am";
+    } else {
+      str += "pm";
+    }
+
+    return str;
   }
 
   onCreateEvent() {

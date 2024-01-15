@@ -11,6 +11,10 @@ interface SaveEventResponse {
   success: boolean
 }
 
+interface GetEventsResponse {
+  events: Event[]
+}
+
 // EventsService is responsible for fetching, filtering, updating events.
 @Injectable()
 export class EventsService {
@@ -26,7 +30,8 @@ export class EventsService {
           .set('endDate', dateToString(endDate))
     };
     return firstValueFrom(
-      this.http.get<Event[]>(ENV.backend + "/_/events", options)
+      this.http.get<GetEventsResponse>(ENV.backend + "/_/events", options)
+        .pipe(map((resp) => resp.events))
     )
   }
 

@@ -35,6 +35,12 @@
             <div class="hour-of-day hour-line"
                 *ngFor="let hour of hours">
             </div>
+            <div class="event"
+                *ngFor="let event of eventsForDate(entry.key)"
+                [ngStyle]="{ top: eventTop(event, 50), height: timeHeight(event.startTime, event.endTime, 50) }">
+                <div class="event-name">{{event.title}}</div>
+                <div class="event-time">{{eventTimeStr(event)}}</div>
+              </div>
           </div>
         </div>
       </div>

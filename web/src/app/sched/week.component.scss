@@ -60,15 +60,21 @@ div.hours {
 }
 
 div.events {
-  display: relative;
+  position: relative;
   border: solid 1px transparent;
 }
 
 .hour-line {
-  display: relative;
+  position: relative;
   border-top: dotted 1px #ccc;
   height: 51px;
   margin-top: 8px;
+}
+
+div.events .event {
+  position: absolute;
+  width: 100%;
+  border: solid 1px blue;
 }
 
 div.container div.day-of-week {
@@ -81,4 +87,8 @@ div.day-of-week div.events {
 
 div.day-of-week div.border {
   border-left: solid 1px black;
+}
+
+div.event-name {
+  font-weight: bold;;
 }
