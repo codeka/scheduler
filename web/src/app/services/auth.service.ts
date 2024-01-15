@@ -44,18 +44,14 @@ export class AuthService {
   // Returns true if the currently-logged in user is in the given role.
   isInRole(role: string): boolean {
     if (!this.isLoggedIn()) {
-      console.log("not logged in")
       return false;
     }
 
     for (const userRole of this.user?.roles || []) {
-      console.log("checking if " + role + " == " + userRole)
       if (role == userRole) {
-        console.log("yep");
         return true;
       }
     }
-    console.log("nup")
     return false;
   }
 
@@ -78,7 +74,6 @@ export class AuthService {
       this.http.post<VerifyConfirmationResponse>(ENV.backend + "/_/auth/verify-confirmation", req)
           .pipe(map((resp) => {
             if (resp.user.id > 0) {
-              console.log("got user: " + JSON.stringify(resp.user));
 
               // Save the secret key so we can authenticate ourselves later. And save the user so we know we're
               // logged in.

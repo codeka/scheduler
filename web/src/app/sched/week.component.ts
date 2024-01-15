@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, map } from 'rxjs';
 import { Event } from '../services/model';
 import { AuthService } from '../services/auth.service';
+import { dateToString } from '../util/date.util';
 
 @Component({
   selector: 'week',
@@ -21,10 +22,20 @@ export class WeekComponent {
   constructor(private route: ActivatedRoute, private router: Router, public auth: AuthService) {
     this.date =
         this.route.params
-            .pipe(map((p) => new Date(parseInt(p["year"]), parseInt(p["month"]) - 1, parseInt(p["day"]))))
-            .pipe(map((date) => {
-              // Make sure the map is the first day of the week (which is defined as Sunday for us)
-              date.setDate(date.getDate() - date.getDay());
+            .pipe(map((p) => {
+              if (!p["year"] || !p["month"] || !p["day"]) {
+                const today = new Date();
+                // No year/month/day specifed, redirect to today.
+                router.navigate(["/week", today.getFullYear(), today.getMonth() + 1, today.getDate()])
+              }
+              const date = new Date(parseInt(p["year"]), parseInt(p["month"]) - 1, parseInt(p["day"]));
+              if (date.getDay() > 0) {
+                // If the given date isn't the sunday, conver to the sunday and redirect there.
+                date.setDate(date.getDate() - date.getDay());
+                router.navigate(["/week", date.getFullYear(), date.getMonth() + 1, date.getDate()])
+              }
+
+              // OK, we're good to display this date.
               return date;
             }));
 
@@ -33,6 +44,7 @@ export class WeekComponent {
     this.lastDay = new Date();
 
     this.days = this.date.pipe(map((date) => {
+      console.log("date changed!: " + date);
       // The first and last hour we'll display. This is just the default. If there are any events that start/end before
       // or after this, we'll adjust accordingly.
       var firstHour = 7;
@@ -55,7 +67,7 @@ export class WeekComponent {
       }
 
       this.hours = [];
-      for (var hour = firstHour; i <= lastHour; i++) {
+      for (var i = firstHour; i <= lastHour; i++) {
         this.hours.push(i);
       }
 
@@ -81,6 +93,25 @@ export class WeekComponent {
 
   onCreateEvent() {
     this.router.navigate(['edit-event']);
+  }
+
+  onLastWeekClick() {
+    const lastWeek = new Date(this.firstDay);
+    lastWeek.setDate(lastWeek.getDate() - 7);
+    this.router.navigate(['week', lastWeek.getFullYear(), lastWeek.getMonth() + 1, lastWeek.getDate()]);
+  }
+
+  onNextWeekClick() {
+    const nextWeek = new Date(this.firstDay);
+    nextWeek.setDate(nextWeek.getDate() + 7);
+    this.router.navigate(['week', nextWeek.getFullYear(), nextWeek.getMonth() + 1, nextWeek.getDate()]);
+  }
+
+  onTodayClick() {
+    const today = new Date();
+    // Make sure we actually navigate to the sunday before today.
+    today.setDate(today.getDate() - today.getDay());
+    this.router.navigate(['week', today.getFullYear(), today.getMonth() + 1, today.getDate()]);
   }
 }
 
