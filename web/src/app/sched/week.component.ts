@@ -92,6 +92,10 @@ export class WeekComponent {
 
   eventsForDate(dt: Date): Array<Event> {
     const dateEvents = new Array<Event>();
+    if (!this.events) {
+      return dateEvents;
+    }
+
     for (const event of this.events) {
       if (stringToDate(event.date).getDate() == dt.getDate()) {
         dateEvents.push(event)

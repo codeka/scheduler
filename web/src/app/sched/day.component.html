@@ -10,7 +10,10 @@
       <button mat-icon-button (click)="onYesterdayClick()"><mat-icon>chevron_left</mat-icon></button>
       <button mat-icon-button (click)="onTomorrowClick()"><mat-icon>chevron_right</mat-icon></button>
       <h1>
-        {{today.toLocaleString('default', { day: '2-digit' })}} {{today.toLocaleString('default', { month: 'long' })}} {{today.getFullYear()}}
+        {{today.toLocaleString('default', { weekday: 'long' })}},
+        {{today.toLocaleString('default', { day: '2-digit' })}}
+        {{today.toLocaleString('default', { month: 'long' })}}
+        {{today.getFullYear()}}
       </h1>
       <div class="spacer"></div>
       <mat-form-field subscriptSizing="dynamic">

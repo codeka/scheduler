@@ -143,8 +143,6 @@ export class DayComponent {
 
   onTodayClick() {
     const today = new Date();
-    // Make sure we actually navigate to the sunday before today.
-    today.setDate(today.getDate() - today.getDay());
     this.router.navigate(['day', today.getFullYear(), today.getMonth() + 1, today.getDate()]);
   }
 }
