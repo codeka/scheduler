@@ -1,0 +1,45 @@
+<div class="content">
+  <div class="sidebar">
+    <p>TODO: a monthly view</p>
+    <p>TODO: filtering options?</p>
+    <p>TODO: a link to settings, etc?</p>
+  </div>
+  <div class="maincontent">
+    <mat-toolbar class="header">
+      <button mat-stroked-button id="today-btn" (click)="onTodayClick()">Today</button>
+      <button mat-icon-button (click)="onYesterdayClick()"><mat-icon>chevron_left</mat-icon></button>
+      <button mat-icon-button (click)="onTomorrowClick()"><mat-icon>chevron_right</mat-icon></button>
+      <h1>
+        {{today.toLocaleString('default', { day: '2-digit' })}} {{today.toLocaleString('default', { month: 'long' })}} {{today.getFullYear()}}
+      </h1>
+      <div class="spacer"></div>
+      <mat-form-field subscriptSizing="dynamic">
+        <mat-select [(value)]="daily" (selectionChange)="onViewChanged($event.value)">
+          <mat-option [value]="'daily'">Daily</mat-option>
+          <mat-option [value]="'weekly'" selected>Weekly</mat-option>
+          <mat-option [value]="'monthly'">Monthly</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <button class="admin-button" mat-raised-button *ngIf="auth.isInRole('EVENT_MANAGER')" (click)="onCreateEvent()"><mat-icon>event</mat-icon>Create Event</button>
+    </mat-toolbar>
+    <div class="container">
+      <div class="hours">
+        <div class="hour-of-day hour-title"
+            *ngFor="let hour of hours">
+          {{hourStr(hour)}}
+        </div>
+      </div>
+      <div class="events">
+        <div class="hour-of-day hour-line"
+            *ngFor="let hour of hours">
+        </div>
+        <div class="event"
+            *ngFor="let event of events | async"
+            [ngStyle]="{ top: eventTop(event, 50), height: timeHeight(event.startTime, event.endTime, 50) }">
+            <div class="event-name">{{event.title}}</div>
+            <div class="event-time">{{eventTimeStr(event)}}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

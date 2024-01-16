@@ -48,7 +48,8 @@ h3 {
 }
 
 div.hours {
-  margin-top: 52pt;
+  margin-top: 9pt;
+  margin-right: 4pt;
 }
 
 .admin-button {
@@ -63,10 +64,6 @@ div.hours {
   margin-bottom: 30pt;
 }
 
-div.events {
-  position: relative;
-}
-
 .hour-line {
   position: relative;
   border-bottom: dotted 0.5pt #ccc;
@@ -74,11 +71,9 @@ div.events {
   margin-bottom: 40pt;
 }
 
-div.container div.day-of-week {
+div.events {
   flex: 1;
-}
-
-div.day-of-week div.events {
+  position: relative;
   margin-top: 8pt;
 }
 

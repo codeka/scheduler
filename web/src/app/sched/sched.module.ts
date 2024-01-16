@@ -8,20 +8,22 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
 import { MatToolbarModule } from '@angular/material/toolbar';
 
 import { IgxTimePickerModule } from 'igniteui-angular';
 
+import { DayComponent } from './day.component';
 import { EditEventComponent } from './edit-event.component';
 import { WeekComponent } from './week.component';
 import { ServicesModule } from '../services/services.module';
 
 @NgModule({
-  declarations: [EditEventComponent, WeekComponent],
+  declarations: [DayComponent, EditEventComponent, WeekComponent],
   imports: [
     CommonModule, FormsModule, IgxTimePickerModule, MatButtonModule, MatCardModule, MatDatepickerModule,
-    MatFormFieldModule, MatIconModule, MatInputModule, MatNativeDateModule, MatToolbarModule, ReactiveFormsModule,
-    ServicesModule
+    MatFormFieldModule, MatIconModule, MatInputModule, MatNativeDateModule, MatSelectModule, MatToolbarModule,
+    ReactiveFormsModule, ServicesModule
   ],
   providers: [],
   bootstrap: []
