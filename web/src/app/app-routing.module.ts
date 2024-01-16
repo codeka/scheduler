@@ -8,6 +8,7 @@ import { LoginComponent } from './auth/login.component';
 import { AuthService } from './services/auth.service';
 import { EditEventComponent } from './sched/edit-event.component';
 import { DayComponent } from './sched/day.component';
+import { MonthComponent } from './sched/month.component';
 
 const loggedInActivate: CanActivateFn = () => {
   return inject(AuthService).isLoggedIn();
@@ -34,10 +35,12 @@ const routes: Routes = [
   { path: 'login/confirm', component: ConfirmComponent },
 
   // Most paths will only match if you're logged in.
-  { path: 'week', canActivate: [loggedInActivate], component: WeekComponent },
-  { path: 'week/:year/:month/:day', canActivate: [loggedInActivate], component: WeekComponent },
   { path: 'day', canActivate: [loggedInActivate], component: DayComponent },
   { path: 'day/:year/:month/:day', canActivate: [loggedInActivate], component: DayComponent },
+  { path: 'week', canActivate: [loggedInActivate], component: WeekComponent },
+  { path: 'week/:year/:month/:day', canActivate: [loggedInActivate], component: WeekComponent },
+  { path: 'month', canActivate: [loggedInActivate], component: MonthComponent },
+  { path: 'month/:year/:month', canActivate: [loggedInActivate], component: MonthComponent },
 
   // Paths for event managers.
   { path: 'edit-event', canActivate: [isEventManagerActivate], component: EditEventComponent },

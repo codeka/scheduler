@@ -1,0 +1,42 @@
+<div class="content">
+  <div class="sidebar">
+    <p>TODO: a monthly view</p>
+    <p>TODO: filtering options?</p>
+    <p>TODO: a link to settings, etc?</p>
+  </div>
+  <div class="maincontent">
+    <mat-toolbar class="header">
+      <button mat-stroked-button id="today-btn" (click)="onTodayClick()">This month</button>
+      <button mat-icon-button (click)="onLastMonthClick()"><mat-icon>chevron_left</mat-icon></button>
+      <button mat-icon-button (click)="onNextMonthClick()"><mat-icon>chevron_right</mat-icon></button>
+      <h1>{{monthStart.toLocaleString('default', { month: 'long' })}} {{monthStart.getFullYear()}}</h1>
+      <div class="spacer"></div>
+      <mat-form-field subscriptSizing="dynamic">
+        <mat-select [(value)]="monthly" (selectionChange)="onViewChanged($event.value)">
+          <mat-option [value]="'daily'">Daily</mat-option>
+          <mat-option [value]="'weekly'">Weekly</mat-option>
+          <mat-option [value]="'monthly'">Monthly</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <button class="admin-button" mat-raised-button *ngIf="auth.isInRole('EVENT_MANAGER')" (click)="onCreateEvent()"><mat-icon>event</mat-icon>Create Event</button>
+    </mat-toolbar>
+    <div class="container">
+      <div class="week week-header">
+        <div class="day day-header" *ngFor="let day of ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']">{{ day }}</div>
+      </div>
+      <div class="week"
+           *ngFor="let weekStart of weeks">
+        <ng-container *ngFor="let day of [weekStart, weekStart+1, weekStart+2, weekStart+3, weekStart+4, weekStart+5, weekStart+6]">
+          <div *ngIf="day >= 0 && day <= monthEnd.getDate(); else blankEntry" class="day">
+            <div class="dayNo">{{ day + 1 }}</div>
+            <div class="event"
+                 *ngFor="let event of eventsForDay(day + 1)">
+              <div class="event-header"><span class="title">{{event.title}}</span> {{eventTimeStr(event)}}</div>
+            </div>
+          </div>
+          <ng-template #blankEntry><div class="day empty-day"></div></ng-template>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>

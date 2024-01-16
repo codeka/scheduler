@@ -13,13 +13,15 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 
 import { IgxTimePickerModule } from 'igniteui-angular';
 
-import { DayComponent } from './day.component';
-import { EditEventComponent } from './edit-event.component';
-import { WeekComponent } from './week.component';
 import { ServicesModule } from '../services/services.module';
 
+import { DayComponent } from './day.component';
+import { EditEventComponent } from './edit-event.component';
+import { MonthComponent } from './month.component';
+import { WeekComponent } from './week.component';
+
 @NgModule({
-  declarations: [DayComponent, EditEventComponent, WeekComponent],
+  declarations: [DayComponent, EditEventComponent, MonthComponent, WeekComponent],
   imports: [
     CommonModule, FormsModule, IgxTimePickerModule, MatButtonModule, MatCardModule, MatDatepickerModule,
     MatFormFieldModule, MatIconModule, MatInputModule, MatNativeDateModule, MatSelectModule, MatToolbarModule,

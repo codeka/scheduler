@@ -1,0 +1,93 @@
+@import '@angular/material/theming';
+
+div.content {
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+div.sidebar {
+  flex-basis: 250pt;
+}
+
+div.maincontent {
+  flex: 1;
+}
+
+#today-btn {
+  margin-right: 8pt;
+}
+
+h1 {
+  padding-left: 8pt;
+  display: inline;
+  font-size: 20pt;
+}
+
+h2 {
+  font-size: 12pt;
+  font-weight: normal;
+  text-align: center;
+  height: 22pt;
+  margin: 0;
+}
+
+h3 {
+  font-size: 18pt;
+  text-align: center;
+  height: 22pt;
+  margin: 0;
+}
+
+.admin-button {
+  margin-left: 10pt;
+}
+
+div.events {
+  flex: 1;
+  position: relative;
+  margin-top: 8pt;
+}
+
+div.events .event {
+  position: absolute;
+  left: 4pt;
+  right: 8pt;
+  border-radius: 4pt;
+  border: solid 2pt blue;
+  padding: 0 4pt;
+  background-color: mix(blue, white, 20%);
+}
+
+div.event-header .title {
+  font-weight: bold;
+}
+
+div.container {
+  flex: 1;
+  display: flex;
+  flex-flow: column nowrap;
+  column-gap: 8pt;
+}
+
+div.week {
+  display: flex;
+  flex-flow: row nowrap;
+  flex: 1;
+}
+
+div.day {
+  border: dotted 1px #ccc;
+  flex: 1;
+  height: 150pt;
+}
+
+div.day-header {
+  border: none;
+  height: 15pt;
+  text-align: center;
+  font-weight: bold;
+}
+
+div.empty-day {
+  border: solid 1px transparent;
+}

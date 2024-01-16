@@ -7,7 +7,7 @@
   </div>
   <div class="maincontent">
     <mat-toolbar class="header">
-      <button mat-stroked-button id="today-btn" (click)="onTodayClick()">Today</button>
+      <button mat-stroked-button id="today-btn" (click)="onTodayClick()">This week</button>
       <button mat-icon-button (click)="onLastWeekClick()"><mat-icon>chevron_left</mat-icon></button>
       <button mat-icon-button (click)="onNextWeekClick()"><mat-icon>chevron_right</mat-icon></button>
       <h1 *ngIf="firstDay.getMonth() != lastDay.getMonth(); else sameMonth">
