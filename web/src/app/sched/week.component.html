@@ -17,13 +17,7 @@
         {{firstDay.toLocaleString('default', { month: 'long' })}} {{firstDay.getFullYear()}}
       </h1></ng-template>
       <div class="spacer"></div>
-      <mat-form-field subscriptSizing="dynamic">
-        <mat-select [(value)]="weekly" (selectionChange)="onViewChanged($event.value)">
-          <mat-option [value]="'daily'">Daily</mat-option>
-          <mat-option [value]="'weekly'" selected>Weekly</mat-option>
-          <mat-option [value]="'monthly'">Monthly</mat-option>
-        </mat-select>
-      </mat-form-field>
+      <view-switcher [date]="firstDay"></view-switcher>
       <button class="admin-button" mat-raised-button *ngIf="auth.isInRole('EVENT_MANAGER')" (click)="onCreateEvent()"><mat-icon>event</mat-icon>Create Event</button>
     </mat-toolbar>
     <div class="container">

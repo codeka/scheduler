@@ -115,16 +115,6 @@ export class DayComponent {
     return str;
   }
 
-  onViewChanged(value: string) {
-    if (value == 'daily') {
-      this.router.navigate(['day', this.today.getFullYear(), this.today.getMonth() + 1, this.today.getDate()]);
-    } else if (value == 'weekly') {
-      this.router.navigate(['week', this.today.getFullYear(), this.today.getMonth() + 1, this.today.getDate()]);
-    } else if (value == 'monthly') {
-      this.router.navigate(['month', this.today.getFullYear(), this.today.getMonth() + 1]);
-    }
-  }
-
   onCreateEvent() {
     this.router.navigate(['edit-event']);
   }

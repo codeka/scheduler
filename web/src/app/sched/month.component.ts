@@ -111,16 +111,6 @@ export class MonthComponent {
     return dateEvents
   }
 
-  onViewChanged(value: string) {
-    if (value == 'daily') {
-      this.router.navigate(['day', this.monthStart.getFullYear(), this.monthStart.getMonth() + 1, this.monthStart.getDate()]);
-    } else if (value == 'weekly') {
-      this.router.navigate(['week', this.monthStart.getFullYear(), this.monthStart.getMonth() + 1, this.monthStart.getDate()]);
-    } else if (value == 'monthly') {
-      this.router.navigate(['month', this.monthStart.getFullYear(), this.monthStart.getMonth() + 1]);
-    }
-  }
-
   onCreateEvent() {
     this.router.navigate(['edit-event']);
   }

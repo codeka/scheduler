@@ -18,10 +18,11 @@ import { ServicesModule } from '../services/services.module';
 import { DayComponent } from './day.component';
 import { EditEventComponent } from './edit-event.component';
 import { MonthComponent } from './month.component';
+import { ViewSwitcherComponent } from './view-switcher.component';
 import { WeekComponent } from './week.component';
 
 @NgModule({
-  declarations: [DayComponent, EditEventComponent, MonthComponent, WeekComponent],
+  declarations: [DayComponent, EditEventComponent, MonthComponent, ViewSwitcherComponent, WeekComponent],
   imports: [
     CommonModule, FormsModule, IgxTimePickerModule, MatButtonModule, MatCardModule, MatDatepickerModule,
     MatFormFieldModule, MatIconModule, MatInputModule, MatNativeDateModule, MatSelectModule, MatToolbarModule,
