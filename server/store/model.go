@@ -25,3 +25,8 @@ type Event struct {
 	StartTime time.Time
 	EndTime   time.Time
 }
+
+type Group struct {
+	ID   int64
+	Name string
+}

@@ -79,3 +79,20 @@ func EventToStore(event *Event) (*store.Event, error) {
 		EndTime:     endTime,
 	}, nil
 }
+
+type Group struct {
+	ID   int64  `json:"id"`
+	Name string `json:"name"`
+	// TODO: default start time, default end time, description etc.
+}
+
+func MakeGroup(group *store.Group) *Group {
+	if group == nil {
+		return nil
+	}
+
+	return &Group{
+		ID:   group.ID,
+		Name: group.Name,
+	}
+}

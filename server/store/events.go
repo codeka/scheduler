@@ -28,8 +28,7 @@ func makeEvent(row *sql.Rows) (*Event, error) {
 	return event, nil
 }
 
-// GetUserByEmail returns the User with the given email address. If the user doesn't exit, returns a nil User and nil
-// error. Any other kind of error returns a non-nil error.
+// GetEventsInDateRange ...
 func GetEventsInDateRange(startDate, endDate time.Time) ([]*Event, error) {
 	rows, err := db.Query(`
 			SELECT

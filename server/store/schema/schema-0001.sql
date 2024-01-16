@@ -43,7 +43,7 @@ INSERT INTO user_roles(user_id, role_name) SELECT id, 'SHIFT_MANAGER' FROM users
 -- 3. Once you enter the confirmation code, we'll give you a cookie with the secret for this particular login
 -- The browser must present the secret key with every request.
 CREATE TABLE user_logins (
-  user_id NUMBER,
+  user_id INTEGER,
   -- The confirmation code we send to the user and ask them to enter back to log in.
   confirmation_code TEXT,
   -- The secret key used to identify the user once they've logged in. This will be null until they've given us
@@ -52,6 +52,35 @@ CREATE TABLE user_logins (
   -- The last time we saw this login. 
   last_seen NUMBER
 );
+
+-- A group is like SSG or Gajukai. Each event will coincide with one or more shifts from various groups.
+CREATE TABLE groups (
+  id INTEGER PRIMARY KEY,
+  name TEXT
+  -- TODO: default start time
+  -- TODO: default end time
+);
+
+-- Add some initial groups.
+INSERT INTO groups (name) VALUES ('Center in Charge');
+INSERT INTO groups (name) VALUES ('Byakuren');
+INSERT INTO groups (name) VALUES ('Soka Group');
+INSERT INTO groups (name) VALUES ('Gajukai');
+INSERT INTO groups (name) VALUES ('SSG');
+INSERT INTO groups (name) VALUES ('A/V');
+INSERT INTO groups (name) VALUES ('Bookstore');
+
+-- A table that maps users to the groups that user belongs to.
+CREATE TABLE user_groups (
+  user_id INTEGER,
+  group_id INTEGER
+);
+
+-- Add the initial user to all the groups.
+INSERT INTO user_groups SELECT
+  (SELECT MAX(id) FROM users),
+  id
+FROM groups;
 
 CREATE TABLE events (
   id INTEGER PRIMARY KEY,
@@ -66,5 +95,14 @@ CREATE TABLE events (
   end_time TEXT
 );
 
--- TODO add groups
--- TODO add shifts
+-- A shift typically covers one (or more) events, but technically there does not need to be a correlation between
+-- events and shifts.
+CREATE TABLE shifts (
+  id INTEGER PRIMARY KEY,
+  group_id INTEGER,
+
+  -- Date and start/end time are  stored similarly to events.
+  date TEXT,
+  start_time TEXT,
+  end_time TEXT
+);

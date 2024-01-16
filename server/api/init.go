@@ -14,8 +14,9 @@ type venue struct {
 }
 
 type InitResponse struct {
-	User  *User  `json:"user"`
-	Venue *venue `json:"venue"`
+	User   *User    `json:"user"`
+	Venue  *venue   `json:"venue"`
+	Groups []*Group `json:"groups"`
 }
 
 // HandleInit handles requests for /_/init which is the first request any client must call. We'll check that they have
@@ -34,6 +35,13 @@ func HandleInit(c *gin.Context) {
 			Name:      v.Name,
 			ShortName: v.ShortName,
 			Address:   v.Address,
+		}
+	}
+
+	gs, _ := store.GetGroups()
+	if gs != nil {
+		for _, g := range gs {
+			resp.Groups = append(resp.Groups, MakeGroup(g))
 		}
 	}
 
