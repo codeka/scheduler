@@ -13,6 +13,7 @@
       <div class="spacer"></div>
       <view-switcher [date]="monthStart"></view-switcher>
       <button class="admin-button" mat-raised-button *ngIf="auth.isInRole('EVENT_MANAGER')" (click)="onCreateEvent()"><mat-icon>event</mat-icon>Create Event</button>
+      <button class="admin-button" mat-raised-button *ngIf="auth.isInRole('ADMIN')" (click)="onCreateShift()"><mat-icon>event</mat-icon>Create Shift</button>
     </mat-toolbar>
     <div class="container">
       <div class="week week-header">

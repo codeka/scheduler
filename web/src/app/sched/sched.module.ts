@@ -20,9 +20,11 @@ import { EditEventComponent } from './edit-event.component';
 import { MonthComponent } from './month.component';
 import { ViewSwitcherComponent } from './view-switcher.component';
 import { WeekComponent } from './week.component';
+import { EditShiftComponent } from './edit-shift.component';
 
 @NgModule({
-  declarations: [DayComponent, EditEventComponent, MonthComponent, ViewSwitcherComponent, WeekComponent],
+  declarations: [
+    DayComponent, EditEventComponent, EditShiftComponent, MonthComponent, ViewSwitcherComponent, WeekComponent],
   imports: [
     CommonModule, FormsModule, IgxTimePickerModule, MatButtonModule, MatCardModule, MatDatepickerModule,
     MatFormFieldModule, MatIconModule, MatInputModule, MatNativeDateModule, MatSelectModule, MatToolbarModule,

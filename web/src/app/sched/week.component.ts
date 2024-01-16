@@ -174,6 +174,10 @@ export class WeekComponent {
     this.router.navigate(['edit-event']);
   }
 
+  onCreateShift() {
+    this.router.navigate(['edit-shift']);
+  }
+
   onLastWeekClick() {
     const lastWeek = new Date(this.firstDay);
     lastWeek.setDate(lastWeek.getDate() - 7);

@@ -115,6 +115,10 @@ export class MonthComponent {
     this.router.navigate(['edit-event']);
   }
 
+  onCreateShift() {
+    this.router.navigate(['edit-shift']);
+  }
+
   onLastMonthClick() {
     const lastMonth = new Date(this.monthStart);
     lastMonth.setMonth(lastMonth.getMonth() - 1);

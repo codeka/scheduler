@@ -1,0 +1,25 @@
+
+#edit-event-card {
+  margin: 28pt auto 0 auto;
+  max-width: 800pt;
+}
+
+div.fields {
+  margin: 20pt 20pt 0 20pt;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+div.fields mat-form-field.full-width {
+  align-self: stretch;
+}
+
+div.fields div.horz {
+  display: flex;
+  flex-direction: row;
+}
+
+igx-time-picker {
+  margin-left: 20pt;
+}

@@ -119,6 +119,10 @@ export class DayComponent {
     this.router.navigate(['edit-event']);
   }
 
+  onCreateShift() {
+    this.router.navigate(['edit-shift']);
+  }
+
   onYesterdayClick() {
     const yesterday = new Date(this.today);
     yesterday.setDate(yesterday.getDate() - 1);

@@ -4,10 +4,14 @@ import { firstValueFrom, map } from "rxjs";
 
 import { ENV } from '../env/environment';
 
-import { Event } from "./model";
+import { Event, Shift } from "./model";
 import { dateToString } from "../util/date.util";
 
 interface SaveEventResponse {
+  success: boolean
+}
+
+interface SaveShiftResponse {
   success: boolean
 }
 
@@ -41,6 +45,15 @@ export class EventsService {
     return firstValueFrom(
       this.http.post<SaveEventResponse>(ENV.backend + "/_/events", event)
           .pipe(map((resp: SaveEventResponse) => {
+            return resp.success
+          }))
+        );
+  }
+
+  saveShift(shift: Shift): Promise<boolean> {
+    return firstValueFrom(
+      this.http.post<SaveShiftResponse>(ENV.backend + "/_/shifts", shift)
+          .pipe(map((resp: SaveShiftResponse) => {
             return resp.success
           }))
         );

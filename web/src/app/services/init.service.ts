@@ -4,11 +4,12 @@ import { firstValueFrom, tap } from "rxjs";
 
 import { ENV } from '../env/environment';
 
-import { User, Venue } from "./model";
+import { Group, User, Venue } from "./model";
 
 interface InitResponse {
   user: User
   venue: Venue
+  groups: Group[]
 }
 
 // InitService runs when the app starts up. You can use this to get access to the data we get from the init request.
@@ -37,5 +38,9 @@ export class InitService {
 
   venue(): Venue {
     return this.initResponse?.venue || { name: "", shortName: "", address: ""}
+  }
+
+  groups(): Group[] {
+    return this.initResponse?.groups || [];
   }
 }

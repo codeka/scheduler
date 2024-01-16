@@ -9,6 +9,7 @@ import { AuthService } from './services/auth.service';
 import { EditEventComponent } from './sched/edit-event.component';
 import { DayComponent } from './sched/day.component';
 import { MonthComponent } from './sched/month.component';
+import { EditShiftComponent } from './sched/edit-shift.component';
 
 const loggedInActivate: CanActivateFn = () => {
   return inject(AuthService).isLoggedIn();
@@ -44,6 +45,7 @@ const routes: Routes = [
 
   // Paths for event managers.
   { path: 'edit-event', canActivate: [isEventManagerActivate], component: EditEventComponent },
+  { path: 'edit-shift', canActivate: [isEventManagerActivate], component: EditShiftComponent },
 
   // The default matcher, redirects to /week if logged in, or /login otherwise. We just put WeekComponent here, but
   // defaultRouteActive always redirects, so it's just a dummy.
