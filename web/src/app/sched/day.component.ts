@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, map, mergeMap } from 'rxjs';
 import { Event } from '../services/model';
 import { AuthService } from '../services/auth.service';
-import { dateToString, stringToDate, stringToTime } from '../util/date.util';
+import { stringToTime } from '../util/date.util';
 import { EventsService } from '../services/events.service';
 
 @Component({
