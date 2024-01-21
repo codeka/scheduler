@@ -22,14 +22,16 @@
           <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
           <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>
-        <igx-time-picker formControlName="startTime">
-          <label igxLabel>Start time</label>
-          <igx-hint>HH:MM tt</igx-hint>
-        </igx-time-picker>
-        <igx-time-picker formControlName="endTime">
-          <label igxLabel>End time</label>
-          <igx-hint>HH:MM tt</igx-hint>
-        </igx-time-picker>
+        <mat-form-field>
+          <mat-label>Start time</mat-label>
+          <input matInput formControlName="startTime">
+          <mat-hint>HH:MM tt</mat-hint>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>End time</mat-label>
+          <input matInput formControlName="endTime">
+          <mat-hint>HH:MM tt</mat-hint>
+        </mat-form-field>
       </div>
     </div>
 
