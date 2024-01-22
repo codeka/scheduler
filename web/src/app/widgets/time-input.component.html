@@ -1,0 +1,11 @@
+<div role="group"
+     class="time-input"
+     [formGroup]="fg"
+     [attr.aria-labelledby]="_ff.getLabelId()"
+     (focusin)="onFocusIn($event)"
+     (focusout)="onFocusOut($event)">
+  <input type="time"
+         formControlName="time"
+         (input)="_handleInput()"
+         #time>
+</div>

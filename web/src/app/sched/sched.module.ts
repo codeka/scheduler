@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, forwardRef } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -20,6 +20,9 @@ import { MonthComponent } from './month.component';
 import { ViewSwitcherComponent } from './view-switcher.component';
 import { WeekComponent } from './week.component';
 import { EditShiftComponent } from './edit-shift.component';
+import { WidgetsModule } from '../widgets/widgets.module';
+import { PhoneNoComponent } from '../widgets/phone-no.component';
+import { TimeInputComponent } from '../widgets/time-input.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +30,9 @@ import { EditShiftComponent } from './edit-shift.component';
   imports: [
     BrowserAnimationsModule, CommonModule, FormsModule, MatButtonModule, MatCardModule, MatDatepickerModule,
     MatFormFieldModule, MatIconModule, MatInputModule, MatNativeDateModule, MatSelectModule, MatToolbarModule,
-    ReactiveFormsModule, ServicesModule
+    ReactiveFormsModule, ServicesModule, WidgetsModule,
+    
+    forwardRef(() => PhoneNoComponent), forwardRef(() => TimeInputComponent),
   ],
   providers: [],
   bootstrap: []
