@@ -62,7 +62,7 @@ export class DayComponent {
   eventTop(event: Event, hourHeight: number): string {
     const time = stringToTime(event.startTime);
     console.log("event.title=" + event.title + " startTime=" + event.startTime);
-    return (9 + (time.getHours() - this.hours[0]) * hourHeight) + "pt";
+    return (9 + (time.getHours() + (time.getMinutes() / 60.0) - this.hours[0]) * hourHeight) + "pt";
   }
 
   // Returns the height, in pixels, of an event with the given start and end time.

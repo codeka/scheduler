@@ -109,7 +109,7 @@ export class WeekComponent {
   eventTop(event: Event, hourHeight: number): string {
     const time = stringToTime(event.startTime);
     console.log("event.title=" + event.title + " startTime=" + event.startTime);
-    return (9 + (time.getHours() - this.hours[0]) * hourHeight) + "pt";
+    return (9 + (time.getHours() + (time.getMinutes() / 60.0) - this.hours[0]) * hourHeight) + "pt";
   }
 
   // Returns the height, in pixels, of an event with the given start and end time.
@@ -137,7 +137,7 @@ export class WeekComponent {
     const startTime = stringToTime(event.startTime);
     const endTime = stringToTime(event.endTime);
 
-    var str = "" + startTime.getHours();
+    var str = "" + ((startTime.getHours() > 12) ? startTime.getHours() - 12 : startTime.getHours());
     if (startTime.getMinutes() != 0) {
       str += ":" + ("0" + startTime.getMinutes()).slice(-2);
     }
