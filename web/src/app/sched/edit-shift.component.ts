@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Group, Shift } from '../services/model';
 import { EventsService } from '../services/events.service';
 import { Router } from '@angular/router';
@@ -12,7 +12,12 @@ import { InitService } from '../services/init.service';
   styleUrls: ['./edit-shift.component.scss']
 })
 export class EditShiftComponent {
-  form: FormGroup
+  form: FormGroup<{
+    groupId: FormControl<number|null>,
+    date: FormControl<Date|null>,
+    startTime: FormControl<Date|null>,
+    endTime: FormControl<Date|null>
+  }>
 
   groups: Group[]
 
@@ -29,15 +34,18 @@ export class EditShiftComponent {
   }
 
   onSave() {
-    const startTime = new Date(this.form.value.startTime);
-    const endTime = new Date(this.form.value.endTime);
+    if (!this.form.value.groupId || !this.form.value.date || !this.form.value.startTime || !this.form.value.endTime) {
+      console.log("some values are not set: date=" + this.form.value.date + ", startTime=" + this.form.value.startTime)
+      return
+    }
+
 
     const shift: Shift = {
-      id: 0, // TODO: if it's an existing event, reuse the ID.
+      id: 0, // TODO: if it's an existing shift, reuse the ID.
       groupId: this.form.value.groupId,
       date: dateToString(this.form.value.date),
-      startTime: timeToString(startTime),
-      endTime: timeToString(endTime),
+      startTime: timeToString(this.form.value.startTime),
+      endTime: timeToString(this.form.value.endTime),
     }
 
     this.events.saveShift(shift)

@@ -96,3 +96,48 @@ func MakeGroup(group *store.Group) *Group {
 		Name: group.Name,
 	}
 }
+
+type Shift struct {
+	ID        int64  `json:"id"`
+	GroupID   int64  `json:"groupId"`
+	Date      string `json:"date"`
+	StartTime string `json:"startTime"`
+	EndTime   string `json:"endTime"`
+}
+
+func ShiftToStore(shift *Shift) (*store.Shift, error) {
+	dt, err := time.Parse(time.DateOnly, shift.Date)
+	if err != nil {
+		return nil, err
+	}
+	startTime, err := time.Parse(time.TimeOnly, shift.StartTime)
+	if err != nil {
+		return nil, err
+	}
+	endTime, err := time.Parse(time.TimeOnly, shift.EndTime)
+	if err != nil {
+		return nil, err
+	}
+
+	return &store.Shift{
+		ID:        shift.ID,
+		GroupID:   shift.GroupID,
+		Date:      dt,
+		StartTime: startTime,
+		EndTime:   endTime,
+	}, nil
+}
+
+func MakeShift(shift *store.Shift) *Shift {
+	if shift == nil {
+		return nil
+	}
+
+	return &Shift{
+		ID:        shift.ID,
+		GroupID:   shift.GroupID,
+		Date:      shift.Date.Format(time.DateOnly),
+		StartTime: shift.StartTime.Format(time.TimeOnly),
+		EndTime:   shift.EndTime.Format(time.TimeOnly),
+	}
+}

@@ -15,8 +15,9 @@ interface SaveShiftResponse {
   success: boolean
 }
 
-interface GetEventsResponse {
+export interface GetEventsResponse {
   events: Event[]
+  shifts: Shift[]
 }
 
 // EventsService is responsible for fetching, filtering, updating events.
@@ -27,7 +28,7 @@ export class EventsService {
 
   // Gets all the events between the given start and end date (inclusive). We ignore the time in the given start/end
   // date and return all events on those days.
-  getEvents(startDate: Date, endDate: Date): Promise<Event[]> {
+  getEvents(startDate: Date, endDate: Date): Promise<GetEventsResponse> {
     const options = {
       params: new HttpParams()
           .set('startDate', dateToString(startDate))
@@ -35,7 +36,7 @@ export class EventsService {
     };
     return firstValueFrom(
       this.http.get<GetEventsResponse>(ENV.backend + "/_/events", options)
-        .pipe(map((resp) => resp.events))
+        .pipe(map((resp) => resp))
     )
   }
 

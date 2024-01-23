@@ -53,8 +53,8 @@ export class MonthComponent {
               }
 
               this.eventsService.getEvents(this.monthStart, this.monthEnd)
-                .then((events) => {
-                  this.events = events;
+                .then((resp) => {
+                  this.events = resp.events;
                 });
 
               return this.monthStart;

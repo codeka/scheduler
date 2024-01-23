@@ -30,3 +30,11 @@ type Group struct {
 	ID   int64
 	Name string
 }
+
+type Shift struct {
+	ID        int64
+	GroupID   int64
+	Date      time.Time
+	StartTime time.Time
+	EndTime   time.Time
+}

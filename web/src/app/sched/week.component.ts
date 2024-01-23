@@ -77,8 +77,8 @@ export class WeekComponent {
       this.hours = hours;
 
       this.eventsService.getEvents(this.firstDay, this.lastDay)
-          .then((events) => {
-            this.events = events;
+          .then((resp) => {
+            this.events = resp.events;
           });
 
       return days;

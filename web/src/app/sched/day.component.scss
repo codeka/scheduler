@@ -70,7 +70,7 @@ div.hours {
   margin-bottom: 40pt;
 }
 
-div.events {
+div.day-canvas {
   flex: 1;
   position: relative;
   margin-top: 8pt;
@@ -80,14 +80,39 @@ div.day-of-week div.border {
   border-left: solid 1px black;
 }
 
-div.events .event {
+div.day-canvas div.events-and-shifts {
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+div.day-canvas div.events-and-shifts div.events-and-shifts-col {
+  flex: 1;
+  position: relative;
+}
+
+div.day-canvas div.events-and-shifts div.events-and-shifts-col.events {
+  flex: 2;
+}
+
+div.day-canvas .event, div.day-canvas .shift {
   position: absolute;
   left: 4pt;
   right: 8pt;
   border-radius: 4pt;
+}
+
+div.day-canvas .event {
   border: solid 2pt blue;
   padding: 0 4pt;
   background-color: mix(blue, white, 20%);
+}
+
+div.day-canvas .shift {
+  border: solid 2pt red;
+  padding: 0 4pt;
+  background-color: mix(red, white, 20%);
 }
 
 div.event-name {

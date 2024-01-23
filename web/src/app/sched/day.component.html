@@ -27,15 +27,29 @@
           {{hourStr(hour)}}
         </div>
       </div>
-      <div class="events">
+      <div class="day-canvas">
         <div class="hour-of-day hour-line"
             *ngFor="let hour of hours">
         </div>
-        <div class="event"
-            *ngFor="let event of events | async"
-            [ngStyle]="{ top: eventTop(event, 50), height: timeHeight(event.startTime, event.endTime, 50) }">
-            <div class="event-name">{{event.title}}</div>
-            <div class="event-time">{{eventTimeStr(event)}}</div>
+        <div class="events-and-shifts">
+          <div class="events-and-shifts-col events">
+            <div class="event"
+                *ngFor="let event of events"
+                [ngStyle]="{ top: timeTop(event.startTime, 50), height: timeHeight(event.startTime, event.endTime, 50) }">
+                <div class="event-name">{{event.title}}</div>
+                <div class="event-time">{{eventTimeStr(event)}}</div>
+            </div>
+          </div>
+          <ng-container *ngFor="let group of groups">
+            <div class="events-and-shifts-col shifts shift-{{group.id}}"
+                 *ngIf="hasShiftsForGroup(group.id)">
+              <div class="shift"
+                  *ngFor="let shift of shiftsForGroup(group.id)"
+                  [ngStyle]="{ top: timeTop(shift.startTime, 50), height: timeHeight(shift.startTime, shift.endTime, 50) }">
+                 {{group.name}}
+              </div>
+            </div>
+          </ng-container>
         </div>
       </div>
     </div>

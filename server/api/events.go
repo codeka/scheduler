@@ -10,6 +10,7 @@ import (
 
 type EventsResponse struct {
 	Events []*Event `json:"events"`
+	Shifts []*Shift `json:"shifts"`
 }
 
 // HandleEventsGet handles requests to /_/events. It returns the events in the data store, filtered by various query
@@ -39,6 +40,15 @@ func HandleEventsGet(c *gin.Context) {
 		for _, e := range events {
 			resp.Events = append(resp.Events, MakeEvent(e))
 		}
+
+		shifts, err := store.GetShiftsInDateRange(startDate, endDate)
+		if err != nil {
+			c.AbortWithError(http.StatusInternalServerError, err)
+			return
+		}
+		for _, s := range shifts {
+			resp.Shifts = append(resp.Shifts, MakeShift(s))
+		}
 	}
 
 	c.JSON(http.StatusOK, resp)
@@ -65,9 +75,31 @@ func HandleEventsPost(c *gin.Context) {
 	c.AbortWithStatus(http.StatusOK)
 }
 
+func HandleShiftsPost(c *gin.Context) {
+	var s Shift
+	if err := c.BindJSON(&s); err != nil {
+		c.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
+	shift, err := ShiftToStore(&s)
+	if err != nil {
+		c.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
+
+	if err := store.SaveShift(shift); err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	c.AbortWithStatus(http.StatusOK)
+}
+
 func setupEvents(g *gin.Engine) error {
 	g.GET("_/events", HandleEventsGet)
 	g.POST("_/events", HandleEventsPost)
+
+	g.POST("_/shifts", HandleShiftsPost)
 
 	return nil
 }

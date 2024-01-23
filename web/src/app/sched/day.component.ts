@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, map, mergeMap } from 'rxjs';
-import { Event } from '../services/model';
+import { Event, Group, Shift } from '../services/model';
 import { AuthService } from '../services/auth.service';
 import { stringToTime } from '../util/date.util';
-import { EventsService } from '../services/events.service';
+import { EventsService, GetEventsResponse } from '../services/events.service';
+import { InitService } from '../services/init.service';
 
 @Component({
   selector: 'day',
@@ -15,7 +16,9 @@ export class DayComponent {
   private date: Observable<Date>;
   today = new Date();
 
-  events: Observable<Array<Event>>;
+  events: Array<Event> = []
+  shifts: Array<Shift> = []
+  groups: Array<Group>
 
   // Used to make the dropdown to select the style default to "daily"
   daily = 'daily';
@@ -23,7 +26,8 @@ export class DayComponent {
   hours: Array<number> = [];
 
   constructor(private route: ActivatedRoute, private router: Router, public auth: AuthService,
-              private eventsService: EventsService) {
+              private eventsService: EventsService, initService: InitService) {
+    this.groups = initService.groups()
     this.date =
         this.route.params
             .pipe(map((p) => {
@@ -36,7 +40,7 @@ export class DayComponent {
               return this.today;
             }));
 
-    this.events = this.date.pipe(mergeMap((date) => {
+    this.date.pipe(mergeMap((date) => {
       // The first and last hour we'll display. This is just the default. If there are any events that start/end before
       // or after this, we'll adjust accordingly.
       var firstHour = 7;
@@ -48,20 +52,18 @@ export class DayComponent {
       }
       this.hours = hours;
 
-      return this.eventsService.getEvents(date, date);
-    }));
-  }
-
-  // We want to pass this to the keyvalue pipe so that it doesn't sort our dates.
-  dontSort() {
-    return 0;
+      return this.eventsService.getEvents(date, date)
+          .then((data) => {
+            this.events = data.events ?? []
+            this.shifts = data.shifts ?? []
+          })
+    })).subscribe(() => {});
   }
 
   // Returns the y-coordinate of the given time, assuming each hour is hourHeight pixels tall, and we start from
   // this.firstHour.
-  eventTop(event: Event, hourHeight: number): string {
-    const time = stringToTime(event.startTime);
-    console.log("event.title=" + event.title + " startTime=" + event.startTime);
+  timeTop(startTime: string, hourHeight: number): string {
+    const time = stringToTime(startTime);
     return (9 + (time.getHours() + (time.getMinutes() / 60.0) - this.hours[0]) * hourHeight) + "pt";
   }
 
@@ -113,6 +115,20 @@ export class DayComponent {
     }
 
     return str;
+  }
+
+  shiftsForGroup(groupId: number): Shift[] {
+    var shifts = new Array<Shift>();
+    for (const shift of this.shifts) {
+      if (shift.groupId == groupId) {
+        shifts.push(shift)
+      }
+    }
+    return shifts
+  }
+
+  hasShiftsForGroup(groupId: number): boolean {
+    return this.shiftsForGroup(groupId).length != 0
   }
 
   onCreateEvent() {
