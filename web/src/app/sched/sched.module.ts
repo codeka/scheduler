@@ -23,10 +23,12 @@ import { EditShiftComponent } from './edit-shift.component';
 import { WidgetsModule } from '../widgets/widgets.module';
 import { PhoneNoComponent } from '../widgets/phone-no.component';
 import { TimeInputComponent } from '../widgets/time-input.component';
+import { ScheduleComponent } from './schedule.component';
 
 @NgModule({
   declarations: [
-    DayComponent, EditEventComponent, EditShiftComponent, MonthComponent, ViewSwitcherComponent, WeekComponent],
+    DayComponent, EditEventComponent, EditShiftComponent, MonthComponent, ScheduleComponent, ViewSwitcherComponent,
+    WeekComponent],
   imports: [
     BrowserAnimationsModule, CommonModule, FormsModule, MatButtonModule, MatCardModule, MatDatepickerModule,
     MatFormFieldModule, MatIconModule, MatInputModule, MatNativeDateModule, MatSelectModule, MatToolbarModule,

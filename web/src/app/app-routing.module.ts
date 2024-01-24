@@ -10,6 +10,7 @@ import { EditEventComponent } from './sched/edit-event.component';
 import { DayComponent } from './sched/day.component';
 import { MonthComponent } from './sched/month.component';
 import { EditShiftComponent } from './sched/edit-shift.component';
+import { ScheduleComponent } from './sched/schedule.component';
 
 const loggedInActivate: CanActivateFn = () => {
   return inject(AuthService).isLoggedIn();
@@ -47,9 +48,9 @@ const routes: Routes = [
   { path: 'edit-event', canActivate: [isEventManagerActivate], component: EditEventComponent },
   { path: 'edit-shift', canActivate: [isEventManagerActivate], component: EditShiftComponent },
 
-  // The default matcher, redirects to /week if logged in, or /login otherwise. We just put WeekComponent here, but
-  // defaultRouteActive always redirects, so it's just a dummy.
-  { path: '', canActivate: [defaultRouteActivate], component: WeekComponent, pathMatch: 'full' },
+  // By default, we show the 'schedule' view, which shows all the events this month and everything in the future that
+  // we have in the database.
+  { path: '', canActivate: [loggedInActivate], component: ScheduleComponent, pathMatch: 'full' },
 ];
 
 @NgModule({

@@ -11,7 +11,7 @@ import { MonthComponent } from './month.component';
   styleUrls: ['./view-switcher.component.scss']
 })
 export class ViewSwitcherComponent {
-  currView = 'daily';
+  currView = 'schedule';
   @Input() date = new Date();
 
   constructor(route: ActivatedRoute, private router: Router) {
@@ -22,7 +22,7 @@ export class ViewSwitcherComponent {
     } else if (route.component == MonthComponent) {
       this.currView = 'monthly'
     } else {
-      //??
+      this.currView = 'schedule'
     }
   }
 
@@ -33,6 +33,8 @@ export class ViewSwitcherComponent {
       this.router.navigate(['week', this.date.getFullYear(), this.date.getMonth() + 1, this.date.getDate()]);
     } else if (value == 'monthly') {
       this.router.navigate(['month', this.date.getFullYear(), this.date.getMonth() + 1]);
+    } else if (value == 'schedule') {
+      this.router.navigate(['/'])
     }
   }
 }
