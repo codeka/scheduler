@@ -101,6 +101,54 @@ func GetUserRoles(id int64) ([]string, error) {
 	return roles, nil
 }
 
+func GetUsers() ([]*User, error) {
+	rows, err := db.Query(`
+			SELECT id, name, email, phone
+			FROM users`)
+	if err != nil {
+		return []*User{}, err
+	}
+	defer rows.Close()
+
+	var users []*User
+	for rows.Next() {
+		user, err := makeUser(rows)
+		if err != nil {
+			continue
+		}
+		users = append(users, user)
+	}
+	return users, nil
+}
+
+// GetAllUserRoles returns a mapping of user ID to the list of roles that user belongs to. It does this for all users
+// in the entire data store.
+func GetAllUserRoles() (map[int64][]string, error) {
+	roleMap := make(map[int64][]string)
+
+	rows, err := db.Query("SELECT user_id, role_name FROM user_roles")
+	if err != nil {
+		return roleMap, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var userID int64
+		var role string
+		if err := rows.Scan(&userID, &role); err != nil {
+			continue
+		}
+
+		roles, ok := roleMap[userID]
+		if !ok {
+			roles = []string{}
+		}
+		roles = append(roles, role)
+		roleMap[userID] = roles
+	}
+	return roleMap, nil
+}
+
 // CreateUserLogin creates a new user login with the given confirmation code for the given user.
 func CreateUserLogin(user *User, code string) error {
 	_, err := db.Exec(

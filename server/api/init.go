@@ -24,9 +24,12 @@ type InitResponse struct {
 func HandleInit(c *gin.Context) {
 	var resp = InitResponse{}
 
-	user, _ := LoadUser(c)
+	user := GetUser(c)
 	if user != nil {
-		resp.User = user
+		roles, err := store.GetUserRoles(user.ID)
+		if err == nil {
+			resp.User = MakeUser(user, roles)
+		}
 	}
 
 	v, _ := store.GetVenue()

@@ -11,6 +11,7 @@ import { DayComponent } from './sched/day.component';
 import { MonthComponent } from './sched/month.component';
 import { EditShiftComponent } from './sched/edit-shift.component';
 import { ScheduleComponent } from './sched/schedule.component';
+import { UserListComponent } from './admin/user-list.component';
 
 const loggedInActivate: CanActivateFn = () => {
   return inject(AuthService).isLoggedIn();
@@ -18,6 +19,10 @@ const loggedInActivate: CanActivateFn = () => {
 
 const isEventManagerActivate: CanActivateFn = () => {
   return inject(AuthService).isInRole('EVENT_MANAGER');
+};
+
+const isAdminActivate: CanActivateFn = () => {
+  return inject(AuthService).isInRole('ADMIN');
 };
 
 const defaultRouteActivate: CanActivateFn = (route: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
@@ -47,6 +52,9 @@ const routes: Routes = [
   // Paths for event managers.
   { path: 'edit-event', canActivate: [isEventManagerActivate], component: EditEventComponent },
   { path: 'edit-shift', canActivate: [isEventManagerActivate], component: EditShiftComponent },
+
+  // Paths for admins.
+  { path: 'users', canActivate: [isAdminActivate], component: UserListComponent },
 
   // By default, we show the 'schedule' view, which shows all the events this month and everything in the future that
   // we have in the database.

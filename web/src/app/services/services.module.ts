@@ -5,6 +5,7 @@ import { AuthInterceptor } from './auth.interceptor';
 import { AuthService } from './auth.service';
 import { InitService } from './init.service';
 import { EventsService } from './events.service';
+import { AdminService } from './admin.service';
 
 @NgModule({
   declarations: [],
@@ -19,6 +20,7 @@ import { EventsService } from './events.service';
       multi: true,
       deps: [InitService],
     },
+    AdminService,
     AuthService,
     EventsService,
     InitService,

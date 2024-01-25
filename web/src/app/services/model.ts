@@ -9,7 +9,7 @@ export interface Venue {
 export interface User {
   id: number
   name: string
-  email: string
+  mail: string
   phone: string
   roles: string[]
 }

@@ -3,10 +3,18 @@
   <img height="40" alt="Logo" src="/assets/img/logo.svg" />
   Scheduler &bull; {{venue.name}}
   <div class="spacer"></div>
-  <h1 *ngIf="user">
-    {{user.name}}
-  </h1>
+  <button mat-button [matMenuTriggerFor]="usermenu" *ngIf="user">
+    {{user.name}} <mat-icon iconPositionEnd>arrow_drop_down</mat-icon>
+  </button>
 </mat-toolbar>
+<mat-menu #usermenu="matMenu">
+  <button mat-menu-item [routerLink]="'/users'" *ngIf="auth.isInRole('ADMIN')">
+    <mat-icon>supervisor_account</mat-icon> Users
+  </button>
+  <button mat-menu-item>
+    <mat-icon>logout</mat-icon> Logout
+  </button>
+</mat-menu>
 
 <div class="content" role="main">
   <router-outlet></router-outlet>
