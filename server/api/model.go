@@ -29,6 +29,15 @@ func MakeUser(user *store.User, roles []string) *User {
 	}
 }
 
+func UserToStore(user *User) *store.User {
+	return &store.User{
+		ID:    user.ID,
+		Name:  user.Name,
+		Mail:  user.Mail,
+		Phone: user.Phone,
+	}
+}
+
 type Event struct {
 	ID          int64  `json:"id"`
 	Title       string `json:"title"`

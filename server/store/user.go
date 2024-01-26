@@ -149,6 +149,21 @@ func GetAllUserRoles() (map[int64][]string, error) {
 	return roleMap, nil
 }
 
+func SaveUser(user *User) error {
+	if user.ID == 0 {
+		_, err := db.Exec(`
+			INSERT INTO users
+			  (name, email, phone)
+			VALUES
+			  (?, ?, ?)`,
+			user.Name, user.Mail, user.Phone)
+		return err
+	}
+	// TODO: non-0 ID (edit)
+
+	return nil
+}
+
 // CreateUserLogin creates a new user login with the given confirmation code for the given user.
 func CreateUserLogin(user *User, code string) error {
 	_, err := db.Exec(

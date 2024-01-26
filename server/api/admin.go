@@ -39,8 +39,30 @@ func HandleAdminUsersGet(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
+func HandleAdminUsersPost(c *gin.Context) {
+	if !IsInRole(c, "ADMIN") {
+		c.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
+
+	var u User
+	if err := c.BindJSON(&u); err != nil {
+		c.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
+	user := UserToStore(&u)
+
+	if err := store.SaveUser(user); err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	c.AbortWithStatus(http.StatusOK)
+}
+
 func setupAdmin(g *gin.Engine) error {
 	g.GET("_/admin/users", HandleAdminUsersGet)
+	g.POST("_/admin/users", HandleAdminUsersPost)
 
 	return nil
 }

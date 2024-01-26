@@ -4,6 +4,10 @@ import { User } from "./model";
 import { firstValueFrom, map } from "rxjs";
 import { ENV } from "../env/environment";
 
+interface SaveUserResponse {
+  success: boolean
+}
+
 interface GetUsersResponse {
   users: User[]
 }
@@ -20,6 +24,13 @@ export class AdminService {
     return firstValueFrom(
       this.http.get<GetUsersResponse>(ENV.backend + "/_/admin/users")
         .pipe(map((resp) => resp.users))
+    )
+  }
+
+  saveUser(user: User): Promise<boolean> {
+    return firstValueFrom(
+      this.http.post<SaveUserResponse>(ENV.backend + "/_/admin/users", user)
+        .pipe(map((resp) => resp.success))
     )
   }
 }

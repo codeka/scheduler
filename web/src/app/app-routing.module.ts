@@ -12,6 +12,7 @@ import { MonthComponent } from './sched/month.component';
 import { EditShiftComponent } from './sched/edit-shift.component';
 import { ScheduleComponent } from './sched/schedule.component';
 import { UserListComponent } from './admin/user-list.component';
+import { EditUserComponent } from './admin/edit-user.component';
 
 const loggedInActivate: CanActivateFn = () => {
   return inject(AuthService).isLoggedIn();
@@ -23,17 +24,6 @@ const isEventManagerActivate: CanActivateFn = () => {
 
 const isAdminActivate: CanActivateFn = () => {
   return inject(AuthService).isInRole('ADMIN');
-};
-
-const defaultRouteActivate: CanActivateFn = (route: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
-  const auth = inject(AuthService);
-  const router = inject(Router);
-  
-  if (auth.isLoggedIn()) {
-    return router.parseUrl("/week");
-  } else {
-    return router.parseUrl("/login");
-  }
 };
 
 const routes: Routes = [
@@ -55,7 +45,8 @@ const routes: Routes = [
 
   // Paths for admins.
   { path: 'users', canActivate: [isAdminActivate], component: UserListComponent },
-
+  { path: 'edit-user', canActivate: [isAdminActivate], component: EditUserComponent },
+  
   // By default, we show the 'schedule' view, which shows all the events this month and everything in the future that
   // we have in the database.
   { path: '', canActivate: [loggedInActivate], component: ScheduleComponent, pathMatch: 'full' },
