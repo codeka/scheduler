@@ -143,10 +143,11 @@ try:
       # We got a modified notification, but nothing since the last iteration, so things have probably settled down
       # enough now that we can restart the server.
       print(f"{bcolors.BLUE}Server files modified, restarting...{bcolors.ENDC}")
-      os.kill(serverProcess.pid, signal.SIGTERM)
-      serverProcess.kill()
-      serverProcess.wait()
-      serverThread.join()
+      if serverProcess:
+        os.kill(serverProcess.pid, signal.SIGTERM)
+        serverProcess.kill()
+        serverProcess.wait()
+        serverThread.join()
       if not startServer():
         print(f"{bcolors.RED}Build failed!{bcolors.ENDC}")
         # Note: we'll stay running, waiting for you to edit the server files again.
@@ -155,7 +156,8 @@ try:
         serverProcess.wait()
         print(f"{bcolors.YELLOW}Server exited with code {serverProcess.returncode}, exiting.{bcolors.ENDC}")
       else:
-        print(f"{bcolors.YELLOW}Server failed to compile, exiting.{bcolors.ENDC}")
+        # Server failed to compile, keep waiting.
+        continue
       break
 except KeyboardInterrupt:
   print(f"{bcolors.BLUE}Exiting...{bcolors.ENDC}")
