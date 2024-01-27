@@ -14,6 +14,7 @@ export class EditUserComponent {
     name: FormControl<string|null>,
     mail: FormControl<string|null>,
     phone: FormControl<string|null>,
+    roles: FormControl<string|null>,
   }>
 
   constructor(private admin: AdminService, private formBuilder: FormBuilder, private router: Router) {
@@ -21,16 +22,22 @@ export class EditUserComponent {
       name: ["", Validators.required],
       mail: ["", Validators.required],
       phone: [""],
+      roles: [""],
     });
   }
 
   onSave() {
+    var roles: Array<string> = []
+    for (var roleName of (this.form.value.roles ?? "").split(",")) {
+      roles.push(roleName.trim().toUpperCase());
+    }
+
     const user: User = {
       id: 0, // TODO: if it's an existing user, reuse the ID.
       name: this.form.value.name ?? "",
       mail: this.form.value.mail ?? "",
       phone: this.form.value.phone ?? "",
-      roles: [] // TODO
+      roles: roles,
     }
 
     this.admin.saveUser(user)

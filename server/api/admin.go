@@ -57,6 +57,13 @@ func HandleAdminUsersPost(c *gin.Context) {
 		return
 	}
 
+	// TODO: should all this be in a transaction so that we don't update the user in case
+	// saving their roles somehow fails?
+	if err := store.UpdateUserRoles(user.ID, u.Roles); err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
 	c.AbortWithStatus(http.StatusOK)
 }
 

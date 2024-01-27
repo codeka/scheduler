@@ -149,17 +149,49 @@ func GetAllUserRoles() (map[int64][]string, error) {
 	return roleMap, nil
 }
 
+// SaveUser saves the given user to the data store. If the user does not have an ID (ID is 0), then a new user is
+// inserted and the user is updated with the correct ID.
 func SaveUser(user *User) error {
 	if user.ID == 0 {
-		_, err := db.Exec(`
+		res, err := db.Exec(`
 			INSERT INTO users
 			  (name, email, phone)
 			VALUES
 			  (?, ?, ?)`,
 			user.Name, user.Mail, user.Phone)
-		return err
+		if err != nil {
+			return err
+		}
+		id, err := res.LastInsertId()
+		if err != nil {
+			return err
+		}
+		user.ID = id
 	}
 	// TODO: non-0 ID (edit)
+
+	return nil
+}
+
+func UpdateUserRoles(userID int64, roles []string) error {
+	// TODO: This should be in a transaction so we don't just delete all roles and leave the DB inconsistent.
+	_, err := db.Exec(`DELETE FROM user_roles WHERE user_id = ?`, userID)
+	if err != nil {
+		return err
+	}
+
+	stmt, err := db.Prepare(`INSERT INTO user_roles (user_id, role_name) VALUES (?, ?)`)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	for _, role := range roles {
+		_, err := stmt.Exec(userID, role)
+		if err != nil {
+			return err
+		}
+	}
 
 	return nil
 }
