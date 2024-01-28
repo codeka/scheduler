@@ -3,6 +3,8 @@ package store
 import (
 	"database/sql"
 	"fmt"
+
+	"com.codeka/scheduler/server/util"
 )
 
 func makeUser(row *sql.Rows) (*User, error) {
@@ -121,6 +123,22 @@ func GetUsers() ([]*User, error) {
 	return users, nil
 }
 
+func GetUser(id int64) (*User, error) {
+	rows, err := db.Query(`
+	    SELECT id, name, email, phone
+			FROM users
+			WHERE id = ?`, id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	if rows.Next() {
+		return makeUser(rows)
+	}
+	return nil, nil
+}
+
 // GetAllUserRoles returns a mapping of user ID to the list of roles that user belongs to. It does this for all users
 // in the entire data store.
 func GetAllUserRoles() (map[int64][]string, error) {
@@ -160,15 +178,24 @@ func SaveUser(user *User) error {
 			  (?, ?, ?)`,
 			user.Name, user.Mail, user.Phone)
 		if err != nil {
-			return err
+			return util.ForwardError("insert into users: %v", err)
 		}
 		id, err := res.LastInsertId()
 		if err != nil {
 			return err
 		}
 		user.ID = id
+	} else {
+		_, err := db.Exec(`
+		  UPDATE users SET
+			  name = ?,
+				email = ?,
+				phone = ?
+			WHERE id = ?`, user.Name, user.Mail, user.Phone, user.ID)
+		if err != nil {
+			return util.ForwardError("update users: %v", err)
+		}
 	}
-	// TODO: non-0 ID (edit)
 
 	return nil
 }

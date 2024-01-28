@@ -27,10 +27,16 @@ export class AdminService {
     )
   }
 
+  getUser(id: number): Promise<User> {
+    return firstValueFrom(
+      this.http.get<User>(ENV.backend + "/_/admin/users/" + id)
+    )
+  }
+
   saveUser(user: User): Promise<boolean> {
     return firstValueFrom(
       this.http.post<SaveUserResponse>(ENV.backend + "/_/admin/users", user)
-        .pipe(map((resp) => resp.success))
+        .pipe(map(() => true))
     )
   }
 }

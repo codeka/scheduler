@@ -11,7 +11,7 @@ import { User } from "../services/model";
   styleUrls: ['./user-list.component.scss']
 })
 export class UserListComponent {
-  displayedColumns: string[] = ['name', 'mail', 'phone', 'roles'];
+  displayedColumns: string[] = ['name', 'mail', 'phone', 'roles', 'actions'];
   users: User[] = []
 
   constructor(private admin: AdminService, private auth: AuthService, private router: Router) {
@@ -19,9 +19,5 @@ export class UserListComponent {
         .then((users) => {
           this.users = users
         })
-  }
-
-  onAddUser() {
-    // TODO
   }
 }

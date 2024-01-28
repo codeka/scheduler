@@ -1,4 +1,5 @@
 import { NgModule } from "@angular/core";
+import { AppRoutingModule } from "../app-routing.module";
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
@@ -16,7 +17,7 @@ import { UserListComponent } from "./user-list.component";
 @NgModule({
   declarations: [EditUserComponent, UserListComponent],
   imports: [
-    FormsModule, MatButtonModule, MatCardModule, MatFormFieldModule, MatIconModule, MatInputModule, MatToolbarModule,
+    AppRoutingModule, FormsModule, MatButtonModule, MatCardModule, MatFormFieldModule, MatIconModule, MatInputModule, MatToolbarModule,
     MatSlideToggleModule, MatTableModule, ReactiveFormsModule, ServicesModule],
   providers: [],
   bootstrap: []

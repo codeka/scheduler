@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { User } from '../services/model';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AdminService } from '../services/admin.service';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'edit-user',
@@ -17,13 +18,30 @@ export class EditUserComponent {
     roles: FormControl<string|null>,
   }>
 
-  constructor(private admin: AdminService, private formBuilder: FormBuilder, private router: Router) {
+  userId = 0
+
+  constructor(private admin: AdminService, private formBuilder: FormBuilder, private route: ActivatedRoute,
+              private router: Router) {
     this.form = this.formBuilder.group({
       name: ["", Validators.required],
       mail: ["", Validators.required],
       phone: [""],
       roles: [""],
     });
+
+    this.route.params.pipe(map((p) => {
+      if (p["id"]) {
+        this.userId = parseInt(p["id"])
+        admin.getUser(this.userId).then((user) => {
+          this.form.patchValue({
+            name: user.name,
+            mail: user.mail,
+            phone: user.phone,
+            roles: (user.roles ??[]).join(", ")
+          })
+        })
+      }
+    })).subscribe(() => {});
   }
 
   onSave() {
@@ -33,7 +51,7 @@ export class EditUserComponent {
     }
 
     const user: User = {
-      id: 0, // TODO: if it's an existing user, reuse the ID.
+      id: this.userId,
       name: this.form.value.name ?? "",
       mail: this.form.value.mail ?? "",
       phone: this.form.value.phone ?? "",

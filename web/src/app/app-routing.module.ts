@@ -45,8 +45,9 @@ const routes: Routes = [
 
   // Paths for admins.
   { path: 'users', canActivate: [isAdminActivate], component: UserListComponent },
+  { path: 'edit-user/:id', canActivate: [isAdminActivate], component: EditUserComponent },
   { path: 'edit-user', canActivate: [isAdminActivate], component: EditUserComponent },
-  
+
   // By default, we show the 'schedule' view, which shows all the events this month and everything in the future that
   // we have in the database.
   { path: '', canActivate: [loggedInActivate], component: ScheduleComponent, pathMatch: 'full' },
