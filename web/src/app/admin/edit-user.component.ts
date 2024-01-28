@@ -13,7 +13,7 @@ import { map } from 'rxjs';
 export class EditUserComponent {
   form: FormGroup<{
     name: FormControl<string|null>,
-    mail: FormControl<string|null>,
+    email: FormControl<string|null>,
     phone: FormControl<string|null>,
     roles: FormControl<string|null>,
   }>
@@ -24,7 +24,7 @@ export class EditUserComponent {
               private router: Router) {
     this.form = this.formBuilder.group({
       name: ["", Validators.required],
-      mail: ["", Validators.required],
+      email: ["", Validators.required],
       phone: [""],
       roles: [""],
     });
@@ -35,7 +35,7 @@ export class EditUserComponent {
         admin.getUser(this.userId).then((user) => {
           this.form.patchValue({
             name: user.name,
-            mail: user.mail,
+            email: user.email,
             phone: user.phone,
             roles: (user.roles ??[]).join(", ")
           })
@@ -53,7 +53,7 @@ export class EditUserComponent {
     const user: User = {
       id: this.userId,
       name: this.form.value.name ?? "",
-      mail: this.form.value.mail ?? "",
+      email: this.form.value.email ?? "",
       phone: this.form.value.phone ?? "",
       roles: roles,
     }

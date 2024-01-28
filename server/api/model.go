@@ -9,7 +9,7 @@ import (
 type User struct {
 	ID    int64    `json:"id"`
 	Name  string   `json:"name"`
-	Mail  string   `json:"mail"`
+	Email string   `json:"email"`
 	Phone string   `json:"phone"`
 	Roles []string `json:"roles"`
 }
@@ -23,7 +23,7 @@ func MakeUser(user *store.User, roles []string) *User {
 	return &User{
 		ID:    user.ID,
 		Name:  user.Name,
-		Mail:  user.Mail,
+		Email: user.Email,
 		Phone: user.Phone,
 		Roles: roles,
 	}
@@ -33,7 +33,7 @@ func UserToStore(user *User) *store.User {
 	return &store.User{
 		ID:    user.ID,
 		Name:  user.Name,
-		Mail:  user.Mail,
+		Email: user.Email,
 		Phone: user.Phone,
 	}
 }

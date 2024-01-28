@@ -14,13 +14,11 @@ func AuthMiddleware(c *gin.Context) {
 	auth := c.Request.Header["Authorization"]
 	if len(auth) > 0 && strings.HasPrefix(auth[0], "Bearer ") {
 		secretKey := strings.TrimPrefix(auth[0], "Bearer ")
-		log.Printf("got a bearer token: %s", secretKey)
 		user, err := store.GetUserBySecret(secretKey)
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return
 		}
-		log.Printf("  got user: %v", user)
 		c.Set("user", user)
 
 		roles, err := store.GetUserRoles(user.ID)
@@ -28,7 +26,6 @@ func AuthMiddleware(c *gin.Context) {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return
 		}
-		log.Printf("  got roles: %v", roles)
 		c.Set("roles", roles)
 	} else {
 		log.Printf("no bearer token")

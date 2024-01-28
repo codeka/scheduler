@@ -9,7 +9,7 @@ import (
 
 func makeUser(row *sql.Rows) (*User, error) {
 	user := &User{}
-	if err := row.Scan(&user.ID, &user.Name, &user.Mail, &user.Phone); err != nil {
+	if err := row.Scan(&user.ID, &user.Name, &user.Email, &user.Phone); err != nil {
 		return nil, err
 	}
 
@@ -176,7 +176,7 @@ func SaveUser(user *User) error {
 			  (name, email, phone)
 			VALUES
 			  (?, ?, ?)`,
-			user.Name, user.Mail, user.Phone)
+			user.Name, user.Email, user.Phone)
 		if err != nil {
 			return util.ForwardError("insert into users: %v", err)
 		}
@@ -191,7 +191,7 @@ func SaveUser(user *User) error {
 			  name = ?,
 				email = ?,
 				phone = ?
-			WHERE id = ?`, user.Name, user.Mail, user.Phone, user.ID)
+			WHERE id = ?`, user.Name, user.Email, user.Phone, user.ID)
 		if err != nil {
 			return util.ForwardError("update users: %v", err)
 		}
