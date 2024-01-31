@@ -134,7 +134,13 @@ func HandleVerifyConfirmation(c *gin.Context) {
 		return
 	}
 
-	resp.User = MakeUser(user, roles)
+	groups, err := store.GetUserGroups(user.ID)
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	resp.User = MakeUser(user, roles, groups)
 
 	if resp.User == nil {
 		// They've entered an invalid confirmation code. Let them know.

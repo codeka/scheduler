@@ -23,6 +23,16 @@
         <input matInput formControlName="roles" />
         <mat-hint>Comma-separated</mat-hint>
       </mat-form-field>
+      <div class="groups-container">
+        <h3>Groups</h3>
+        <ng-container formArrayName="groups">
+          <ng-container *ngFor="let group of groupsControls; let i = index">
+            <div class="group-row" [formGroup]="group">
+              <mat-slide-toggle formControlName="groupMembership">{{allGroups[i].name}}</mat-slide-toggle>
+            </div>
+          </ng-container>
+        </ng-container>
+      </div>
     </div>
 
     <mat-card-actions>

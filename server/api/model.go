@@ -7,25 +7,27 @@ import (
 )
 
 type User struct {
-	ID    int64    `json:"id"`
-	Name  string   `json:"name"`
-	Email string   `json:"email"`
-	Phone string   `json:"phone"`
-	Roles []string `json:"roles"`
+	ID     int64    `json:"id"`
+	Name   string   `json:"name"`
+	Email  string   `json:"email"`
+	Phone  string   `json:"phone"`
+	Roles  []string `json:"roles"`
+	Groups []int64  `json:"groups"`
 }
 
 // MakeUser converts the given store.User to our User type.
-func MakeUser(user *store.User, roles []string) *User {
+func MakeUser(user *store.User, roles []string, groups []int64) *User {
 	if user == nil {
 		return nil
 	}
 
 	return &User{
-		ID:    user.ID,
-		Name:  user.Name,
-		Email: user.Email,
-		Phone: user.Phone,
-		Roles: roles,
+		ID:     user.ID,
+		Name:   user.Name,
+		Email:  user.Email,
+		Phone:  user.Phone,
+		Roles:  roles,
+		Groups: groups,
 	}
 }
 

@@ -12,6 +12,7 @@ export interface User {
   email: string
   phone: string
   roles: string[]
+  groups: number[]
 }
 
 export interface Event {

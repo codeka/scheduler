@@ -33,8 +33,14 @@ func HandleAdminUsersGet(c *gin.Context) {
 		return
 	}
 
+	userGroups, err := store.GetAllUserGroups()
+	if err != nil {
+		util.HandleError(c, http.StatusInternalServerError, err)
+		return
+	}
+
 	for _, u := range users {
-		user := MakeUser(u, userRoles[u.ID])
+		user := MakeUser(u, userRoles[u.ID], userGroups[u.ID])
 		resp.Users = append(resp.Users, user)
 	}
 
@@ -70,7 +76,13 @@ func HandleAdminUserGet(c *gin.Context) {
 		return
 	}
 
-	user := MakeUser(u, roles)
+	groups, err := store.GetUserGroups(u.ID)
+	if err != nil {
+		util.HandleError(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	user := MakeUser(u, roles, groups)
 	c.JSON(http.StatusOK, user)
 }
 
@@ -95,6 +107,11 @@ func HandleAdminUsersPost(c *gin.Context) {
 	// TODO: should all this be in a transaction so that we don't update the user in case
 	// saving their roles somehow fails?
 	if err := store.UpdateUserRoles(user.ID, u.Roles); err != nil {
+		util.HandleError(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	if err := store.UpdateUserGroups(user.ID, u.Groups); err != nil {
 		util.HandleError(c, http.StatusInternalServerError, err)
 		return
 	}

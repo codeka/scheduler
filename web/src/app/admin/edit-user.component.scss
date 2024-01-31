@@ -24,3 +24,18 @@ div.fields div.horz {
 button {
   margin-left: 8pt;
 }
+
+div.groups-container {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+}
+
+div.groups-container h3 {
+  margin: 16pt 0 0 8pt;
+}
+
+div.groups-container mat-slide-toggle {
+  align-self: stretch;
+  margin-top: 8pt;
+}

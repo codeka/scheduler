@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"com.codeka/scheduler/server/store"
+	"com.codeka/scheduler/server/util"
 	"github.com/gin-gonic/gin"
 )
 
@@ -27,9 +28,18 @@ func HandleInit(c *gin.Context) {
 	user := GetUser(c)
 	if user != nil {
 		roles, err := store.GetUserRoles(user.ID)
-		if err == nil {
-			resp.User = MakeUser(user, roles)
+		if err != nil {
+			util.HandleError(c, http.StatusInternalServerError, err)
+			return
 		}
+
+		groups, err := store.GetUserGroups(user.ID)
+		if err != nil {
+			util.HandleError(c, http.StatusInternalServerError, err)
+			return
+		}
+
+		resp.User = MakeUser(user, roles, groups)
 	}
 
 	v, _ := store.GetVenue()

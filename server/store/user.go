@@ -84,25 +84,6 @@ func GetUserBySecret(secretKey string) (*User, error) {
 	return nil, nil
 }
 
-// GetUserRoles returns the roles the given user belongs to.
-func GetUserRoles(id int64) ([]string, error) {
-	rows, err := db.Query("SELECT role_name FROM user_roles WHERE user_id = ?", id)
-	if err != nil {
-		return []string{}, err
-	}
-	defer rows.Close()
-
-	var roles []string
-	for rows.Next() {
-		var role string
-		if err := rows.Scan(&role); err != nil {
-			continue
-		}
-		roles = append(roles, role)
-	}
-	return roles, nil
-}
-
 func GetUsers() ([]*User, error) {
 	rows, err := db.Query(`
 			SELECT id, name, email, phone
@@ -139,6 +120,25 @@ func GetUser(id int64) (*User, error) {
 	return nil, nil
 }
 
+// GetUserRoles returns the roles the given user belongs to.
+func GetUserRoles(id int64) ([]string, error) {
+	rows, err := db.Query("SELECT role_name FROM user_roles WHERE user_id = ?", id)
+	if err != nil {
+		return []string{}, err
+	}
+	defer rows.Close()
+
+	var roles []string
+	for rows.Next() {
+		var role string
+		if err := rows.Scan(&role); err != nil {
+			continue
+		}
+		roles = append(roles, role)
+	}
+	return roles, nil
+}
+
 // GetAllUserRoles returns a mapping of user ID to the list of roles that user belongs to. It does this for all users
 // in the entire data store.
 func GetAllUserRoles() (map[int64][]string, error) {
@@ -165,6 +165,50 @@ func GetAllUserRoles() (map[int64][]string, error) {
 		roleMap[userID] = roles
 	}
 	return roleMap, nil
+}
+
+func GetUserGroups(id int64) ([]int64, error) {
+	rows, err := db.Query("SELECT group_id FROM user_groups WHERE user_id = ?", id)
+	if err != nil {
+		return []int64{}, err
+	}
+	defer rows.Close()
+
+	var groups []int64
+	for rows.Next() {
+		var groupID int64
+		if err := rows.Scan(&groupID); err != nil {
+			continue
+		}
+		groups = append(groups, groupID)
+	}
+	return groups, nil
+}
+
+func GetAllUserGroups() (map[int64][]int64, error) {
+	groupMap := make(map[int64][]int64)
+
+	rows, err := db.Query("SELECT user_id, group_id FROM user_groups")
+	if err != nil {
+		return groupMap, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var userID int64
+		var groupID int64
+		if err := rows.Scan(&userID, &groupID); err != nil {
+			continue
+		}
+
+		groups, ok := groupMap[userID]
+		if !ok {
+			groups = []int64{}
+		}
+		groups = append(groups, groupID)
+		groupMap[userID] = groups
+	}
+	return groupMap, nil
 }
 
 // SaveUser saves the given user to the data store. If the user does not have an ID (ID is 0), then a new user is
@@ -215,6 +259,29 @@ func UpdateUserRoles(userID int64, roles []string) error {
 
 	for _, role := range roles {
 		_, err := stmt.Exec(userID, role)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func UpdateUserGroups(userID int64, groups []int64) error {
+	// TODO: This should be in a transaction so we don't just delete all roles and leave the DB inconsistent.
+	_, err := db.Exec(`DELETE FROM user_groups WHERE user_id = ?`, userID)
+	if err != nil {
+		return err
+	}
+
+	stmt, err := db.Prepare(`INSERT INTO user_groups (user_id, group_id) VALUES (?, ?)`)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	for _, groupID := range groups {
+		_, err := stmt.Exec(userID, groupID)
 		if err != nil {
 			return err
 		}
