@@ -1,10 +1,14 @@
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { User } from "./model";
+import { User, Venue } from "./model";
 import { firstValueFrom, map } from "rxjs";
 import { ENV } from "../env/environment";
 
 interface SaveUserResponse {
+  success: boolean
+}
+
+interface SaveVenueResponse {
   success: boolean
 }
 
@@ -36,6 +40,13 @@ export class AdminService {
   saveUser(user: User): Promise<boolean> {
     return firstValueFrom(
       this.http.post<SaveUserResponse>(ENV.backend + "/_/admin/users", user)
+        .pipe(map(() => true))
+    )
+  }
+
+  saveVenue(venue: Venue): Promise<boolean> {
+    return firstValueFrom(
+      this.http.post<SaveVenueResponse>(ENV.backend + "/_/admin/venue", venue)
         .pipe(map(() => true))
     )
   }

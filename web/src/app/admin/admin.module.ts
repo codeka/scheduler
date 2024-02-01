@@ -14,9 +14,10 @@ import { MatToolbarModule } from "@angular/material/toolbar";
 import { EditUserComponent } from "./edit-user.component";
 import { UserListComponent } from "./user-list.component";
 import { BrowserModule } from "@angular/platform-browser";
+import { EditVenueComponent } from "./edit-venue.component";
 
 @NgModule({
-  declarations: [EditUserComponent, UserListComponent],
+  declarations: [EditUserComponent, EditVenueComponent, UserListComponent],
   imports: [
     AppRoutingModule, BrowserModule, FormsModule, MatButtonModule, MatCardModule, MatFormFieldModule, MatIconModule,
     MatInputModule, MatSlideToggleModule, MatToolbarModule, MatTableModule, ReactiveFormsModule, ServicesModule],

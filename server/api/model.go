@@ -6,6 +6,28 @@ import (
 	"com.codeka/scheduler/server/store"
 )
 
+type Venue struct {
+	Name      string `json:"name"`
+	ShortName string `json:"shortName"`
+	Address   string `json:"address"`
+}
+
+func MakeVenue(venue *store.Venue) *Venue {
+	return &Venue{
+		Name:      venue.Name,
+		ShortName: venue.ShortName,
+		Address:   venue.Address,
+	}
+}
+
+func VenueToStore(venue *Venue) *store.Venue {
+	return &store.Venue{
+		Name:      venue.Name,
+		ShortName: venue.ShortName,
+		Address:   venue.Address,
+	}
+}
+
 type User struct {
 	ID     int64    `json:"id"`
 	Name   string   `json:"name"`

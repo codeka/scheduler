@@ -24,3 +24,13 @@ func GetVenue() (*Venue, error) {
 	}
 	return nil, nil
 }
+
+func SaveVenue(venue *Venue) error {
+	_, err := db.Exec(`
+	    UPDATE venue SET
+			  name = ?,
+				short_name = ?,
+				address = ?`,
+		venue.Name, venue.ShortName, venue.Address)
+	return err
+}

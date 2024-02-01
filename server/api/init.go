@@ -8,15 +8,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type venue struct {
-	Name      string `json:"name"`
-	ShortName string `json:"shortName"`
-	Address   string `json:"address"`
-}
-
 type InitResponse struct {
 	User   *User    `json:"user"`
-	Venue  *venue   `json:"venue"`
+	Venue  *Venue   `json:"venue"`
 	Groups []*Group `json:"groups"`
 }
 
@@ -44,11 +38,7 @@ func HandleInit(c *gin.Context) {
 
 	v, _ := store.GetVenue()
 	if v != nil {
-		resp.Venue = &venue{
-			Name:      v.Name,
-			ShortName: v.ShortName,
-			Address:   v.Address,
-		}
+		resp.Venue = MakeVenue(v)
 	}
 
 	gs, _ := store.GetGroups()
