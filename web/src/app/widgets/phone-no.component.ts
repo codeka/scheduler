@@ -20,8 +20,6 @@ export class MyTel {
     '[class.example-floating]': 'shouldLabelFloat',
     '[id]': 'id',
   },
-  standalone: true,
-  imports: [FormsModule, ReactiveFormsModule],
 })
 export class PhoneNoComponent implements ControlValueAccessor, MatFormFieldControl<MyTel>, OnDestroy {
   static nextId = 0;

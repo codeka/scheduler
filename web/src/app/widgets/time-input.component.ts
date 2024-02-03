@@ -13,8 +13,6 @@ import { Subject } from "rxjs";
     '[class.time-input-floating]': 'shouldLabelFloat',
     '[id]': 'id',
   },
-  standalone: true,
-  imports: [FormsModule, ReactiveFormsModule],
 })
 export class TimeInputComponent implements MatFormFieldControl<Date>, ControlValueAccessor, OnDestroy  {
   static nextId = 0
@@ -192,5 +190,4 @@ export class TimeInputComponent implements MatFormFieldControl<Date>, ControlVal
 
     return new Date(1, 1, 1, hours, minutes, 0);
   }
-  
 }

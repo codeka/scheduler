@@ -18,6 +18,11 @@
         <mat-label>Address</mat-label>
         <input matInput formControlName="address" />
       </mat-form-field>
+      <mat-form-field>
+        <mat-label>Picture</mat-label>
+        <image-picker (picked)="imagePicked($event)" />
+      </mat-form-field>
+      <image-preview #imagePreview />
     </div>
 
     <mat-card-actions>

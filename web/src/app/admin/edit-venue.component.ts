@@ -1,9 +1,11 @@
-import { Component } from "@angular/core";
+import { Component, ViewChild } from "@angular/core";
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import { AdminService } from "../services/admin.service";
 import { InitService } from "../services/init.service";
 import { Router } from "@angular/router";
 import { Venue } from "../services/model";
+import { ImagePreviewComponent } from "../widgets/image-preview.component";
+import { FileInfo } from "../widgets/image-picker.component";
 
 
 @Component({
@@ -18,6 +20,8 @@ export class EditVenueComponent {
     address: FormControl<string|null>,
   }>
 
+  @ViewChild('imagePreview') imagePreview!: ImagePreviewComponent
+
   constructor(
       private admin: AdminService, private formBuilder: FormBuilder, public init: InitService,
       private router: Router) {
@@ -26,6 +30,10 @@ export class EditVenueComponent {
       shortName: [init.venue().shortName, Validators.required],
       address: [init.venue().address],
     });
+  }
+
+  imagePicked(file: FileInfo) {
+    this.imagePreview.updatePreview(file.file)
   }
 
   onSave() {
