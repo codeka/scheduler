@@ -32,12 +32,13 @@ func VenueToStore(venue *Venue) *store.Venue {
 }
 
 type User struct {
-	ID     int64    `json:"id"`
-	Name   string   `json:"name"`
-	Email  string   `json:"email"`
-	Phone  string   `json:"phone"`
-	Roles  []string `json:"roles"`
-	Groups []int64  `json:"groups"`
+	ID          int64    `json:"id"`
+	Name        string   `json:"name"`
+	Email       string   `json:"email"`
+	Phone       string   `json:"phone"`
+	PictureName string   `json:"pictureName"`
+	Roles       []string `json:"roles"`
+	Groups      []int64  `json:"groups"`
 }
 
 // MakeUser converts the given store.User to our User type.
@@ -47,21 +48,23 @@ func MakeUser(user *store.User, roles []string, groups []int64) *User {
 	}
 
 	return &User{
-		ID:     user.ID,
-		Name:   user.Name,
-		Email:  user.Email,
-		Phone:  user.Phone,
-		Roles:  roles,
-		Groups: groups,
+		ID:          user.ID,
+		Name:        user.Name,
+		Email:       user.Email,
+		Phone:       user.Phone,
+		PictureName: user.PictureName,
+		Roles:       roles,
+		Groups:      groups,
 	}
 }
 
 func UserToStore(user *User) *store.User {
 	return &store.User{
-		ID:    user.ID,
-		Name:  user.Name,
-		Email: user.Email,
-		Phone: user.Phone,
+		ID:          user.ID,
+		Name:        user.Name,
+		Email:       user.Email,
+		Phone:       user.Phone,
+		PictureName: user.PictureName,
 	}
 }
 

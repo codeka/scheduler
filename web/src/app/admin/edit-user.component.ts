@@ -5,6 +5,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AdminService } from '../services/admin.service';
 import { map } from 'rxjs';
 import { InitService } from '../services/init.service';
+import { FileInfo } from '../widgets/image-picker.component';
+import { ImageService } from '../services/image.service';
 
 @Component({
   selector: 'edit-user',
@@ -23,9 +25,10 @@ export class EditUserComponent {
   userId = 0
   user?: User
   allGroups: Array<Group> = []
+  fileInfo: FileInfo|null = null
 
   constructor(private admin: AdminService, private formBuilder: FormBuilder, public init: InitService,
-              private route: ActivatedRoute, private router: Router) {
+              public img: ImageService, private route: ActivatedRoute, private router: Router) {
     this.form = this.formBuilder.group({
       name: ["", Validators.required],
       email: ["", Validators.required],
@@ -70,6 +73,10 @@ export class EditUserComponent {
     return this.form.controls.groups.controls as FormGroup[]
   }
 
+  imageUpdated(file: FileInfo) {
+    this.fileInfo = file
+  }
+
   onSave() {
     var roles: Array<string> = []
     for (var roleName of (this.form.value.roles ?? "").split(",")) {
@@ -89,14 +96,21 @@ export class EditUserComponent {
       name: this.form.value.name ?? "",
       email: this.form.value.email ?? "",
       phone: this.form.value.phone ?? "",
+      pictureName: this.user?.pictureName ?? "",
       roles: roles,
       groups: groups,
     }
 
     this.admin.saveUser(user)
       .then(() => {
-        // TODO: navigate to the day/week/whatever this event is on.
-        this.router.navigate(["/users"])
+        if (this.fileInfo != null) {
+          this.admin.saveUserPicture(user.id, this.fileInfo.file)
+            .then(() => {
+              this.router.navigate(["/users"])
+            })
+        } else {
+          this.router.navigate(["/users"])
+        }
       })
   }
 }

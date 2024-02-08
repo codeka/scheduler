@@ -48,6 +48,15 @@ export class AdminService {
     )
   }
 
+  saveUserPicture(userId: number, file: File): Promise<boolean> {
+    const form = new FormData()
+    form.append("picture", file)
+    return firstValueFrom(
+      this.http.post<SaveUserResponse>(ENV.backend + "/_/admin/users/" + userId + "/picture", form)
+        .pipe(map(() => true))
+    )
+  }
+
   saveVenue(venue: Venue): Promise<boolean> {
     return firstValueFrom(
       this.http.post<SaveVenueResponse>(ENV.backend + "/_/admin/venue", venue)

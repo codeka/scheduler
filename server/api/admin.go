@@ -119,6 +119,56 @@ func HandleAdminUsersPost(c *gin.Context) {
 	c.AbortWithStatus(http.StatusOK)
 }
 
+func HandleAdminUserPicturePost(c *gin.Context) {
+	if !IsInRole(c, "ADMIN") {
+		c.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
+
+	userIdStr := c.Param("id")
+	userId, err := strconv.ParseInt(userIdStr, 10, 64)
+	if err != nil {
+		util.HandleError(c, http.StatusBadRequest, err)
+		return
+	}
+	user, err := store.GetUser(userId)
+	if err != nil {
+		util.HandleError(c, http.StatusInternalServerError, err)
+		return
+	}
+	if user == nil {
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+
+	file, err := c.FormFile("picture")
+	if err != nil {
+		util.HandleError(c, http.StatusBadRequest, err)
+		return
+	}
+
+	name, path, err := store.MakeImageFileName()
+	if err != nil {
+		util.HandleError(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	err = c.SaveUploadedFile(file, path)
+	if err != nil {
+		util.HandleError(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	user.PictureName = name
+	err = store.SaveUser(user)
+	if err != nil {
+		util.HandleError(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	c.AbortWithStatus(http.StatusOK)
+}
+
 func HandleAdminVenuePost(c *gin.Context) {
 	if !IsInRole(c, "ADMIN") {
 		c.AbortWithStatus(http.StatusUnauthorized)
@@ -182,6 +232,7 @@ func HandleAdminVenuePicturePost(c *gin.Context) {
 func setupAdmin(g *gin.Engine) error {
 	g.GET("_/admin/users", HandleAdminUsersGet)
 	g.GET("_/admin/users/:id", HandleAdminUserGet)
+	g.POST("_/admin/users/:id/picture", HandleAdminUserPicturePost)
 	g.POST("_/admin/users", HandleAdminUsersPost)
 	g.POST("_/admin/venue", HandleAdminVenuePost)
 	g.POST("_/admin/venue/picture", HandleAdminVenuePicturePost)

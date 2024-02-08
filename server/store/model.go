@@ -10,10 +10,11 @@ type Venue struct {
 }
 
 type User struct {
-	ID    int64
-	Name  string
-	Email string
-	Phone string
+	ID          int64
+	Name        string
+	Email       string
+	Phone       string
+	PictureName string
 }
 
 type Event struct {

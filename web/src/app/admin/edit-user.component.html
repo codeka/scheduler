@@ -5,34 +5,38 @@
   </mat-card-header>
 
   <form [formGroup]="form" (ngSubmit)="onSave()" novalidate>
-    <div class="fields">
-      <mat-form-field>
-        <mat-label>Name</mat-label>
-        <input matInput formControlName="name" />
-      </mat-form-field>
-      <mat-form-field>
-        <mat-label>Email</mat-label>
-        <input matInput formControlName="email" />
-      </mat-form-field>
-      <mat-form-field>
-        <mat-label>Phone</mat-label>
-        <input matInput formControlName="phone" />
-      </mat-form-field>
-      <mat-form-field>
-        <mat-label>Roles</mat-label>
-        <input matInput formControlName="roles" />
-        <mat-hint>Comma-separated</mat-hint>
-      </mat-form-field>
-      <div class="groups-container">
-        <h3>Groups</h3>
-        <ng-container formArrayName="groups">
-          <ng-container *ngFor="let group of groupsControls; let i = index">
-            <div class="group-row" [formGroup]="group">
-              <mat-slide-toggle formControlName="groupMembership">{{allGroups[i].name}}</mat-slide-toggle>
-            </div>
+    <div class="row">
+      <div class="fields">
+        <mat-form-field>
+          <mat-label>Name</mat-label>
+          <input matInput formControlName="name" />
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email" />
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Phone</mat-label>
+          <input matInput formControlName="phone" />
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Roles</mat-label>
+          <input matInput formControlName="roles" />
+          <mat-hint>Comma-separated</mat-hint>
+        </mat-form-field>
+        <div class="groups-container">
+          <h3>Groups</h3>
+          <ng-container formArrayName="groups">
+            <ng-container *ngFor="let group of groupsControls; let i = index">
+              <div class="group-row" [formGroup]="group">
+                <mat-slide-toggle formControlName="groupMembership">{{allGroups[i].name}}</mat-slide-toggle>
+              </div>
+            </ng-container>
           </ng-container>
-        </ng-container>
+        </div>
       </div>
+
+      <image-picker [initialImg]="img.imageUrl(user?.pictureName)" (picked)="imageUpdated($event)" />
     </div>
 
     <mat-card-actions>

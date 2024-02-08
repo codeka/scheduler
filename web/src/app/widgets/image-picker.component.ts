@@ -12,7 +12,7 @@ export class FileInfo {
   styleUrls: ['image-picker.component.scss'],
   providers: [ { provide: MatFormFieldControl, useExisting: ImagePickerComponent } ],
 })
-export class ImagePickerComponent implements OnInit {
+export class ImagePickerComponent {
   previewUrl: string = ""
   file: File|null = null
   filename: string = ""
@@ -23,7 +23,13 @@ export class ImagePickerComponent implements OnInit {
   @ViewChild('preview') preview!: ElementRef
 
   // If set, this will be the initial image we'll load up.
-  @Input() initialImg!: string
+  @Input()
+  set initialImg(value: string) {
+    if (this.file == null) {
+      // Only if you haven't picted your own file yet.
+      this.previewUrl = value
+    }
+  }
 
   // Event fired whenever you pick a file.
   @Output('picked') picked = new EventEmitter<FileInfo>()
@@ -37,12 +43,6 @@ export class ImagePickerComponent implements OnInit {
     }
 
     this.fileInput.nativeElement.click();
-  }
-
-  ngOnInit(): void {
-    if (this.initialImg) {
-      this.previewUrl = this.initialImg
-    }
   }
 
   fileSelected(event: Event): boolean {
@@ -70,7 +70,6 @@ export class ImagePickerComponent implements OnInit {
     var imgHeight = img.height
     const previewWidth = this.preview.nativeElement.clientWidth
     const previewHeight = this.preview.nativeElement.clientHeight
-    console.log(`img=${imgWidth}x${imgHeight} preview=${previewWidth}x${previewHeight}`)
     if (imgWidth > imgHeight) {
       if (imgWidth > previewWidth) {
         img.style.width = previewWidth + "px"

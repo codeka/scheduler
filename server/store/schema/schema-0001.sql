@@ -22,7 +22,8 @@ CREATE TABLE users (
   id INTEGER PRIMARY KEY,
   name TEXT,
   email TEXT,
-  phone TEXT
+  phone TEXT,
+  picture_name TEXT
 );
 
 -- Different users can have different roles in the system which gives them different levels of access to things.
