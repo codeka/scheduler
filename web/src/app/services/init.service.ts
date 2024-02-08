@@ -37,7 +37,7 @@ export class InitService {
   }
 
   venue(): Venue {
-    return this.initResponse?.venue || { name: "", shortName: "", address: ""}
+    return this.initResponse?.venue || { name: "", shortName: "", address: "", pictureName: ""}
   }
 
   groups(): Group[] {

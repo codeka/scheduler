@@ -6,6 +6,7 @@ import { AuthService } from './auth.service';
 import { InitService } from './init.service';
 import { EventsService } from './events.service';
 import { AdminService } from './admin.service';
+import { ImageService } from './image.service';
 
 @NgModule({
   declarations: [],
@@ -23,6 +24,7 @@ import { AdminService } from './admin.service';
     AdminService,
     AuthService,
     EventsService,
+    ImageService,
     InitService,
   ],
   bootstrap: [AuthService, InitService]

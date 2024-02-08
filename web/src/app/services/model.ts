@@ -4,6 +4,10 @@ export interface Venue {
   name: string
   shortName: string
   address: string
+  pictureName: string
+
+  // This is only used when saving the venue, contains an optional new picture to use.
+  picture?: File
 }
 
 export interface User {

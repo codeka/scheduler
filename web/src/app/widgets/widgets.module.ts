@@ -8,14 +8,13 @@ import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
 
 import { ImagePickerComponent } from "./image-picker.component";
-import { ImagePreviewComponent } from "./image-preview.component";
 import { MatButton } from "@angular/material/button";
 import { TimeInputComponent } from "./time-input.component";
 import { PhoneNoComponent } from "./phone-no.component";
 
 @NgModule({
-  declarations: [ImagePickerComponent, ImagePreviewComponent, PhoneNoComponent, TimeInputComponent],
-  exports: [ImagePickerComponent, ImagePreviewComponent, PhoneNoComponent, TimeInputComponent],
+  declarations: [ImagePickerComponent, PhoneNoComponent, TimeInputComponent],
+  exports: [ImagePickerComponent, PhoneNoComponent, TimeInputComponent],
   imports: [
     BrowserAnimationsModule, CommonModule, FormsModule, MatButton, MatFormFieldModule, MatIconModule, MatInputModule,
     ReactiveFormsModule

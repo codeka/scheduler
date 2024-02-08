@@ -140,11 +140,51 @@ func HandleAdminVenuePost(c *gin.Context) {
 	c.AbortWithStatus(http.StatusOK)
 }
 
+func HandleAdminVenuePicturePost(c *gin.Context) {
+	if !IsInRole(c, "ADMIN") {
+		c.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
+
+	file, err := c.FormFile("picture")
+	if err != nil {
+		util.HandleError(c, http.StatusBadRequest, err)
+		return
+	}
+
+	name, path, err := store.MakeImageFileName()
+	if err != nil {
+		util.HandleError(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	err = c.SaveUploadedFile(file, path)
+	if err != nil {
+		util.HandleError(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	venue, err := store.GetVenue()
+	if err != nil {
+		util.HandleError(c, http.StatusInternalServerError, err)
+		return
+	}
+	venue.PictureName = name
+	err = store.SaveVenue(venue)
+	if err != nil {
+		util.HandleError(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	c.AbortWithStatus(http.StatusOK)
+}
+
 func setupAdmin(g *gin.Engine) error {
 	g.GET("_/admin/users", HandleAdminUsersGet)
 	g.GET("_/admin/users/:id", HandleAdminUserGet)
 	g.POST("_/admin/users", HandleAdminUsersPost)
 	g.POST("_/admin/venue", HandleAdminVenuePost)
+	g.POST("_/admin/venue/picture", HandleAdminVenuePicturePost)
 
 	return nil
 }

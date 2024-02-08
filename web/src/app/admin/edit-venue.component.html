@@ -5,26 +5,24 @@
   </mat-card-header>
 
   <form [formGroup]="form" (ngSubmit)="onSave()" novalidate>
-    <div class="fields">
-      <mat-form-field>
-        <mat-label>Name</mat-label>
-        <input matInput formControlName="name" />
-      </mat-form-field>
-      <mat-form-field>
-        <mat-label>Short Name</mat-label>
-        <input matInput formControlName="shortName" />
-      </mat-form-field>
-      <mat-form-field>
-        <mat-label>Address</mat-label>
-        <input matInput formControlName="address" />
-      </mat-form-field>
-      <mat-form-field>
-        <mat-label>Picture</mat-label>
-        <image-picker (picked)="imagePicked($event)" />
-      </mat-form-field>
-      <image-preview #imagePreview />
-    </div>
+    <div class="row">
+      <image-picker [initialImg]="img.imageUrl(init.venue().pictureName)" (picked)="imageUpdated($event)" />
 
+      <div class="fields">
+        <mat-form-field>
+          <mat-label>Name</mat-label>
+          <input matInput formControlName="name" />
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Short Name</mat-label>
+          <input matInput formControlName="shortName" />
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Address</mat-label>
+          <input matInput formControlName="address" />
+        </mat-form-field>
+      </div>
+    </div>
     <mat-card-actions>
       <div class="spacer"></div>
       <button mat-raised-button color="primary" type="submit"><mat-icon>save</mat-icon> Save</button>

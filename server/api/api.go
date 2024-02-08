@@ -20,6 +20,9 @@ func Setup(g *gin.Engine) error {
 	if err := setupAdmin(g); err != nil {
 		return err
 	}
+	if err := setupImage(g); err != nil {
+		return err
+	}
 
 	return nil
 }

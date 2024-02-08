@@ -9,10 +9,12 @@ import (
 )
 
 var (
-	db *sql.DB
+	db      *sql.DB
+	datadir string
 )
 
-func Init(datadir string) error {
+func Init(datdir string) error {
+	datadir = datdir
 	dbfile := path.Join(datadir, "store.db")
 	dsn := "file:///" + dbfile + "?_pragma=foreign_keys(1)&_time_format=sqlite"
 	log.Printf("dsn=%s", dsn)

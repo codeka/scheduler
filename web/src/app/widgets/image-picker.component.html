@@ -1,5 +1,6 @@
-<div role="group" class="image-picker" [formGroup]="fg">
-  <input matInput type="text" class="filename" formControlName="filename" (click)="selectFile()">
-  <button mat-flat-button color="primary" (click)="selectFile($event)">Choose</button>
+<div role="group" class="image-picker" #preview>
+  <img src="{{previewUrl}}" (load)="imageLoaded()" #img />
+  <button mat-flat-button color="primary" (click)="selectFile($event)">Change</button>
   <input type="file" accept="image/*" (change)="fileSelected($event)" style="display: none;" #file>
 </div>
+

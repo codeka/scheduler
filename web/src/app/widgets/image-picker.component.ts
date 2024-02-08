@@ -1,9 +1,6 @@
-import { FocusMonitor } from "@angular/cdk/a11y";
-import { Component, ElementRef, EventEmitter, Inject, Optional, Output, Self, ViewChild } from "@angular/core";
-import { FormBuilder, FormControl, FormGroup, FormGroupDirective, NgControl, NgForm, Validators } from "@angular/forms";
-import { MAT_FORM_FIELD, MatFormField, MatFormFieldControl } from "@angular/material/form-field";
-import { BaseMatFormFieldControl } from "./base-mat-form-field-control";
-import { ErrorStateMatcher } from "@angular/material/core";
+
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
+import { MatFormFieldControl } from "@angular/material/form-field";
 
 export class FileInfo {
   constructor(public filename: string, public file: File) {}
@@ -15,35 +12,25 @@ export class FileInfo {
   styleUrls: ['image-picker.component.scss'],
   providers: [ { provide: MatFormFieldControl, useExisting: ImagePickerComponent } ],
 })
-export class ImagePickerComponent extends BaseMatFormFieldControl<FileInfo> {
-  preview: string = ""
+export class ImagePickerComponent implements OnInit {
+  previewUrl: string = ""
+  file: File|null = null
+  filename: string = ""
 
   // We have to use ElementRef to get the actual native element, Angular's HTMLInputElement's click() doesn't work.
   @ViewChild('file') fileInput!: ElementRef
+  @ViewChild('img') img!: ElementRef
+  @ViewChild('preview') preview!: ElementRef
+
+  // If set, this will be the initial image we'll load up.
+  @Input() initialImg!: string
 
   // Event fired whenever you pick a file.
   @Output('picked') picked = new EventEmitter<FileInfo>()
 
-  fg: FormGroup<{
-    filename: FormControl<string|null>
-  }>
-
-  constructor(fb: FormBuilder, focusMonitor: FocusMonitor, elem: ElementRef,
-    @Optional() @Inject(MAT_FORM_FIELD) public _ff: MatFormField,
-    @Optional() parentForm: NgForm,  @Optional() parentFormGroup: FormGroupDirective,
-    @Optional() defaultErrorStateMatcher: ErrorStateMatcher,
-    @Optional() @Self() ngControl: NgControl) {
-    super("image-picker", focusMonitor, elem, ngControl, parentForm, parentFormGroup, defaultErrorStateMatcher)
-
-    this.fg = fb.group({
-      filename: [{ value:"", disabled: true }],
-    })
+  constructor() {
   }
-  
-  public focus() {
-    // TODO
-  }
-  
+
   selectFile(event?: Event) {
     if (event != null) {
       event.preventDefault()
@@ -52,22 +39,55 @@ export class ImagePickerComponent extends BaseMatFormFieldControl<FileInfo> {
     this.fileInput.nativeElement.click();
   }
 
+  ngOnInit(): void {
+    if (this.initialImg) {
+      this.previewUrl = this.initialImg
+    }
+  }
+
   fileSelected(event: Event): boolean {
     const target = event.target as HTMLInputElement
     const files = target.files as FileList
 
     if (files.length > 0) {
-      this.value = {
-        filename: files[0].name,
-        file: files[0]
+      this.filename = files[0].name,
+      this.file = files[0]
+      const reader = new FileReader()
+      reader.onload = () => {
+        this.previewUrl = reader.result as string
       }
-      this.fg.value.filename = files[0].name
-      this.fg.controls.filename.setValue(files[0].name)
-      this.picked.emit(this.value)
+      reader.readAsDataURL(this.file)
     }
-    
+
     // Reset it so that if you pick the same file again, we'll be called again.
     target.value = ""
     return true
+  }
+
+  imageLoaded() {
+    const img = this.img.nativeElement
+    var imgWidth = img.width
+    var imgHeight = img.height
+    const previewWidth = this.preview.nativeElement.clientWidth
+    const previewHeight = this.preview.nativeElement.clientHeight
+    console.log(`img=${imgWidth}x${imgHeight} preview=${previewWidth}x${previewHeight}`)
+    if (imgWidth > imgHeight) {
+      if (imgWidth > previewWidth) {
+        img.style.width = previewWidth + "px"
+        img.style.height = Math.round(previewWidth * (imgHeight / imgWidth)) + "px"
+      }
+    } else {
+      if (imgHeight > previewHeight) {
+        img.style.height = previewHeight + "px"
+        img.style.width = Math.round(previewHeight * (imgWidth / imgHeight)) + "px"
+      }
+    }
+
+    img.style.display = "block"
+
+    this.picked.emit({
+      filename: this.filename,
+      file: this.file!,
+    })
   }
 }

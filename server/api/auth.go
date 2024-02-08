@@ -1,12 +1,12 @@
 package api
 
 import (
-	"crypto/rand"
 	"log"
 	"net/http"
 	"strings"
 
 	"com.codeka/scheduler/server/store"
+	"com.codeka/scheduler/server/util"
 	"github.com/gin-gonic/gin"
 )
 
@@ -37,20 +37,6 @@ var (
 	SecretLetters = []rune("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 	SecretSize    = 64
 )
-
-// randomSequence returns a random sequence of length n from the given letters
-func randomSequence(n int, letters []rune) (string, error) {
-	bytes := make([]byte, n)
-	if _, err := rand.Read(bytes); err != nil {
-		return "", err
-	}
-
-	runes := make([]rune, n)
-	for i := range runes {
-		runes[i] = letters[int(bytes[i])%len(letters)]
-	}
-	return string(runes), nil
-}
 
 // HandleSendConfirmation handles requests for /_/auth/send-confirmation which indicates a user is trying to log in. We
 // will look up their user record and send a code to the email address or phone number (if there is one).
@@ -86,7 +72,7 @@ func HandleSendConfirmation(c *gin.Context) {
 		return
 	}
 
-	code, err := randomSequence(ConfirmationCodeSize, ConfirmationCodeLetters)
+	code, err := util.RandomSequence(ConfirmationCodeSize, ConfirmationCodeLetters)
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 		return
@@ -148,7 +134,7 @@ func HandleVerifyConfirmation(c *gin.Context) {
 		return
 	}
 
-	resp.SecretKey, err = randomSequence(SecretSize, SecretLetters)
+	resp.SecretKey, err = util.RandomSequence(SecretSize, SecretLetters)
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 		return

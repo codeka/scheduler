@@ -12,6 +12,10 @@ interface SaveVenueResponse {
   success: boolean
 }
 
+interface SaveVenuePictureResponse {
+  success: boolean
+}
+
 interface GetUsersResponse {
   users: User[]
 }
@@ -48,6 +52,15 @@ export class AdminService {
     return firstValueFrom(
       this.http.post<SaveVenueResponse>(ENV.backend + "/_/admin/venue", venue)
         .pipe(map(() => true))
+    )
+  }
+
+  saveVenuePicture(filename: string, file: File): Promise<boolean> {
+    const form = new FormData()
+    form.append("picture", file)
+    return firstValueFrom(
+      this.http.post<SaveVenuePictureResponse>(ENV.backend + "/_/admin/venue/picture", form)
+          .pipe(map(() => true))
     )
   }
 }

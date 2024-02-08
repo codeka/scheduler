@@ -10,11 +10,12 @@ INSERT INTO schema_version (version) VALUES (1);
 CREATE TABLE venue (
   name TEXT,
   short_name TEXT,
-  address TEXT
+  address TEXT,
+  picture_name TEXT,
 );
 
 -- Create an initial fake entry. There should be exact one entry in this table at all times.
-INSERT INTO venue (name, short_name, address) VALUES ('Sample Center', 'SMPL', '123 Fake St');
+INSERT INTO venue (name, short_name, address, picture_name) VALUES ('Sample Center', 'SMPL', '123 Fake St', '');
 
 -- Users are the people who can sign up to help shifts.
 CREATE TABLE users (

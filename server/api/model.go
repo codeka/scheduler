@@ -7,24 +7,27 @@ import (
 )
 
 type Venue struct {
-	Name      string `json:"name"`
-	ShortName string `json:"shortName"`
-	Address   string `json:"address"`
+	Name        string `json:"name"`
+	ShortName   string `json:"shortName"`
+	Address     string `json:"address"`
+	PictureName string `json:"pictureName"`
 }
 
 func MakeVenue(venue *store.Venue) *Venue {
 	return &Venue{
-		Name:      venue.Name,
-		ShortName: venue.ShortName,
-		Address:   venue.Address,
+		Name:        venue.Name,
+		ShortName:   venue.ShortName,
+		Address:     venue.Address,
+		PictureName: venue.PictureName,
 	}
 }
 
 func VenueToStore(venue *Venue) *store.Venue {
 	return &store.Venue{
-		Name:      venue.Name,
-		ShortName: venue.ShortName,
-		Address:   venue.Address,
+		Name:        venue.Name,
+		ShortName:   venue.ShortName,
+		Address:     venue.Address,
+		PictureName: venue.PictureName,
 	}
 }
 

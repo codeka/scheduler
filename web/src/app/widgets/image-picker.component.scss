@@ -1,4 +1,18 @@
 div.image-picker {
-  display: flex;
-  flex-direction: row;
+  width: 300pt;
+  height: 300pt;
+  border: solid 1px black;
+ 
+  position: relative;
+}
+
+div.image-picker button {
+  position: absolute;
+  right: 10pt;
+  bottom: 10pt;
+}
+
+// The image starts off hidden.
+div.image-picker img {
+  display: none;
 }

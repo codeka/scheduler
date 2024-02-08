@@ -1,7 +1,6 @@
 package api
 
 import (
-	"log"
 	"net/http"
 	"strings"
 
@@ -27,8 +26,6 @@ func AuthMiddleware(c *gin.Context) {
 			return
 		}
 		c.Set("roles", roles)
-	} else {
-		log.Printf("no bearer token")
 	}
 
 	c.Next()

@@ -3,9 +3,10 @@ package store
 import "time"
 
 type Venue struct {
-	ShortName string
-	Name      string
-	Address   string
+	ShortName   string
+	Name        string
+	Address     string
+	PictureName string
 }
 
 type User struct {

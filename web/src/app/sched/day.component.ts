@@ -6,6 +6,7 @@ import { AuthService } from '../services/auth.service';
 import { stringToTime } from '../util/date.util';
 import { EventsService, GetEventsResponse } from '../services/events.service';
 import { InitService } from '../services/init.service';
+import { ImageService } from '../services/image.service';
 
 @Component({
   selector: 'day',
@@ -25,8 +26,8 @@ export class DayComponent {
 
   hours: Array<number> = [];
 
-  constructor(private route: ActivatedRoute, private router: Router, public auth: AuthService,
-              private eventsService: EventsService, initService: InitService) {
+  constructor(private route: ActivatedRoute, private router: Router, public auth: AuthService, public img: ImageService,
+              public init: InitService, private eventsService: EventsService, initService: InitService) {
     this.groups = initService.groups()
     this.date =
         this.route.params
