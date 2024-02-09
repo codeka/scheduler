@@ -5,6 +5,7 @@ import { AdminService } from "../services/admin.service";
 import { AuthService } from "../services/auth.service";
 import { User } from "../services/model";
 import { InitService } from "../services/init.service";
+import { ImageService } from "../services/image.service";
 
 @Component({
   selector: 'user-list',
@@ -12,11 +13,10 @@ import { InitService } from "../services/init.service";
   styleUrls: ['./user-list.component.scss']
 })
 export class UserListComponent {
-  displayedColumns: string[] = ['name', 'mail', 'phone', 'roles', 'groups', 'actions'];
+  displayedColumns: string[] = ['picture', 'name', 'mail', 'phone', 'roles', 'groups', 'actions'];
   users: User[] = []
 
-  constructor(private admin: AdminService, private auth: AuthService, private init: InitService,
-              private router: Router) {
+  constructor(public img: ImageService, private init: InitService, admin: AdminService) {
     admin.getUsers()
         .then((users) => {
           this.users = users

@@ -7,6 +7,10 @@
     <button class="admin-button" mat-raised-button [routerLink]="'/edit-user'"><mat-icon>person_add]</mat-icon>Add User</button>
   </mat-toolbar>
   <table mat-table [dataSource]="users" class="mat-elevation-z8">
+    <ng-container matColumnDef="picture">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let user"><img src="{{img.imageUrl(user.pictureName)}}" width="40" /></td>
+    </ng-container>
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef>Name</th>
       <td mat-cell *matCellDef="let user">{{user.name}}</td>

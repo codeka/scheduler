@@ -84,9 +84,11 @@ export class ImagePickerComponent {
 
     img.style.display = "block"
 
-    this.picked.emit({
-      filename: this.filename,
-      file: this.file!,
-    })
+    if (this.file) {
+      this.picked.emit({
+        filename: this.filename,
+        file: this.file!,
+      })
+    }
   }
 }
