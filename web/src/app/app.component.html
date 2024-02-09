@@ -14,7 +14,7 @@
   <button mat-menu-item [routerLink]="'/edit-venue'" *ngIf="auth.isInRole('ADMIN')">
     <mat-icon>house</mat-icon> Venue Settings
   </button>
-  <button mat-menu-item>
+  <button mat-menu-item (click)="logout()">
     <mat-icon>logout</mat-icon> Logout
   </button>
 </mat-menu>

@@ -1,5 +1,5 @@
 import { NgModule, inject } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivateFn, Router, RouterModule, RouterStateSnapshot, Routes } from '@angular/router';
+import { CanActivateFn, CanMatchFn, RouterModule, Routes } from '@angular/router';
 import { WeekComponent } from './sched/week.component';
 
 import { ConfirmComponent } from './auth/confirm.component';
@@ -14,18 +14,17 @@ import { ScheduleComponent } from './sched/schedule.component';
 import { UserListComponent } from './admin/user-list.component';
 import { EditUserComponent } from './admin/edit-user.component';
 import { EditVenueComponent } from './admin/edit-venue.component';
+import { NotFoundComponent } from './not-found.component';
 
-const loggedInActivate: CanActivateFn = () => {
+const loggedIn: CanMatchFn = () => {
   return inject(AuthService).isLoggedIn();
 };
 
-const isEventManagerActivate: CanActivateFn = () => {
-  return inject(AuthService).isInRole('EVENT_MANAGER');
-};
-
-const isAdminActivate: CanActivateFn = () => {
-  return inject(AuthService).isInRole('ADMIN');
-};
+function inRole(roleName: string): CanMatchFn {
+  return () => {
+    return inject(AuthService).isInRole(roleName);
+  }
+}
 
 const routes: Routes = [
   // Login can match any time.
@@ -33,26 +32,29 @@ const routes: Routes = [
   { path: 'login/confirm', component: ConfirmComponent },
 
   // Most paths will only match if you're logged in.
-  { path: 'day', canActivate: [loggedInActivate], component: DayComponent },
-  { path: 'day/:year/:month/:day', canActivate: [loggedInActivate], component: DayComponent },
-  { path: 'week', canActivate: [loggedInActivate], component: WeekComponent },
-  { path: 'week/:year/:month/:day', canActivate: [loggedInActivate], component: WeekComponent },
-  { path: 'month', canActivate: [loggedInActivate], component: MonthComponent },
-  { path: 'month/:year/:month', canActivate: [loggedInActivate], component: MonthComponent },
+  { path: 'day', canMatch: [loggedIn], component: DayComponent },
+  { path: 'day/:year/:month/:day', canMatch: [loggedIn], component: DayComponent },
+  { path: 'week', canMatch: [loggedIn], component: WeekComponent },
+  { path: 'week/:year/:month/:day', canMatch: [loggedIn], component: WeekComponent },
+  { path: 'month', canMatch: [loggedIn], component: MonthComponent },
+  { path: 'month/:year/:month', canMatch: [loggedIn], component: MonthComponent },
 
   // Paths for event managers.
-  { path: 'edit-event', canActivate: [isEventManagerActivate], component: EditEventComponent },
-  { path: 'edit-shift', canActivate: [isEventManagerActivate], component: EditShiftComponent },
+  { path: 'edit-event', canMatch: [inRole('EVENT_MANAGER')], component: EditEventComponent },
+  { path: 'edit-shift', canMatch: [inRole('EVENT_MANAGER')], component: EditShiftComponent },
 
   // Paths for admins.
-  { path: 'users', canActivate: [isAdminActivate], component: UserListComponent },
-  { path: 'edit-user/:id', canActivate: [isAdminActivate], component: EditUserComponent },
-  { path: 'edit-user', canActivate: [isAdminActivate], component: EditUserComponent },
-  { path: 'edit-venue', canActivate: [isAdminActivate], component: EditVenueComponent },
+  { path: 'users', canMatch: [inRole('ADMIN')], component: UserListComponent },
+  { path: 'edit-user/:id', canMatch: [inRole('ADMIN')], component: EditUserComponent },
+  { path: 'edit-user', canMatch: [inRole('ADMIN')], component: EditUserComponent },
+  { path: 'edit-venue', canMatch: [inRole('ADMIN')], component: EditVenueComponent },
 
   // By default, we show the 'schedule' view, which shows all the events this month and everything in the future that
   // we have in the database.
-  { path: '', canActivate: [loggedInActivate], component: ScheduleComponent, pathMatch: 'full' },
+  { path: '', canMatch: [loggedIn], component: ScheduleComponent, pathMatch: "full" },
+
+  { path: '**', canMatch: [loggedIn], component: NotFoundComponent },
+  { path: '**', redirectTo: '/login' },
 ];
 
 @NgModule({

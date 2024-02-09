@@ -16,4 +16,8 @@ export class AppComponent {
     this.venue = init.venue()
     this.user = init.user()
   }
+
+  logout() {
+    this.auth.logout()
+  }
 }

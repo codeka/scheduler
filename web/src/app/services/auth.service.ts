@@ -55,6 +55,13 @@ export class AuthService {
     return false;
   }
 
+  logout() {
+    localStorage.removeItem("secretKey")
+
+    // With the secret key gone, we'll want to redirect you back to the home page.
+    window.location.href = "/";
+  }
+
   sendConfirmationCode(emailOrPhone: string): Promise<ConfirmationSentResponse> {
     const req: ConfirmationSendRequest = {
       emailOrPhone: emailOrPhone

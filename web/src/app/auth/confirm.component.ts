@@ -14,7 +14,7 @@ export class ConfirmComponent {
 
   onConfirm() {
     this.auth.verifyConfirmation(this.code).then((success: Boolean) => {
-      this.router.navigate(["/"]);
+      location.href = "/"
     }, (error) => {
       // TODO:L handle error.
     });

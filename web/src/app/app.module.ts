@@ -14,10 +14,11 @@ import { ServicesModule } from './services/services.module';
 import { SchedModule } from './sched/sched.module';
 
 import { AppComponent } from './app.component';
+import { NotFoundComponent } from './not-found.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent, NotFoundComponent
   ],
   imports: [
     AdminModule, AppRoutingModule, AuthModule, BrowserModule, BrowserAnimationsModule, MatButtonModule, MatIconModule,
