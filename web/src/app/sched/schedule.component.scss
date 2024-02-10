@@ -1,0 +1,50 @@
+
+div.schedule-month h1 {
+  font-size: 10pt;
+  margin: 0;
+  padding: 0 0 0 10pt;
+}
+
+div.month-row {
+  background-color: #fcfcfc;
+  border-bottom: 1px dotted black;
+}
+
+div.schedule-day {
+  border-bottom: 1px dotted #ccc;
+}
+
+div.schedule-day h2 {
+  font-size: 10pt;
+  margin: 0;
+  padding: 0 0 0 16pt;
+}
+
+div.event span.title {
+  font-weight: bold;
+  padding: 0 0 0 22pt;
+}
+
+div.row {
+  display: flex;
+  flex-direction: row;
+}
+
+div.month-row div.month {
+  flex: 2;
+}
+
+div.month-row div.group {
+  flex: 1;
+  line-height: 32px;
+  text-align: center;
+}
+
+div.row div.events {
+  flex: 2;
+}
+
+div.row div.group {
+  flex: 1;
+  border-left: dashed 1px #ccc;
+}

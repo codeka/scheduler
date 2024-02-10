@@ -37,3 +37,33 @@ export function stringToTime(str: string): Date {
   return new Date(0, 0, 0, parseInt(parts[0]), parseInt(parts[1]), parseInt(parts[2]), 0);
 }
 
+// Returns true if the given two dates fall on the same day.
+export function sameDay(dt1: Date, dt2: Date): boolean {
+  return dt1.getFullYear() == dt2.getFullYear() && dt1.getMonth() == dt2.getMonth() && dt1.getDate() == dt2.getDate()
+}
+
+export function formatStartEndTime(startTime: Date, endTime: Date): string {
+  var str = "" + startTime.getHours();
+  if (startTime.getMinutes() != 0) {
+    str += ":" + ("0" + startTime.getMinutes()).slice(-2);
+  }
+  if (startTime.getHours() < 12 && endTime.getHours() >= 12) {
+    str += "am";
+  }
+  str += "-";
+  if (endTime.getHours() > 12) {
+    str += "" + (endTime.getHours() - 12);
+  } else {
+    str += "" + endTime.getHours();
+  }
+  if (endTime.getMinutes() != 0) {
+    str += ":" + ("0" + endTime.getMinutes()).slice(-2);
+  }
+  if (endTime.getHours() < 12) {
+    str += "am";
+  } else {
+    str += "pm";
+  }
+
+  return str;
+}

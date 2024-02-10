@@ -1,9 +1,25 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Event } from '../services/model';
+import { Event, Group, Shift } from '../services/model';
 import { AuthService } from '../services/auth.service';
-import { stringToDate, stringToTime } from '../util/date.util';
+import { formatStartEndTime, sameDay, stringToDate, stringToTime } from '../util/date.util';
 import { EventsService } from '../services/events.service';
+import { InitService } from '../services/init.service';
+
+class ScheduleDay {
+  events = new Array<Event>()
+  groups = new Array<Group>()
+  shifts = new Map<Group, Array<Shift>>()
+
+  constructor(public date: Date) {}
+}
+
+/** Root of the "schedule" list. We show each month */
+class ScheduleMonth {
+  days = new Array<ScheduleDay>()
+
+  constructor(public date: Date) {}
+}
 
 @Component({
   selector: 'schedule',
@@ -13,17 +29,43 @@ import { EventsService } from '../services/events.service';
 export class ScheduleComponent {
   monthStart = new Date()
 
-  events: Array<Event> = [];
+  events: Array<Event> = []
+  months: Array<ScheduleMonth> = []
+  groups: Array<Group> = []
 
   constructor(private route: ActivatedRoute, private router: Router, public auth: AuthService,
-              private eventsService: EventsService) {
+              private init: InitService, private eventsService: EventsService) {
     const today = new Date()
-    this.monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+    this.monthStart = new Date(today.getFullYear(), today.getMonth(), 1)
+    this.groups = init.groups()
 
     // Get all events into the next year, just to make sure we cover ~everything in the future.
     this.eventsService.getEvents(this.monthStart, new Date(today.getFullYear() + 1, 1, 1))
         .then((resp) => {
           this.events = resp.events;
+
+          var months = new Array<ScheduleMonth>()
+          var currMonth: ScheduleMonth|null = null
+          var currDay: ScheduleDay|null = null
+          for (const event of resp.events) {
+            const eventDate = stringToDate(event.date)
+            const eventMonth = new Date(eventDate.getFullYear(), eventDate.getMonth(), 1)
+            if (currMonth == null || !sameDay(currMonth.date, eventMonth)) {
+              currMonth = new ScheduleMonth(eventMonth)
+              months.push(currMonth)
+            }
+
+            if (currDay == null || !sameDay(currDay.date, eventDate)) {
+              currDay = new ScheduleDay(eventDate)
+              currMonth.days.push(currDay)
+              currDay.groups = new Array<Group>(...init.groups())
+            }
+
+            currDay.events.push(event)
+            // TODO: add shifts
+            // TODO: add groups
+          }
+          this.months = months
         });
   }
 
@@ -31,30 +73,7 @@ export class ScheduleComponent {
   eventTimeStr(event: Event): string {
     const startTime = stringToTime(event.startTime);
     const endTime = stringToTime(event.endTime);
-
-    var str = "" + startTime.getHours();
-    if (startTime.getMinutes() != 0) {
-      str += ":" + ("0" + startTime.getMinutes()).slice(-2);
-    }
-    if (startTime.getHours() < 12 && endTime.getHours() >= 12) {
-      str += "am";
-    }
-    str += "-";
-    if (endTime.getHours() > 12) {
-      str += "" + (endTime.getHours() - 12);
-    } else {
-      str += "" + endTime.getHours();
-    }
-    if (endTime.getMinutes() != 0) {
-      str += ":" + ("0" + endTime.getMinutes()).slice(-2);
-    }
-    if (endTime.getHours() < 12) {
-      str += "am";
-    } else {
-      str += "pm";
-    }
-
-    return str;
+    return formatStartEndTime(startTime, endTime)
   }
 
   eventsForDay(day: number): Array<Event> {

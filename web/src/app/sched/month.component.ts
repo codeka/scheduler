@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, map, mergeMap } from 'rxjs';
 import { Event } from '../services/model';
 import { AuthService } from '../services/auth.service';
-import { dateToString, stringToDate, stringToTime } from '../util/date.util';
+import { dateToString, formatStartEndTime, stringToDate, stringToTime } from '../util/date.util';
 import { EventsService } from '../services/events.service';
 
 @Component({
@@ -67,34 +67,10 @@ export class MonthComponent {
     return 0;
   }
 
-  // Returns a string that represents the time the given event runs (e.g. "8-9:30am" or "11:30am-12:30pm", etc).
   eventTimeStr(event: Event): string {
     const startTime = stringToTime(event.startTime);
     const endTime = stringToTime(event.endTime);
-
-    var str = "" + startTime.getHours();
-    if (startTime.getMinutes() != 0) {
-      str += ":" + ("0" + startTime.getMinutes()).slice(-2);
-    }
-    if (startTime.getHours() < 12 && endTime.getHours() >= 12) {
-      str += "am";
-    }
-    str += "-";
-    if (endTime.getHours() > 12) {
-      str += "" + (endTime.getHours() - 12);
-    } else {
-      str += "" + endTime.getHours();
-    }
-    if (endTime.getMinutes() != 0) {
-      str += ":" + ("0" + endTime.getMinutes()).slice(-2);
-    }
-    if (endTime.getHours() < 12) {
-      str += "am";
-    } else {
-      str += "pm";
-    }
-
-    return str;
+    return formatStartEndTime(startTime, endTime)
   }
 
   eventsForDay(day: number): Array<Event> {

@@ -1,9 +1,46 @@
 <mat-toolbar class="header">
-  <h1>
-    Schedule
-  </h1>
+  <h1>Schedule</h1>
   <div class="spacer"></div>
   <view-switcher></view-switcher>
   <button class="admin-button" mat-raised-button *ngIf="auth.isInRole('EVENT_MANAGER')" (click)="onCreateEvent()"><mat-icon>event</mat-icon>Create Event</button>
   <button class="admin-button" mat-raised-button *ngIf="auth.isInRole('ADMIN')" (click)="onCreateShift()"><mat-icon>event</mat-icon>Create Shift</button>
 </mat-toolbar>
+<div class="schedule">
+  <div class="schedule-month"
+      *ngFor="let month of months">
+    <div class="month-row row">
+      <div class="month"><h1>{{month.date.toLocaleString('default', { month: 'long' })}}</h1></div>
+      <div class="group"
+          *ngFor="let group of groups">
+        {{group.name}}
+      </div>
+    </div>
+    <div class="schedule-day"
+        *ngFor="let day of month.days">
+      <div class="row">
+        <div class="events">
+          <h2>
+            {{day.date.toLocaleString('default', { month: 'short' })}}
+            {{day.date.toLocaleString('default', { day: '2-digit' })}}
+          </h2>
+        </div>
+        <div class="group"
+            *ngFor="let group of groups">
+        </div>
+      </div>
+      <div class="row">
+        <div class="events">
+          <div class="event"
+              *ngFor="let event of day.events">
+            <span class="title">{{event.title}}</span>
+            {{eventTimeStr(event)}}
+          </div>
+        </div>
+        <div class="group"
+            *ngFor="let group of groups">
+          {{group.name}}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
