@@ -9,7 +9,7 @@ import { InitService } from '../services/init.service';
 class ScheduleDay {
   events = new Array<Event>()
   groups = new Array<Group>()
-  shifts = new Map<Group, Array<Shift>>()
+  shifts = new Map<number, Array<Shift>>() // map of string group ID to list of shifts for that group
 
   constructor(public date: Date) {}
 }
@@ -62,17 +62,53 @@ export class ScheduleComponent {
             }
 
             currDay.events.push(event)
-            // TODO: add shifts
             // TODO: add groups
+          }
+
+          for (const shift of resp.shifts) {
+            const shiftDate = stringToDate(shift.date)
+            const shiftMonth = new Date(shiftDate.getFullYear(), shiftDate.getMonth(), 1)
+            const day = this.findDay(months, shiftDate)
+            if (day == null) {
+              // It should exist... this is weird. Just ignore it.
+              continue
+            }
+
+            var shifts = day.shifts.get(shift.groupId)
+            if (!shifts) {
+              shifts = new Array<Shift>()
+              day.shifts.set(shift.groupId, shifts)
+            }
+            shifts.push(shift)
           }
           this.months = months
         });
+  }
+
+  // Finds the ScheduleDay for the given date, or null if the date doesn't exist.
+  findDay(months: Array<ScheduleMonth>, date: Date): ScheduleDay|null {
+    for (const month of months) {
+      if (month.date.getMonth() == date.getMonth()) {
+        for (const day of month.days) {
+          if (day.date.getDate() == date.getDate()) {
+            return day
+          }
+        }
+      }
+    }
+    return null
   }
 
   // Returns a string that represents the time the given event runs (e.g. "8-9:30am" or "11:30am-12:30pm", etc).
   eventTimeStr(event: Event): string {
     const startTime = stringToTime(event.startTime);
     const endTime = stringToTime(event.endTime);
+    return formatStartEndTime(startTime, endTime)
+  }
+
+  shiftTimeStr(shift: Shift): string {
+    const startTime = stringToTime(shift.startTime)
+    const endTime = stringToTime(shift.endTime)
     return formatStartEndTime(startTime, endTime)
   }
 
