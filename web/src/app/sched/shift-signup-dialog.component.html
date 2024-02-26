@@ -1,0 +1,14 @@
+<h2 mat-dialog-title>Shift signup</h2>
+<mat-dialog-content>
+  <p>Sign up for shift <strong>{{ data.group.name }}</strong>
+     on <strong>{{ shiftDateStr(data.shift) }}</strong>
+     from <strong>{{ shiftTimeStr(data.shift) }}</strong>?</p>
+  <mat-form-field>
+    <mat-label>User</mat-label>
+    <input matInput [(ngModel)]="data.user">
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button (click)="onCancelClick()">Cancel</button>
+  <button mat-button [mat-dialog-close]="data.user" cdkFocusInitial>Sign up</button>
+</mat-dialog-actions>

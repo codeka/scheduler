@@ -5,6 +5,8 @@ import { AuthService } from '../services/auth.service';
 import { formatStartEndTime, sameDay, stringToDate, stringToTime } from '../util/date.util';
 import { EventsService } from '../services/events.service';
 import { InitService } from '../services/init.service';
+import { MatDialog } from '@angular/material/dialog';
+import { ShiftSignupDialogComponent } from './shift-signup-dialog.component';
 
 class ScheduleDay {
   events = new Array<Event>()
@@ -33,7 +35,7 @@ export class ScheduleComponent {
   months: Array<ScheduleMonth> = []
   groups: Array<Group> = []
 
-  constructor(private route: ActivatedRoute, private router: Router, public auth: AuthService,
+  constructor(public auth: AuthService, private dialog: MatDialog, private route: ActivatedRoute, private router: Router,
               private init: InitService, private eventsService: EventsService) {
     const today = new Date()
     this.monthStart = new Date(today.getFullYear(), today.getMonth(), 1)
@@ -124,6 +126,15 @@ export class ScheduleComponent {
       }
     }
     return dateEvents
+  }
+
+  onShiftSignup(group: Group, shift: Shift) {
+    const dialogRef = this.dialog.open(ShiftSignupDialogComponent, {
+      data: { group: group, shift: shift },
+    })
+    dialogRef.afterClosed().subscribe(result => {
+      console.log("dialog closed: " + result)
+    })
   }
 
   onCreateEvent() {

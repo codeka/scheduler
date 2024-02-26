@@ -16,7 +16,7 @@
       </div>
     </div>
     <div class="schedule-day"
-        *ngFor="let day of month.days">
+         *ngFor="let day of month.days">
       <div class="row">
         <div class="events">
           <h2>
@@ -25,22 +25,27 @@
           </h2>
         </div>
         <div class="group"
-            *ngFor="let group of groups">
+             *ngFor="let group of groups">
         </div>
       </div>
       <div class="row">
         <div class="events">
           <div class="event"
-              *ngFor="let event of day.events">
+               *ngFor="let event of day.events">
             <span class="title">{{event.title}}</span>
             {{eventTimeStr(event)}}
           </div>
         </div>
         <div class="group"
-            *ngFor="let group of groups">
+             *ngFor="let group of groups">
           <div class="shift"
-             *ngFor="let shift of day.shifts.get(group.id)">
-             {{shiftTimeStr(shift)}}
+               *ngFor="let shift of day.shifts.get(group.id)">
+            {{shiftTimeStr(shift)}}
+            <!-- TODO: only if you're allowed to sign up -->
+            <!-- TODO: format nicely -->
+            <button mat-icon-button (click)="onShiftSignup(group, shift)" matTooltip="Sign up for this shift">
+              <mat-icon>edit_calendar</mat-icon>
+            </button>
           </div>
         </div>
       </div>
