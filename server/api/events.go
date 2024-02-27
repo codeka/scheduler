@@ -2,15 +2,21 @@ package api
 
 import (
 	"net/http"
+	"strconv"
 	"time"
 
 	"com.codeka/scheduler/server/store"
+	"com.codeka/scheduler/server/util"
 	"github.com/gin-gonic/gin"
 )
 
 type EventsResponse struct {
 	Events []*Event `json:"events"`
 	Shifts []*Shift `json:"shifts"`
+}
+
+type EligibleUsersResponse struct {
+	Users []*User `json:"users"`
 }
 
 // HandleEventsGet handles requests to /_/events. It returns the events in the data store, filtered by various query
@@ -95,11 +101,49 @@ func HandleShiftsPost(c *gin.Context) {
 	c.AbortWithStatus(http.StatusOK)
 }
 
+// HandleShiftsEligibleUsersGet returns all the users that are eligible for a given shift. But only if the authenticated
+// user is a SHIFT_MANAGER.
+func HandleShiftsEligibleUsersGet(c *gin.Context) {
+	//if !IsInRole(c, "ADMIN") && !IsInRole(c, "SHIFT_MANAGER") {
+	//		c.AbortWithStatus(http.StatusUnauthorized)
+	//		return
+	//	}
+
+	shiftIdStr := c.Param("id")
+	shiftId, err := strconv.ParseInt(shiftIdStr, 10, 64)
+	if err != nil {
+		util.HandleError(c, http.StatusBadRequest, err)
+		return
+	}
+
+	shift, err := store.GetShift(shiftId)
+	if err != nil {
+		util.HandleError(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	query := c.Query("q")
+	users, err := store.GetEligibleUsers(shift, query)
+	if err != nil {
+		util.HandleError(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	resp := EligibleUsersResponse{}
+	for _, u := range users {
+		user := MakeUser(u, []string{}, []int64{}) // Don't fill in roles or groups for these users.
+		resp.Users = append(resp.Users, user)
+	}
+
+	c.JSON(http.StatusOK, resp)
+}
+
 func setupEvents(g *gin.Engine) error {
 	g.GET("_/events", HandleEventsGet)
 	g.POST("_/events", HandleEventsPost)
 
 	g.POST("_/shifts", HandleShiftsPost)
+	g.GET("_/shifts/:id/eligible-users", HandleShiftsEligibleUsersGet)
 
 	return nil
 }

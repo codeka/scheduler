@@ -1,14 +1,22 @@
 <h2 mat-dialog-title>Shift signup</h2>
-<mat-dialog-content>
-  <p>Sign up for shift <strong>{{ data.group.name }}</strong>
-     on <strong>{{ shiftDateStr(data.shift) }}</strong>
-     from <strong>{{ shiftTimeStr(data.shift) }}</strong>?</p>
-  <mat-form-field>
-    <mat-label>User</mat-label>
-    <input matInput [(ngModel)]="data.user">
-  </mat-form-field>
-</mat-dialog-content>
-<mat-dialog-actions>
-  <button mat-button (click)="onCancelClick()">Cancel</button>
-  <button mat-button [mat-dialog-close]="data.user" cdkFocusInitial>Sign up</button>
-</mat-dialog-actions>
+<form [formGroup]="form" (ngSubmit)="onSave()" novalidate>
+  <mat-dialog-content>
+    <p>Sign up for shift <strong>{{ data.group.name }}</strong>
+      on <strong>{{ shiftDateStr(data.shift) }}</strong>
+      from <strong>{{ shiftTimeStr(data.shift) }}</strong>?</p>
+    <mat-form-field>
+      <mat-label>User</mat-label>
+      <input matInput formControlName="userId" [matAutocomplete]="auto">
+      <mat-autocomplete #auto="matAutocomplete">
+        <mat-option *ngFor="let user of eligibleUsers | async" [value]="user.name">
+          {{user.name}}
+        </mat-option>
+      </mat-autocomplete>
+      <mat-error *ngIf="form.controls.userId.invalid">User is not eligible</mat-error>
+    </mat-form-field>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button mat-button (click)="onCancelClick()">Cancel</button>
+    <button mat-button cdkFocusInitial>Sign up</button>
+  </mat-dialog-actions>
+</form>

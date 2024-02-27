@@ -124,6 +124,28 @@ func GetShiftsInDateRange(startDate, endDate time.Time) ([]*Shift, error) {
 	return shifts, nil
 }
 
+func GetShift(id int64) (*Shift, error) {
+	rows, err := db.Query(`
+			SELECT
+				id, group_id, date, start_time, end_time
+			FROM shifts
+			WHERE id = ?`, id)
+	if err != nil {
+		return nil, fmt.Errorf("error querying shift: %v", err)
+	}
+	defer rows.Close()
+
+	if rows.Next() {
+		shift, err := makeShift(rows)
+		if err != nil {
+			return nil, fmt.Errorf("error parsing shift: %v", err)
+		}
+
+		return shift, err
+	}
+	return nil, fmt.Errorf("shift not found: %d", id)
+}
+
 func SaveShift(shift *Shift) error {
 	date := shift.Date.Format(time.DateOnly)
 	startTime := shift.StartTime.Format(time.TimeOnly)

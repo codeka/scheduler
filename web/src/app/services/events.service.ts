@@ -4,7 +4,7 @@ import { firstValueFrom, map } from "rxjs";
 
 import { ENV } from '../env/environment';
 
-import { Event, Shift } from "./model";
+import { Event, Shift, User } from "./model";
 import { dateToString } from "../util/date.util";
 
 interface SaveEventResponse {
@@ -18,6 +18,10 @@ interface SaveShiftResponse {
 export interface GetEventsResponse {
   events: Event[]
   shifts: Shift[]
+}
+
+interface GetEligibleUserForShiftResponse {
+  users: User[]
 }
 
 // EventsService is responsible for fetching, filtering, updating events.
@@ -56,6 +60,16 @@ export class EventsService {
       this.http.post<SaveShiftResponse>(ENV.backend + "/_/shifts", shift)
           .pipe(map((resp: SaveShiftResponse) => {
             return resp.success
+          }))
+        );
+  }
+
+  getEligibleUserForShift(shift: Shift, query: string): Promise<User[]> {
+    return firstValueFrom(
+      this.http.get<GetEligibleUserForShiftResponse>(
+        ENV.backend + "/_/shifts/" + shift.id + "/eligible-users?q=" + query)
+          .pipe(map((resp: GetEligibleUserForShiftResponse) => {
+            return resp.users
           }))
         );
   }

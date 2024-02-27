@@ -2,10 +2,11 @@ import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDialogModule } from '@angular/material/dialog'
+import { MatAutocompleteModule } from '@angular/material/autocomplete'
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDialogModule } from '@angular/material/dialog'
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -31,9 +32,9 @@ import { ShiftSignupDialogComponent } from './shift-signup-dialog.component';
     DayComponent, EditEventComponent, EditShiftComponent, MonthComponent, ScheduleComponent, ShiftSignupDialogComponent,
     ViewSwitcherComponent, WeekComponent],
   imports: [
-    BrowserAnimationsModule, CommonModule, FormsModule, MatButtonModule, MatCardModule, MatDatepickerModule,
-    MatDialogModule, MatFormFieldModule, MatIconModule, MatInputModule, MatNativeDateModule, MatSelectModule,
-    MatToolbarModule, MatTooltipModule, ReactiveFormsModule, ServicesModule, WidgetsModule,
+    BrowserAnimationsModule, CommonModule, FormsModule, MatAutocompleteModule, MatButtonModule, MatCardModule,
+    MatDatepickerModule, MatDialogModule, MatFormFieldModule, MatIconModule, MatInputModule, MatNativeDateModule,
+    MatSelectModule, MatToolbarModule, MatTooltipModule, ReactiveFormsModule, ServicesModule, WidgetsModule,
   ],
   providers: [],
   bootstrap: []

@@ -109,6 +109,31 @@ func GetUsers() ([]*User, error) {
 	return users, nil
 }
 
+// GetEligibleUsers returns all users in the data who are eligible to sign up for the given shift. We filter the
+// users by the given query: an empty string returns all, but a non-empty string will filter the users by their name.
+func GetEligibleUsers(shift *Shift, query string) ([]*User, error) {
+	rows, err := db.Query(`
+			SELECT id, name, email, phone, picture_name
+			FROM users INNER JOIN user_groups ON users.id = user_groups.user_id
+			WHERE user_groups.group_id = ?
+			  AND name LIKE ?
+	  `, shift.GroupID, query+"%")
+	if err != nil {
+		return []*User{}, err
+	}
+	defer rows.Close()
+
+	var users []*User
+	for rows.Next() {
+		user, err := makeUser(rows)
+		if err != nil {
+			continue
+		}
+		users = append(users, user)
+	}
+	return users, nil
+}
+
 func GetUser(id int64) (*User, error) {
 	rows, err := db.Query(`
 	    SELECT id, name, email, phone, picture_name
