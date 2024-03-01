@@ -136,12 +136,18 @@ func MakeGroup(group *store.Group) *Group {
 	}
 }
 
+type ShiftSignup struct {
+	UserID int64  `json:"userId"`
+	Notes  string `json:"notes"`
+}
+
 type Shift struct {
-	ID        int64  `json:"id"`
-	GroupID   int64  `json:"groupId"`
-	Date      string `json:"date"`
-	StartTime string `json:"startTime"`
-	EndTime   string `json:"endTime"`
+	ID        int64         `json:"id"`
+	GroupID   int64         `json:"groupId"`
+	Date      string        `json:"date"`
+	StartTime string        `json:"startTime"`
+	EndTime   string        `json:"endTime"`
+	Signups   []ShiftSignup `json:"signups"`
 }
 
 func ShiftToStore(shift *Shift) (*store.Shift, error) {
@@ -167,9 +173,20 @@ func ShiftToStore(shift *Shift) (*store.Shift, error) {
 	}, nil
 }
 
-func MakeShift(shift *store.Shift) *Shift {
+func MakeShift(shift *store.Shift, signups []*store.ShiftSignup) *Shift {
 	if shift == nil {
 		return nil
+	}
+
+	var su []ShiftSignup
+	for _, s := range signups {
+		if s == nil {
+			continue
+		}
+		su = append(su, ShiftSignup{
+			UserID: s.UserID,
+			Notes:  s.Notes,
+		})
 	}
 
 	return &Shift{
@@ -178,5 +195,6 @@ func MakeShift(shift *store.Shift) *Shift {
 		Date:      shift.Date.Format(time.DateOnly),
 		StartTime: shift.StartTime.Format(time.TimeOnly),
 		EndTime:   shift.EndTime.Format(time.TimeOnly),
+		Signups:   su,
 	}
 }

@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -146,6 +148,32 @@ func GetShift(id int64) (*Shift, error) {
 	return nil, fmt.Errorf("shift not found: %d", id)
 }
 
+// Gets a mapping of the userIDs that are signed up for the given
+func GetShiftUsers(shiftID ...int64) ([]*ShiftSignup, error) {
+	shiftIDStrs := make([]string, len(shiftID))
+	for i, id := range shiftID {
+		shiftIDStrs[i] = strconv.FormatInt(id, 10)
+	}
+
+	rows, err := db.Query(`
+	  SELECT shift_id, user_id, notes FROM shift_users WHERE shift_id IN (` + strings.Join(shiftIDStrs, ", ") + `)`)
+	if err != nil {
+		return []*ShiftSignup{}, err
+	}
+
+	var signups []*ShiftSignup
+	for rows.Next() {
+		signup := &ShiftSignup{}
+		err = rows.Scan(&signup.ShiftID, &signup.UserID, &signup.Notes)
+		if err != nil {
+			return []*ShiftSignup{}, err
+		}
+		signups = append(signups, signup)
+	}
+
+	return signups, nil
+}
+
 func SaveShift(shift *Shift) error {
 	date := shift.Date.Format(time.DateOnly)
 	startTime := shift.StartTime.Format(time.TimeOnly)
@@ -164,4 +192,11 @@ func SaveShift(shift *Shift) error {
 	}
 	// TODO: implement update
 	return fmt.Errorf("not implemented yet")
+}
+
+func SaveShiftUser(shiftID, userID int64) error {
+	_, err := db.Exec(`
+	    INSERT INTO shift_users (user_id, shift_id, notes) VALUES (?, ?, ?)`,
+		userID, shiftID, "")
+	return err
 }

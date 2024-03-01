@@ -4,7 +4,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { Group, Shift, User } from "../services/model";
 import { formatStartEndTime, stringToDate, stringToTime } from "../util/date.util";
 import { AbstractControl, AsyncValidatorFn, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from "@angular/forms";
-import { Observable, debounceTime, distinctUntilChanged, firstValueFrom, map, of, startWith, switchMap } from "rxjs";
+import { Observable, debounceTime, distinctUntilChanged, map, of, startWith, switchMap } from "rxjs";
 import { EventsService } from "../services/events.service";
 
 // TODO: include proper stuff here.
@@ -28,7 +28,7 @@ export class ShiftSignupDialogComponent {
 
   constructor(
     public dialogRef: MatDialogRef<ShiftSignupDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    private formBuilder: FormBuilder, eventsService: EventsService
+    private formBuilder: FormBuilder, private eventsService: EventsService
   ) {
     this.form = this.formBuilder.group({
       userId: ["", Validators.required, this.isUserEligibleValidator()],
@@ -63,13 +63,16 @@ export class ShiftSignupDialogComponent {
   }
 
   onSave(): void {
-    var user: User|null = null
-    // TODO: look through all eligible users, not just the ones that match the query.
+    var user: User|undefined
+
     this.allEligibleUsers?.forEach(value => {
       if (value.name == this.form.value.userId) {
         user = value
       }
     })
+
+    this.eventsService.shiftSignup(this.data.shift, user)
+
     this.dialogRef.close(user)
   }
 

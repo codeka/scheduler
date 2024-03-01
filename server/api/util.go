@@ -51,6 +51,34 @@ func IsInRole(c *gin.Context, role string) bool {
 	return false
 }
 
+func IsInGroup(c *gin.Context, groupID int64) bool {
+	var groups []int64
+	val, ok := c.Get("groups")
+	if ok {
+		groups, ok = val.([]int64)
+	}
+	if !ok { // Note: this could have been set to value by the cast as well, hence need to check again.
+		user := GetUser(c)
+		if user == nil {
+			return false
+		}
+
+		groups, err := store.GetUserGroups(user.ID)
+		if err != nil {
+			return false
+		}
+
+		c.Set("groups", groups)
+	}
+
+	for _, group := range groups {
+		if group == groupID {
+			return true
+		}
+	}
+	return false
+}
+
 // GetUser returns the authenticated user, or nil if not authenticated.
 func GetUser(c *gin.Context) *store.User {
 	val, ok := c.Get("user")

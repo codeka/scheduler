@@ -40,3 +40,9 @@ type Shift struct {
 	StartTime time.Time
 	EndTime   time.Time
 }
+
+type ShiftSignup struct {
+	ShiftID int64
+	UserID  int64
+	Notes   string
+}

@@ -108,3 +108,10 @@ CREATE TABLE shifts (
   start_time TEXT,
   end_time TEXT
 );
+
+CREATE TABLE shift_users (
+  user_id INTEGER,
+  shift_id INTEGER,
+  -- Any notes you want to associate with your signup, e.g. "sorry I have to leave 10 minutes early" etc.
+  notes TEXT
+);

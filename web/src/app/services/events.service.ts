@@ -24,6 +24,12 @@ interface GetEligibleUserForShiftResponse {
   users: User[]
 }
 
+interface ShiftSignupRequest {
+  userId?: number
+}
+
+interface ShiftSignupResponse {}
+
 // EventsService is responsible for fetching, filtering, updating events.
 @Injectable()
 export class EventsService {
@@ -72,5 +78,17 @@ export class EventsService {
             return resp.users
           }))
         );
+  }
+
+  /** Sign up the given user for the given shift. If user is not specified, sign up the current user. */
+  shiftSignup(shift: Shift, user?: User): Promise<boolean> {
+    return firstValueFrom(
+      this.http.post<ShiftSignupResponse>(
+          ENV.backend + "/_/shifts/" + shift.id + "/signups",
+          { userId: user?.id } as ShiftSignupRequest)
+        .pipe(map((resp: ShiftSignupResponse) => {
+          return true
+        }))
+    )
   }
 }

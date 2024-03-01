@@ -109,6 +109,21 @@ func GetUsers() ([]*User, error) {
 	return users, nil
 }
 
+// GetUSersMap is the same as GetUsers, but returns as map from UserID -> *User.
+func GetUsersMap() (map[int64]*User, error) {
+	allUsers, err := GetUsers()
+	if err != nil {
+		return nil, err
+	}
+
+	users := make(map[int64]*User)
+	for _, u := range allUsers {
+		users[u.ID] = u
+	}
+
+	return users, nil
+}
+
 // GetEligibleUsers returns all users in the data who are eligible to sign up for the given shift. We filter the
 // users by the given query: an empty string returns all, but a non-empty string will filter the users by their name.
 func GetEligibleUsers(shift *Shift, query string) ([]*User, error) {
