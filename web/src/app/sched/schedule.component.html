@@ -53,6 +53,11 @@
                 {{ signup.user.name }}
               </mat-chip>
             </mat-chip-set>
+            @for (signup of shift.signups ; track signup.user.id) {
+              <div class="signup-note" *ngIf="signup.notes != ''">
+                <strong>{{ signup.user.name }}:</strong> {{ signup.notes }}
+              </div>
+            }
           </div>
         </div>
       </div>

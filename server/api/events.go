@@ -22,6 +22,7 @@ type EligibleUsersResponse struct {
 
 type ShiftSignupRequest struct {
 	UserID *int64 `json:"userId"`
+	Notes  *string
 }
 
 // HandleEventsGet handles requests to /_/events. It returns the events in the data store, filtered by various query
@@ -234,7 +235,13 @@ func HandleShiftsSignupPost(c *gin.Context) {
 	}
 
 	// Finally, we're all good, add the user to this shift.
-	store.SaveShiftUser(shift.ID, user.ID)
+	var notes string
+	if req.Notes == nil {
+		notes = ""
+	} else {
+		notes = *req.Notes
+	}
+	store.SaveShiftUser(shift.ID, user.ID, notes)
 }
 
 func setupEvents(g *gin.Engine) error {

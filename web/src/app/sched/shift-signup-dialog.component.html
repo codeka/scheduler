@@ -4,19 +4,26 @@
     <p>Sign up for shift <strong>{{ data.group.name }}</strong>
       on <strong>{{ shiftDateStr(data.shift) }}</strong>
       from <strong>{{ shiftTimeStr(data.shift) }}</strong>?</p>
-    <mat-form-field>
-      <mat-label>User</mat-label>
-      <input matInput formControlName="userId" [matAutocomplete]="auto">
-      <mat-autocomplete #auto="matAutocomplete">
-        <mat-option *ngFor="let user of eligibleUsers | async" [value]="user.name">
-          {{user.name}}
-        </mat-option>
-      </mat-autocomplete>
-      <mat-error *ngIf="form.controls.userId.invalid">User is not eligible</mat-error>
-    </mat-form-field>
+    <div class="fields">
+      <mat-form-field>
+        <mat-label>User</mat-label>
+        <input matInput formControlName="userId" [matAutocomplete]="auto">
+        <mat-autocomplete #auto="matAutocomplete">
+          <mat-option *ngFor="let user of eligibleUsers | async" [value]="user.name">
+            {{user.name}}
+          </mat-option>
+        </mat-autocomplete>
+        <mat-error *ngIf="form.controls.userId.invalid">User is not eligible</mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Notes</mat-label>
+        <input matInput formControlName="notes">
+      </mat-form-field>
+    </div>
   </mat-dialog-content>
   <mat-dialog-actions>
-    <button mat-button (click)="onCancelClick()">Cancel</button>
-    <button mat-button cdkFocusInitial>Sign up</button>
+    <div class="spacer"></div>
+    <button mat-raised-button color="primary" cdkFocusInitial>Sign up</button>
+    <button mat-raised-button (click)="onCancelClick()">Cancel</button>
   </mat-dialog-actions>
 </form>

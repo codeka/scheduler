@@ -21,7 +21,8 @@ export interface DialogData {
 })
 export class ShiftSignupDialogComponent {
   form: FormGroup<{
-    userId: FormControl<string|null>
+    userId: FormControl<string|null>,
+    notes: FormControl<string|null>,
   }>
   eligibleUsers: Observable<User[]>
   allEligibleUsers: User[]|null = null
@@ -32,6 +33,7 @@ export class ShiftSignupDialogComponent {
   ) {
     this.form = this.formBuilder.group({
       userId: ["", Validators.required, this.isUserEligibleValidator()],
+      notes: [""],
     });
 
     this.eligibleUsers = this.form.controls.userId.valueChanges
@@ -71,7 +73,7 @@ export class ShiftSignupDialogComponent {
       }
     })
 
-    this.eventsService.shiftSignup(this.data.shift, user)
+    this.eventsService.shiftSignup(this.data.shift, user, this.form.value.notes ?? "")
 
     this.dialogRef.close(user)
   }

@@ -194,9 +194,9 @@ func SaveShift(shift *Shift) error {
 	return fmt.Errorf("not implemented yet")
 }
 
-func SaveShiftUser(shiftID, userID int64) error {
+func SaveShiftUser(shiftID, userID int64, notes string) error {
 	_, err := db.Exec(`
 	    INSERT INTO shift_users (user_id, shift_id, notes) VALUES (?, ?, ?)`,
-		userID, shiftID, "")
+		userID, shiftID, notes)
 	return err
 }

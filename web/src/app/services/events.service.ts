@@ -26,6 +26,7 @@ interface GetEligibleUserForShiftResponse {
 
 interface ShiftSignupRequest {
   userId?: number
+  notes: string
 }
 
 interface ShiftSignupResponse {}
@@ -81,11 +82,11 @@ export class EventsService {
   }
 
   /** Sign up the given user for the given shift. If user is not specified, sign up the current user. */
-  shiftSignup(shift: Shift, user?: User): Promise<boolean> {
+  shiftSignup(shift: Shift, user?: User, notes?: string): Promise<boolean> {
     return firstValueFrom(
       this.http.post<ShiftSignupResponse>(
           ENV.backend + "/_/shifts/" + shift.id + "/signups",
-          { userId: user?.id } as ShiftSignupRequest)
+          { userId: user?.id, notes: notes ?? "" } as ShiftSignupRequest)
         .pipe(map((resp: ShiftSignupResponse) => {
           return true
         }))
