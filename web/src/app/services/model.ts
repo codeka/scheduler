@@ -37,10 +37,16 @@ export interface Group {
   name: string
 }
 
+export interface ShiftSignup {
+  user: User
+  notes: string
+}
+
 export interface Shift {
   id: number
   groupId: number
   date: string
   startTime: string
   endTime: string
+  signups: ShiftSignup[]
 }

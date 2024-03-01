@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, map, mergeMap } from 'rxjs';
 import { Event, Group, Shift } from '../services/model';
 import { AuthService } from '../services/auth.service';
-import { stringToTime } from '../util/date.util';
+import { formatStartEndTime, stringToTime } from '../util/date.util';
 import { EventsService, GetEventsResponse } from '../services/events.service';
 import { InitService } from '../services/init.service';
 import { ImageService } from '../services/image.service';
@@ -92,30 +92,13 @@ export class DayComponent {
   eventTimeStr(event: Event): string {
     const startTime = stringToTime(event.startTime);
     const endTime = stringToTime(event.endTime);
+    return formatStartEndTime(startTime, endTime)
+  }
 
-    var str = "" + startTime.getHours();
-    if (startTime.getMinutes() != 0) {
-      str += ":" + ("0" + startTime.getMinutes()).slice(-2);
-    }
-    if (startTime.getHours() < 12 && endTime.getHours() >= 12) {
-      str += "am";
-    }
-    str += "-";
-    if (endTime.getHours() > 12) {
-      str += "" + (endTime.getHours() - 12);
-    } else {
-      str += "" + endTime.getHours();
-    }
-    if (endTime.getMinutes() != 0) {
-      str += ":" + ("0" + endTime.getMinutes()).slice(-2);
-    }
-    if (endTime.getHours() < 12) {
-      str += "am";
-    } else {
-      str += "pm";
-    }
-
-    return str;
+  shiftTimeStr(shift: Shift): string {
+    const startTime = stringToTime(shift.startTime)
+    const endTime = stringToTime(shift.endTime)
+    return formatStartEndTime(startTime, endTime)
   }
 
   shiftsForGroup(groupId: number): Shift[] {

@@ -46,6 +46,7 @@ export class EditShiftComponent {
       date: dateToString(this.form.value.date),
       startTime: timeToString(this.form.value.startTime),
       endTime: timeToString(this.form.value.endTime),
+      signups: []
     }
 
     this.events.saveShift(shift)

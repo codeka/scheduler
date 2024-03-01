@@ -14,7 +14,6 @@ import (
 type EventsResponse struct {
 	Events []*Event `json:"events"`
 	Shifts []*Shift `json:"shifts"`
-	Users  []*User  `json:"users"`
 }
 
 type EligibleUsersResponse struct {
@@ -75,21 +74,6 @@ func HandleEventsGet(c *gin.Context) {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return
 		}
-		userMap := make(map[int64]*store.User)
-		for _, signup := range allSignups {
-			_, ok := userMap[signup.UserID]
-			if ok {
-				// Already got this
-				continue
-			}
-
-			user := allUsers[signup.UserID]
-			if user != nil {
-				userMap[user.ID] = user
-				// We add the user without any roles or groups, the client doesn't care.
-				resp.Users = append(resp.Users, MakeUser(user, []string{}, []int64{}))
-			}
-		}
 
 		for _, s := range shifts {
 			var signups []*store.ShiftSignup
@@ -99,7 +83,7 @@ func HandleEventsGet(c *gin.Context) {
 				}
 			}
 
-			resp.Shifts = append(resp.Shifts, MakeShift(s, signups))
+			resp.Shifts = append(resp.Shifts, MakeShift(s, signups, allUsers))
 		}
 	}
 

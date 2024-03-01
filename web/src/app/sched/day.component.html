@@ -49,7 +49,14 @@
               <div class="shift"
                   *ngFor="let shift of shiftsForGroup(group.id)"
                   [ngStyle]="{ top: timeTop(shift.startTime, 50), height: timeHeight(shift.startTime, shift.endTime, 50) }">
-                 {{group.name}}
+                <div class="shift-name">{{group.name}}</div>
+                <div class="shift-time">{{shiftTimeStr(shift)}}</div>
+                <mat-chip-set role="list">
+                  <mat-chip role="listitem" class="shift-signup"
+                           *ngFor="let signup of shift.signups">
+                    {{ signup.user.name }}
+                  </mat-chip>
+                </mat-chip-set>
               </div>
             </div>
           </ng-container>

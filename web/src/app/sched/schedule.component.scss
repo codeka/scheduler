@@ -48,3 +48,18 @@ div.row div.group {
   flex: 1;
   border-left: dashed 1px #ccc;
 }
+
+div.shift {
+  padding-left: 8pt;
+}
+
+div.shift-time {
+  display: flex;
+  flex-direction: row;
+  line-height: 48px;
+}
+
+div.shift-time span {
+  display: block;
+  flex: 1;
+}

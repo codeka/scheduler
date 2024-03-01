@@ -40,12 +40,19 @@
              *ngFor="let group of groups">
           <div class="shift"
                *ngFor="let shift of day.shifts.get(group.id)">
-            {{shiftTimeStr(shift)}}
-            <!-- TODO: only if you're allowed to sign up -->
-            <!-- TODO: format nicely -->
-            <button mat-icon-button (click)="onShiftSignup(group, shift)" matTooltip="Sign up for this shift">
-              <mat-icon>edit_calendar</mat-icon>
-            </button>
+            <div class="shift-time">
+              <span>{{shiftTimeStr(shift)}}</span>
+              <!-- TODO: only if you're allowed to sign up -->
+              <button mat-icon-button (click)="onShiftSignup(group, shift)" matTooltip="Sign up for this shift">
+                <mat-icon>edit_calendar</mat-icon>
+              </button>
+            </div>
+            <mat-chip-set role="list">
+              <mat-chip role="listitem" class="shift-signup"
+                   *ngFor="let signup of shift.signups">
+                {{ signup.user.name }}
+              </mat-chip>
+            </mat-chip-set>
           </div>
         </div>
       </div>

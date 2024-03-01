@@ -69,7 +69,6 @@ export class ScheduleComponent {
 
           for (const shift of resp.shifts) {
             const shiftDate = stringToDate(shift.date)
-            const shiftMonth = new Date(shiftDate.getFullYear(), shiftDate.getMonth(), 1)
             const day = this.findDay(months, shiftDate)
             if (day == null) {
               // It should exist... this is weird. Just ignore it.

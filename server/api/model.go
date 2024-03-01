@@ -137,8 +137,11 @@ func MakeGroup(group *store.Group) *Group {
 }
 
 type ShiftSignup struct {
-	UserID int64  `json:"userId"`
-	Notes  string `json:"notes"`
+	// User is the actual user that signed up. We don't include groups or roles. This is slightly inefficient to send
+	// the whole user (rather than sending the IDs plus list of users, but it makes the API much simpler). In reality
+	// there's not going to be a lot of duplicated users (typically people won't sign up dozens of times)
+	User  *User  `json:"user"`
+	Notes string `json:"notes"`
 }
 
 type Shift struct {
@@ -173,7 +176,7 @@ func ShiftToStore(shift *Shift) (*store.Shift, error) {
 	}, nil
 }
 
-func MakeShift(shift *store.Shift, signups []*store.ShiftSignup) *Shift {
+func MakeShift(shift *store.Shift, signups []*store.ShiftSignup, users map[int64]*store.User) *Shift {
 	if shift == nil {
 		return nil
 	}
@@ -184,8 +187,8 @@ func MakeShift(shift *store.Shift, signups []*store.ShiftSignup) *Shift {
 			continue
 		}
 		su = append(su, ShiftSignup{
-			UserID: s.UserID,
-			Notes:  s.Notes,
+			User:  MakeUser(users[s.UserID], []string{}, []int64{}),
+			Notes: s.Notes,
 		})
 	}
 
