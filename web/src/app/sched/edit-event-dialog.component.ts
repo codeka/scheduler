@@ -4,7 +4,7 @@ import { Event } from '../services/model';
 import { EventsService } from '../services/events.service';
 import { Router } from '@angular/router';
 import { dateToString, stringToDate, stringToTime, timeToString } from '../util/date.util';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 export interface DialogData {
   event?: Event
@@ -25,7 +25,8 @@ export class EditEventDialogComponent implements OnInit {
   }>
 
   constructor(private events: EventsService, private formBuilder: FormBuilder, private router: Router,
-             @Inject(MAT_DIALOG_DATA) public data: DialogData) {
+              public dialogRef: MatDialogRef<EditEventDialogComponent>,
+              @Inject(MAT_DIALOG_DATA) public data: DialogData) {
     this.form = this.formBuilder.group({
       title: ["", Validators.required],
       description: [""],
@@ -62,8 +63,7 @@ export class EditEventDialogComponent implements OnInit {
 
     this.events.saveEvent(event)
       .then(() => {
-        // TODO: navigate to the day/week/whatever this event is on.
-        this.router.navigate(["/week"])
+        this.dialogRef.close(event)
       })
   }
 }

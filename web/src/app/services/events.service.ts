@@ -1,15 +1,11 @@
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { firstValueFrom, map } from "rxjs";
+import { catchError, firstValueFrom, map } from "rxjs";
 
 import { ENV } from '../env/environment';
 
 import { Event, Shift, User } from "./model";
 import { dateToString } from "../util/date.util";
-
-interface SaveEventResponse {
-  success: boolean
-}
 
 interface SaveShiftResponse {
   success: boolean
@@ -55,10 +51,13 @@ export class EventsService {
   // resolves.
   saveEvent(event: Event): Promise<boolean> {
     return firstValueFrom(
-      this.http.post<SaveEventResponse>(ENV.backend + "/_/events", event)
-          .pipe(map((resp: SaveEventResponse) => {
-            return resp.success
+      this.http.post<any>(ENV.backend + "/_/events", event)
+          .pipe(map(() => {
+            return true
           }))
+          .pipe(catchError(map(() => {
+            return false
+          })))
         );
   }
 

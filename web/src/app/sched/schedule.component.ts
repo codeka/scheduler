@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Event, Group, Shift, ShiftSignup } from '../services/model';
 import { AuthService } from '../services/auth.service';
@@ -29,8 +29,9 @@ class ScheduleMonth {
   templateUrl: './schedule.component.html',
   styleUrls: ['./schedule.component.scss']
 })
-export class ScheduleComponent {
-  monthStart = new Date()
+export class ScheduleComponent implements OnInit {
+  today = new Date()
+  monthStart = new Date(this.today.getFullYear(), this.today.getMonth(), 1)
 
   events: Array<Event> = []
   months: Array<ScheduleMonth> = []
@@ -38,12 +39,12 @@ export class ScheduleComponent {
 
   constructor(public auth: AuthService, private dialog: MatDialog, private route: ActivatedRoute, private router: Router,
               private init: InitService, private eventsService: EventsService) {
-    const today = new Date()
-    this.monthStart = new Date(today.getFullYear(), today.getMonth(), 1)
     this.groups = init.groups()
+  }
 
+  public ngOnInit(): void {
     // Get all events into the next year, just to make sure we cover ~everything in the future.
-    this.eventsService.getEvents(this.monthStart, new Date(today.getFullYear() + 1, 1, 1))
+    this.eventsService.getEvents(this.monthStart, new Date(this.today.getFullYear() + 1, 1, 1))
         .then((resp) => {
           this.events = resp.events;
 
@@ -61,7 +62,7 @@ export class ScheduleComponent {
             if (currDay == null || !sameDay(currDay.date, eventDate)) {
               currDay = new ScheduleDay(eventDate)
               currMonth.days.push(currDay)
-              currDay.groups = new Array<Group>(...init.groups())
+              currDay.groups = new Array<Group>(...this.init.groups())
             }
 
             currDay.events.push(event)
@@ -142,13 +143,21 @@ export class ScheduleComponent {
   }
 
   onEditEvent(event: Event) {
-    this.dialog.open(EditEventDialogComponent, {
+    const dialogRef = this.dialog.open(EditEventDialogComponent, {
       data: { event: event },
+    })
+    dialogRef.afterClosed().subscribe(() => {
+      // Refresh the page.
+      this.ngOnInit();
     })
   }
 
   onCreateEvent() {
-    this.dialog.open(EditEventDialogComponent)
+    const dialogRef = this.dialog.open(EditEventDialogComponent)
+    dialogRef.afterClosed().subscribe(() => {
+      // Refresh the page.
+      this.ngOnInit();
+    })
   }
 
   onCreateShift() {
