@@ -24,21 +24,26 @@
         </mat-form-field>
         <mat-form-field>
           <mat-label>Start time</mat-label>
-          <time-input1 formControlName="startTime"></time-input1>
+          <time-input formControlName="startTime"></time-input>
           <mat-hint>HH:MM tt</mat-hint>
         </mat-form-field>
         <mat-form-field>
           <mat-label>End time</mat-label>
-          <time-input1 formControlName="endTime"></time-input1>
+          <time-input formControlName="endTime"></time-input>
           <mat-hint>HH:MM tt</mat-hint>
         </mat-form-field>
       </div>
     </div>
 
     <mat-card-actions>
+      <button mat-button
+              type="submit"
+              matTooltip="Save the current event and start a new one without closing the dialog">
+        SAVE EVENT & NEW
+      </button>
       <div class="spacer"></div>
       <button mat-button type="submit">SAVE EVENT</button>
-      <button mat-button>CANCEL</button>
+      <button mat-button mat-dialog-close>CANCEL</button>
     </mat-card-actions>
   </form>
 </mat-card>

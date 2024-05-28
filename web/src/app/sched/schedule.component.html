@@ -34,6 +34,9 @@
                *ngFor="let event of day.events">
             <span class="title">{{event.title}}</span>
             {{eventTimeStr(event)}}
+            <button mat-icon-button class="icon-small" (click)="onEditEvent(event)" matTooltip="Edit event">
+              <mat-icon>edit</mat-icon>
+            </button>
           </div>
         </div>
         <div class="group"
@@ -43,12 +46,13 @@
             <div class="shift-time">
               <span>{{shiftTimeStr(shift)}}</span>
               <!-- TODO: only if you're allowed to sign up -->
-              <button mat-icon-button (click)="onShiftSignup(group, shift)" matTooltip="Sign up for this shift">
+              <button mat-icon-button class="icon-small" (click)="onShiftSignup(group, shift)"
+                      matTooltip="Sign up for {{shiftTimeStr(shift)}} shift">
                 <mat-icon>edit_calendar</mat-icon>
               </button>
             </div>
             <mat-chip-set role="list">
-              <mat-chip role="listitem" class="shift-signup"
+              <mat-chip role="listitem" class="shift-signup" (click)="onSignupClick(signup)"
                    *ngFor="let signup of shift.signups">
                 {{ signup.user.name }}
               </mat-chip>

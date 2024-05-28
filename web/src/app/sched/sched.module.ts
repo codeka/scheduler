@@ -18,7 +18,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { ServicesModule } from '../services/services.module';
 
 import { DayComponent } from './day.component';
-import { EditEventComponent } from './edit-event.component';
+import { EditEventDialogComponent } from './edit-event-dialog.component';
 import { MonthComponent } from './month.component';
 import { ViewSwitcherComponent } from './view-switcher.component';
 import { WeekComponent } from './week.component';
@@ -30,8 +30,8 @@ import { ShiftSignupDialogComponent } from './shift-signup-dialog.component';
 
 @NgModule({
   declarations: [
-    DayComponent, EditEventComponent, EditShiftComponent, MonthComponent, ScheduleComponent, ShiftSignupDialogComponent,
-    ViewSwitcherComponent, WeekComponent],
+    DayComponent, EditEventDialogComponent, EditShiftComponent, MonthComponent, ScheduleComponent,
+    ShiftSignupDialogComponent, ViewSwitcherComponent, WeekComponent],
   imports: [
     BrowserAnimationsModule, CommonModule, FormsModule, MatAutocompleteModule, MatButtonModule, MatCardModule,
     MatChipsModule, MatDatepickerModule, MatDialogModule, MatFormFieldModule, MatIconModule, MatInputModule, 

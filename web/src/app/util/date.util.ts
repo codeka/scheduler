@@ -19,7 +19,13 @@ export function timeToString(tm: Date): string {
   return `${hour}:${minute}:${second}`
 }
 
-export function stringToDate(str: string): Date {
+export function stringToDate(str: string): Date;
+export function stringToDate(str?: string): Date|undefined;
+export function stringToDate(str?: string): Date|undefined {
+  if (str === undefined) {
+    return undefined;
+  }
+
   const parts = str.split("-");
   if (parts.length != 3) {
     throw "Invalid date: " + str;
@@ -27,6 +33,7 @@ export function stringToDate(str: string): Date {
 
   return new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]), 0, 0, 0, 0);
 }
+
 
 export function stringToTime(str: string): Date {
   const parts = str.split(":");

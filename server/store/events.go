@@ -93,9 +93,18 @@ func SaveEvent(event *Event) error {
 			  (?, ?, ?, ?, ?)`,
 			event.Title, event.Description, date, startTime, endTime)
 		return err
+	} else {
+		_, err := db.Exec(`
+		UPDATE events SET
+		  title = ?,
+			description = ?,
+			date = ?,
+			start_time = ?,
+			end_time = ?
+		WHERE id = ?`,
+			event.Title, event.Description, date, startTime, endTime, event.ID)
+		return err
 	}
-	// TODO: implement update
-	return fmt.Errorf("not implemented yet")
 }
 
 func GetShiftsInDateRange(startDate, endDate time.Time) ([]*Shift, error) {

@@ -5,7 +5,7 @@ import { MAT_FORM_FIELD, MatFormField, MatFormFieldControl } from "@angular/mate
 import { Subject } from "rxjs";
 
 @Component({
-  selector: 'time-input1',
+  selector: 'time-input',
   templateUrl: 'time-input.component.html',
   styleUrls: ['time-input.component.scss'],
   providers: [{provide: MatFormFieldControl, useExisting: TimeInputComponent}],
@@ -40,9 +40,7 @@ export class TimeInputComponent implements MatFormFieldControl<Date>, ControlVal
       "time": ["", [Validators.required]],
     })
 
-    //if (this.ngControl != null) {
-      this.ngControl.valueAccessor = this;
-    //}
+    this.ngControl.valueAccessor = this;
   }
 
   @HostBinding() id = `time-input-${TimeInputComponent.nextId++}`;
@@ -53,17 +51,9 @@ export class TimeInputComponent implements MatFormFieldControl<Date>, ControlVal
   }
   set value(date: Date|null) {
     date = date || new Date()
-    var hours = date.getHours()
-    var isAm = true;
-    if (hours == 0) {
-      isAm = true;
-      hours = 12;
-    } else if (hours > 12) {
-      isAm = false
-      hours -= 12;
-    }
-    const ampm = (isAm ? " AM" : " PM")
-    this.fg.value.time = `${hours}:${date.getMinutes()} ${ampm}`
+    this.fg.patchValue({
+      time: `${("00" + date.getHours()).slice(-2)}:${("00" + date.getMinutes()).slice(-2)}`
+    })
     this.stateChanges.next()
   }
 

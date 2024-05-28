@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Event, Group, Shift } from '../services/model';
+import { Event, Group, Shift, ShiftSignup } from '../services/model';
 import { AuthService } from '../services/auth.service';
 import { formatStartEndTime, sameDay, stringToDate, stringToTime } from '../util/date.util';
 import { EventsService } from '../services/events.service';
 import { InitService } from '../services/init.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ShiftSignupDialogComponent } from './shift-signup-dialog.component';
+import { EditEventDialogComponent } from './edit-event-dialog.component';
 
 class ScheduleDay {
   events = new Array<Event>()
@@ -49,7 +50,7 @@ export class ScheduleComponent {
           var months = new Array<ScheduleMonth>()
           var currMonth: ScheduleMonth|null = null
           var currDay: ScheduleDay|null = null
-          for (const event of resp.events) {
+          if (resp.events) for (const event of resp.events) {
             const eventDate = stringToDate(event.date)
             const eventMonth = new Date(eventDate.getFullYear(), eventDate.getMonth(), 1)
             if (currMonth == null || !sameDay(currMonth.date, eventMonth)) {
@@ -67,7 +68,7 @@ export class ScheduleComponent {
             // TODO: add groups
           }
 
-          for (const shift of resp.shifts) {
+          if (resp.shifts) for (const shift of resp.shifts) {
             const shiftDate = stringToDate(shift.date)
             const day = this.findDay(months, shiftDate)
             if (day == null) {
@@ -136,8 +137,18 @@ export class ScheduleComponent {
     })
   }
 
+  onSignupClick(signup: ShiftSignup) {
+    console.log("click! " + JSON.stringify(signup))
+  }
+
+  onEditEvent(event: Event) {
+    this.dialog.open(EditEventDialogComponent, {
+      data: { event: event },
+    })
+  }
+
   onCreateEvent() {
-    this.router.navigate(['edit-event']);
+    this.dialog.open(EditEventDialogComponent)
   }
 
   onCreateShift() {

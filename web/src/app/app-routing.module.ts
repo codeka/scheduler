@@ -6,7 +6,7 @@ import { ConfirmComponent } from './auth/confirm.component';
 import { LoginComponent } from './auth/login.component';
 
 import { AuthService } from './services/auth.service';
-import { EditEventComponent } from './sched/edit-event.component';
+import { EditEventDialogComponent } from './sched/edit-event-dialog.component';
 import { DayComponent } from './sched/day.component';
 import { MonthComponent } from './sched/month.component';
 import { EditShiftComponent } from './sched/edit-shift.component';
@@ -40,7 +40,7 @@ const routes: Routes = [
   { path: 'month/:year/:month', canMatch: [loggedIn], component: MonthComponent },
 
   // Paths for event managers.
-  { path: 'edit-event', canMatch: [inRole('EVENT_MANAGER')], component: EditEventComponent },
+  { path: 'edit-event', canMatch: [inRole('EVENT_MANAGER')], component: EditEventDialogComponent },
   { path: 'edit-shift', canMatch: [inRole('EVENT_MANAGER')], component: EditShiftComponent },
 
   // Paths for admins.
