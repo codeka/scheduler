@@ -160,6 +160,10 @@ export class ScheduleComponent implements OnInit {
     })
   }
 
+  onEditShift(shift: Shift) {
+    
+  }
+
   onCreateShift() {
     this.router.navigate(['edit-shift']);
   }
