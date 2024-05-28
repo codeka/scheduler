@@ -11,13 +11,15 @@ import { ImagePickerComponent } from "./image-picker.component";
 import { MatButton } from "@angular/material/button";
 import { TimeInputComponent } from "./time-input.component";
 import { PhoneNoComponent } from "./phone-no.component";
+import { ConfirmationDialogComponent } from "./confirm-dialog.component";
+import { MatCardModule } from "@angular/material/card";
 
 @NgModule({
-  declarations: [ImagePickerComponent, PhoneNoComponent, TimeInputComponent],
-  exports: [ImagePickerComponent, PhoneNoComponent, TimeInputComponent],
+  declarations: [ConfirmationDialogComponent, ImagePickerComponent, PhoneNoComponent, TimeInputComponent],
+  exports: [ConfirmationDialogComponent, ImagePickerComponent, PhoneNoComponent, TimeInputComponent],
   imports: [
-    BrowserAnimationsModule, CommonModule, FormsModule, MatButton, MatFormFieldModule, MatIconModule, MatInputModule,
-    ReactiveFormsModule
+    BrowserAnimationsModule, CommonModule, FormsModule, MatButton, MatCardModule, MatFormFieldModule, MatIconModule,
+    MatInputModule, ReactiveFormsModule
   ],
   providers: [],
   bootstrap: []

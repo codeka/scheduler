@@ -61,6 +61,18 @@ export class EventsService {
         );
   }
 
+  deleteEvent(id: number): Promise<boolean> {
+    return firstValueFrom(
+      this.http.delete<any>(ENV.backend + "/_/events/" + id)
+          .pipe(map(() => {
+            return true
+          }))
+          .pipe(catchError(map(() => {
+            return false // todo: there could be a lot of errors here?
+          })))
+    )
+  }
+
   saveShift(shift: Shift): Promise<boolean> {
     return firstValueFrom(
       this.http.post<SaveShiftResponse>(ENV.backend + "/_/shifts", shift)

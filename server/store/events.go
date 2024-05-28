@@ -107,6 +107,13 @@ func SaveEvent(event *Event) error {
 	}
 }
 
+func DeleteEvent(id int64) error {
+	// TODO: validate that if this is the last event, there should be no shifts for that day, too.
+	_, err := db.Exec(`
+			DELETE FROM events WHERE id = ?`, id)
+	return err
+}
+
 func GetShiftsInDateRange(startDate, endDate time.Time) ([]*Shift, error) {
 	rows, err := db.Query(`
 			SELECT

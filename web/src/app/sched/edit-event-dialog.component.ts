@@ -4,7 +4,8 @@ import { Event } from '../services/model';
 import { EventsService } from '../services/events.service';
 import { Router } from '@angular/router';
 import { dateToString, stringToDate, stringToTime, timeToString } from '../util/date.util';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { confirmAction } from '../widgets/confirm-dialog';
 
 export interface DialogData {
   event?: Event
@@ -25,7 +26,7 @@ export class EditEventDialogComponent implements OnInit {
   }>
 
   constructor(private events: EventsService, private formBuilder: FormBuilder, private router: Router,
-              public dialogRef: MatDialogRef<EditEventDialogComponent>,
+              private dialog: MatDialog, public dialogRef: MatDialogRef<EditEventDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public data: DialogData) {
     this.form = this.formBuilder.group({
       title: ["", Validators.required],
@@ -34,6 +35,11 @@ export class EditEventDialogComponent implements OnInit {
       startTime: [new Date(1, 1, 1, 10, 0, 0), Validators.required],
       endTime: [new Date(1, 1, 1, 11, 0, 0), Validators.required],
     });
+
+    // Make sure data is non-null.
+    if (!this.data) {
+      this.data = {}
+    }
   }
 
   public ngOnInit(): void {
@@ -43,6 +49,25 @@ export class EditEventDialogComponent implements OnInit {
       date: stringToDate(this.data.event?.date) || new Date(),
       startTime: stringToTime(this.data.event?.startTime || "10:00"),
       endTime: stringToTime(this.data.event?.endTime || "11:00"),
+    })
+  }
+
+  onDelete() {
+    const id = this.data.event?.id
+    if (!id) {
+      return
+    }
+
+    confirmAction(this.dialog, {
+        msg: "Are you sure you want to delete this event?",
+        title: "Delete event",
+        confirmButtonLabel: "DELETE"
+      }).then(() => {
+      this.events.deleteEvent(id).then(success => {
+        // TODO: if there was an error, show it.
+        this.dialogRef.close()
+        this.ngOnInit();
+      })
     })
   }
 

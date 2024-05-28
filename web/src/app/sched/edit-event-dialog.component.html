@@ -1,7 +1,10 @@
 
 <mat-card id="edit-event-card">
   <mat-card-header>
-    <mat-card-title>Edit event (todo: or create?)</mat-card-title>
+    <mat-card-title>
+      <ng-container *ngIf="!!data.event">Edit {{data.event.title}}</ng-container>
+      <ng-container *ngIf="!data.event">New event</ng-container>
+    </mat-card-title>
   </mat-card-header>
 
   <form [formGroup]="form" (ngSubmit)="onSave()" novalidate>
@@ -42,7 +45,8 @@
         SAVE EVENT & NEW
       </button>
       <div class="spacer"></div>
-      <button mat-button type="submit">SAVE EVENT</button>
+      <button mat-stroked-button color="warn" *ngIf="!!data.event" (click)="onDelete()" type="button">DELETE EVENT</button>
+      <button mat-raised-button color="primary" type="submit">SAVE EVENT</button>
       <button mat-button mat-dialog-close>CANCEL</button>
     </mat-card-actions>
   </form>

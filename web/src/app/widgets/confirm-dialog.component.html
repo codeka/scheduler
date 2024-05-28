@@ -1,0 +1,14 @@
+
+<mat-card id="confirm-card">
+  <mat-card-header>
+    <mat-card-title>{{data.title || "Confirm"}}</mat-card-title>
+  </mat-card-header>
+
+  <p>{{data.msg}}</p>
+
+  <mat-card-actions>
+    <div class="spacer"></div>
+    <button mat-raised-button color="primary" (click)="dialogRef.close(true)">{{ data.confirmButtonLabel || "CONFIRM" }}</button>
+    <button mat-button (click)="dialogRef.close(false)">CANCEL</button>
+  </mat-card-actions>
+</mat-card>

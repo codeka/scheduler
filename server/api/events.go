@@ -112,6 +112,22 @@ func HandleEventsPost(c *gin.Context) {
 	c.AbortWithStatus(http.StatusOK)
 }
 
+func HandleEventsDelete(c *gin.Context) {
+	eventIdStr := c.Param("id")
+	eventId, err := strconv.ParseInt(eventIdStr, 10, 64)
+	if err != nil {
+		util.HandleError(c, http.StatusBadRequest, err)
+		return
+	}
+
+	if err := store.DeleteEvent(eventId); err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	c.AbortWithStatus(http.StatusOK)
+}
+
 func HandleShiftsPost(c *gin.Context) {
 	var s Shift
 	if err := c.BindJSON(&s); err != nil {
@@ -247,6 +263,7 @@ func HandleShiftsSignupPost(c *gin.Context) {
 func setupEvents(g *gin.Engine) error {
 	g.GET("_/events", HandleEventsGet)
 	g.POST("_/events", HandleEventsPost)
+	g.DELETE("_/events/:id", HandleEventsDelete)
 
 	g.POST("_/shifts", HandleShiftsPost)
 	g.GET("_/shifts/:id/eligible-users", HandleShiftsEligibleUsersGet)
