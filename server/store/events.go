@@ -213,6 +213,9 @@ func SaveShift(shift *Shift) error {
 func SaveShiftUser(shiftID, userID int64, notes string) error {
 	// If there's already an existing sign up for this user, delete it first.
 	err := DeleteShiftUser(shiftID, userID)
+	if err != nil {
+		return nil
+	}
 
 	_, err = db.Exec(`
 	    INSERT INTO shift_users (user_id, shift_id, notes) VALUES (?, ?, ?)`,
