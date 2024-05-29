@@ -23,7 +23,10 @@
   </mat-dialog-content>
   <mat-dialog-actions>
     <div class="spacer"></div>
-    <button mat-raised-button color="primary" cdkFocusInitial>Sign up</button>
-    <button mat-raised-button (click)="onCancelClick()">Cancel</button>
+    <button mat-stroked-button color="warn" *ngIf="!!data.signup" (click)="onDelete()" type="button">REMOVE SIGNUP</button>
+    <button mat-raised-button color="primary" cdkFocusInitial>
+      @if (!!data.signup) { SAVE } @else { SIGN UP }
+    </button>
+    <button mat-button (click)="onCancelClick()" type="button">CANCEL</button>
   </mat-dialog-actions>
 </form>

@@ -57,7 +57,7 @@
               </button>
             </div>
             <mat-chip-set role="list">
-              <mat-chip role="listitem" class="shift-signup" (click)="onSignupClick(signup)"
+              <mat-chip role="listitem" class="shift-signup" (click)="onSignupClick(group, shift, signup)"
                    *ngFor="let signup of shift.signups">
                 {{ signup.user.name }}
               </mat-chip>

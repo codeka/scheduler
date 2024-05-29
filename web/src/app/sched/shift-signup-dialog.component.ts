@@ -1,17 +1,19 @@
-import { Component, Inject } from "@angular/core";
-import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
+import { Component, Inject, OnInit } from "@angular/core";
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from "@angular/material/dialog";
 
-import { Group, Shift, User } from "../services/model";
+import { Group, Shift, ShiftSignup, User } from "../services/model";
 import { formatStartEndTime, stringToDate, stringToTime } from "../util/date.util";
 import { AbstractControl, AsyncValidatorFn, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from "@angular/forms";
 import { Observable, debounceTime, distinctUntilChanged, map, of, startWith, switchMap } from "rxjs";
 import { EventsService } from "../services/events.service";
+import { confirmAction } from "../widgets/confirm-dialog";
 
 // TODO: include proper stuff here.
 export interface DialogData {
   group: Group
   shift: Shift
   user?: string
+  signup?: ShiftSignup
 }
 
 @Component({
@@ -19,7 +21,7 @@ export interface DialogData {
   templateUrl: './shift-signup-dialog.component.html',
   styleUrls: ['./shift-signup-dialog.component.scss']
 })
-export class ShiftSignupDialogComponent {
+export class ShiftSignupDialogComponent implements OnInit {
   form: FormGroup<{
     userId: FormControl<string|null>,
     notes: FormControl<string|null>,
@@ -29,10 +31,10 @@ export class ShiftSignupDialogComponent {
 
   constructor(
     public dialogRef: MatDialogRef<ShiftSignupDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    private formBuilder: FormBuilder, private eventsService: EventsService
+    private dialog: MatDialog, private formBuilder: FormBuilder, private eventsService: EventsService
   ) {
     this.form = this.formBuilder.group({
-      userId: ["", Validators.required, this.isUserEligibleValidator()],
+      userId: [{value: "", disabled: !!data.signup}, Validators.required, this.isUserEligibleValidator()],
       notes: [""],
     });
 
@@ -51,6 +53,13 @@ export class ShiftSignupDialogComponent {
               }
             })
         ).subscribe()
+  }
+
+  public ngOnInit(): void {
+    this.form.patchValue({
+      userId: this.data.signup?.user.name || "",
+      notes: this.data.signup?.notes || ""
+    })
   }
 
   shiftTimeStr(shift: Shift): string {
@@ -76,6 +85,26 @@ export class ShiftSignupDialogComponent {
     this.eventsService.shiftSignup(this.data.shift, user, this.form.value.notes ?? "")
 
     this.dialogRef.close(user)
+  }
+
+  onDelete(): void {
+    const signupUserId = this.data.signup?.user.id
+    if (!signupUserId) {
+      return
+    }
+
+    confirmAction(this.dialog, {
+        msg: "Are you sure you want to cancel this sign up? If you cannot no longer make it, please also contact " +
+             "your leader so that they are aware.",
+        title: "Remove signup",
+        confirmButtonLabel: "REMOVE SIGNUP"
+      }).then(() => {
+      this.eventsService.deleteShiftSignup(this.data.shift.id, signupUserId).then(() => {
+        // TODO: if there was an error, show it.
+        this.dialogRef.close()
+        this.ngOnInit();
+      })
+    })
   }
 
   onCancelClick(): void {

@@ -134,12 +134,19 @@ export class ScheduleComponent implements OnInit {
       data: { group: group, shift: shift },
     })
     dialogRef.afterClosed().subscribe(result => {
-      console.log("dialog closed: " + result)
+      // Refresh the page.
+      this.ngOnInit();
     })
   }
 
-  onSignupClick(signup: ShiftSignup) {
-    console.log("click! " + JSON.stringify(signup))
+  onSignupClick(group: Group, shift: Shift, signup: ShiftSignup) {
+    const dialogRef = this.dialog.open(ShiftSignupDialogComponent, {
+      data: { group: group, shift: shift, signup: signup },
+    })
+    dialogRef.afterClosed().subscribe(result => {
+      // Refresh the page.
+      this.ngOnInit();
+    })
   }
 
   onEditEvent(event: Event) {
@@ -161,7 +168,7 @@ export class ScheduleComponent implements OnInit {
   }
 
   onEditShift(shift: Shift) {
-    
+
   }
 
   onCreateShift() {

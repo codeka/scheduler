@@ -258,6 +258,26 @@ func HandleShiftsSignupPost(c *gin.Context) {
 		notes = *req.Notes
 	}
 	store.SaveShiftUser(shift.ID, user.ID, notes)
+	c.AbortWithStatus(http.StatusOK)
+}
+
+func HandleShiftsSignupDelete(c *gin.Context) {
+	shiftIDStr := c.Param("shiftID")
+	shiftID, err := strconv.ParseInt(shiftIDStr, 10, 64)
+	if err != nil {
+		util.HandleError(c, http.StatusBadRequest, err)
+		return
+	}
+
+	userIDStr := c.Param("userID")
+	userID, err := strconv.ParseInt(userIDStr, 10, 64)
+	if err != nil {
+		util.HandleError(c, http.StatusBadRequest, err)
+		return
+	}
+
+	store.DeleteShiftUser(shiftID, userID)
+	c.AbortWithStatus(http.StatusOK)
 }
 
 func setupEvents(g *gin.Engine) error {
@@ -268,6 +288,7 @@ func setupEvents(g *gin.Engine) error {
 	g.POST("_/shifts", HandleShiftsPost)
 	g.GET("_/shifts/:id/eligible-users", HandleShiftsEligibleUsersGet)
 	g.POST("_/shifts/:id/signups", HandleShiftsSignupPost)
+	g.DELETE("_/shifts/:shiftID/signups/:userID", HandleShiftsSignupDelete)
 
 	return nil
 }

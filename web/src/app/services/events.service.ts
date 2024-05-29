@@ -25,8 +25,6 @@ interface ShiftSignupRequest {
   notes: string
 }
 
-interface ShiftSignupResponse {}
-
 // EventsService is responsible for fetching, filtering, updating events.
 @Injectable()
 export class EventsService {
@@ -95,12 +93,18 @@ export class EventsService {
   /** Sign up the given user for the given shift. If user is not specified, sign up the current user. */
   shiftSignup(shift: Shift, user?: User, notes?: string): Promise<boolean> {
     return firstValueFrom(
-      this.http.post<ShiftSignupResponse>(
+      this.http.post(
           ENV.backend + "/_/shifts/" + shift.id + "/signups",
           { userId: user?.id, notes: notes ?? "" } as ShiftSignupRequest)
-        .pipe(map((resp: ShiftSignupResponse) => {
+        .pipe(map(() => {
           return true
         }))
     )
+  }
+
+  deleteShiftSignup(shiftId: number, userId: number): Promise<boolean> {
+    return firstValueFrom(
+      this.http.delete(ENV.backend + "/_/shifts/" + shiftId + "/signups/" + userId)
+          .pipe(map(() => { return true; })))
   }
 }
