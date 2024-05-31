@@ -16,6 +16,11 @@ interface GetEligibleUserForShiftResponse {
   users: User[]
 }
 
+interface SaveEventRequest {
+  event: Event,
+  initialShifts: Shift[]
+}
+
 interface ShiftSignupRequest {
   userId?: number
   notes: string
@@ -43,9 +48,10 @@ export class EventsService {
 
   // Called as an app initializer. Returns a promise that means the rest of the app won't start until the promise
   // resolves.
-  saveEvent(event: Event): Promise<boolean> {
+  saveEvent(event: Event, initialShifts: Shift[] = []): Promise<boolean> {
     return firstValueFrom(
-      this.http.post<any>(ENV.backend + "/_/events", event)
+      this.http.post<any>(ENV.backend + "/_/events",
+            { event: event, initialShifts: initialShifts } as SaveEventRequest)
           .pipe(map(() => {
             return true
           }))

@@ -30,6 +30,37 @@
         <mat-hint>HH:MM tt</mat-hint>
       </mat-form-field>
     </div>
+
+  <div class="shifts" *ngIf="!data.event">
+    <h3>Shifts</h3>
+    <p>Initial set of shifts to create along with this event.</p>
+
+    <ng-container formArrayName="shifts">
+      @for(shift of shifts; track shift.groupId; let  i = $index) {
+        <div formGroupName="{{i}}">
+          <mat-form-field>
+            <mat-label>Group</mat-label>
+            <mat-select formControlName="groupId">
+              @for (group of groups; track group.id) {
+                <mat-option [value]="group.id">{{ group.name }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Start time</mat-label>
+            <time-input formControlName="startTime"></time-input>
+            <mat-hint>HH:MM tt</mat-hint>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>End time</mat-label>
+            <time-input formControlName="endTime"></time-input>
+            <mat-hint>HH:MM tt</mat-hint>
+          </mat-form-field>
+        </div>
+      }
+    </ng-container>
+  </div>
+
   </div>
 
   <mat-dialog-actions>

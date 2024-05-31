@@ -20,6 +20,11 @@ type EligibleUsersResponse struct {
 	Users []*User `json:"users"`
 }
 
+type SaveShiftRequest struct {
+	Event         *Event   `json:"event"`
+	InitialShifts []*Shift `json:"initialShifts"`
+}
+
 type ShiftSignupRequest struct {
 	UserID *int64 `json:"userId"`
 	Notes  *string
@@ -93,12 +98,12 @@ func HandleEventsGet(c *gin.Context) {
 
 // HandleEventsPosts handles POST requests to /_/events. We save the event you've posted to the data store.
 func HandleEventsPost(c *gin.Context) {
-	var e Event
-	if err := c.BindJSON(&e); err != nil {
+	var req SaveShiftRequest
+	if err := c.BindJSON(&req); err != nil {
 		c.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
-	event, err := EventToStore(&e)
+	event, err := EventToStore(req.Event)
 	if err != nil {
 		c.AbortWithError(http.StatusBadRequest, err)
 		return
@@ -107,6 +112,22 @@ func HandleEventsPost(c *gin.Context) {
 	if err := store.SaveEvent(event); err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 		return
+	}
+
+	if req.InitialShifts != nil {
+		for _, s := range req.InitialShifts {
+			shift, err := ShiftToStore(s)
+			if err != nil {
+				c.AbortWithError(http.StatusBadRequest, err)
+				return
+			}
+
+			err = store.SaveShift(shift)
+			if err != nil {
+				c.AbortWithError(http.StatusInternalServerError, err)
+				return
+			}
+		}
 	}
 
 	c.AbortWithStatus(http.StatusOK)
