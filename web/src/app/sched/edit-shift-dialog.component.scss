@@ -5,7 +5,7 @@
 }
 
 div.fields {
-  margin: 20pt 20pt 0 20pt;
+  margin: 0 20pt 20pt 20pt;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -18,4 +18,8 @@ div.fields mat-form-field.full-width {
 div.fields div.horz {
   display: flex;
   flex-direction: row;
+}
+
+mat-card-actions button {
+  margin: 8pt;
 }

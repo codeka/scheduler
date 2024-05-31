@@ -205,9 +205,24 @@ func SaveShift(shift *Shift) error {
 			  (?, ?, ?, ?)`,
 			shift.GroupID, date, startTime, endTime)
 		return err
+	} else {
+		_, err := db.Exec(`
+		  UPDATE shifts SET
+			  group_id = ?,
+				date = ?,
+				start_time = ?,
+				end_time = ?
+			WHERE id = ?`,
+			shift.GroupID, date, startTime, endTime, shift.ID)
+		return err
 	}
-	// TODO: implement update
-	return fmt.Errorf("not implemented yet")
+}
+
+func DeleteShift(shiftID int64) error {
+	_, err := db.Exec(`
+	  DELETE FROM shifts WHERE id = ?`,
+		shiftID)
+	return err
 }
 
 func SaveShiftUser(shiftID, userID int64, notes string) error {

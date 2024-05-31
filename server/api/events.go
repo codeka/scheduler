@@ -148,6 +148,22 @@ func HandleShiftsPost(c *gin.Context) {
 	c.AbortWithStatus(http.StatusOK)
 }
 
+func HandleShiftDelete(c *gin.Context) {
+	shiftIDStr := c.Param("shiftID")
+	shiftID, err := strconv.ParseInt(shiftIDStr, 10, 64)
+	if err != nil {
+		util.HandleError(c, http.StatusBadRequest, err)
+		return
+	}
+
+	if err := store.DeleteShift(shiftID); err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	c.AbortWithStatus(http.StatusOK)
+}
+
 // HandleShiftsEligibleUsersGet returns all the users that are eligible for a given shift. But only if the authenticated
 // user is a SHIFT_MANAGER.
 func HandleShiftsEligibleUsersGet(c *gin.Context) {
@@ -286,6 +302,7 @@ func setupEvents(g *gin.Engine) error {
 	g.DELETE("_/events/:id", HandleEventsDelete)
 
 	g.POST("_/shifts", HandleShiftsPost)
+	g.DELETE("_/shifts/:shiftID", HandleShiftDelete)
 	g.GET("_/shifts/:id/eligible-users", HandleShiftsEligibleUsersGet)
 	g.POST("_/shifts/:id/signups", HandleShiftsSignupPost)
 	g.DELETE("_/shifts/:shiftID/signups/:userID", HandleShiftsSignupDelete)

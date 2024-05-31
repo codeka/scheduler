@@ -8,6 +8,7 @@ import { InitService } from '../services/init.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ShiftSignupDialogComponent } from './shift-signup-dialog.component';
 import { EditEventDialogComponent } from './edit-event-dialog.component';
+import { EditShiftDialogComponent } from './edit-shift-dialog.component';
 
 class ScheduleDay {
   events = new Array<Event>()
@@ -168,11 +169,21 @@ export class ScheduleComponent implements OnInit {
   }
 
   onEditShift(shift: Shift) {
-
+    const dialogRef = this.dialog.open(EditShiftDialogComponent, {
+      data: { shift: shift },
+    })
+    dialogRef.afterClosed().subscribe(() => {
+      // Refresh the page.
+      this.ngOnInit();
+    })
   }
 
   onCreateShift() {
-    this.router.navigate(['edit-shift']);
+    const dialogRef = this.dialog.open(EditShiftDialogComponent)
+    dialogRef.afterClosed().subscribe(() => {
+      // Refresh the page.
+      this.ngOnInit();
+    })
   }
 }
 

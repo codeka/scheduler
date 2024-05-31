@@ -12,7 +12,7 @@ export interface DialogData {
 }
 
 @Component({
-  selector: 'edit-event',
+  selector: 'edit-event-dialog',
   templateUrl: './edit-event-dialog.component.html',
   styleUrls: ['./edit-event-dialog.component.scss']
 })
@@ -66,7 +66,6 @@ export class EditEventDialogComponent implements OnInit {
       this.events.deleteEvent(id).then(success => {
         // TODO: if there was an error, show it.
         this.dialogRef.close()
-        this.ngOnInit();
       })
     })
   }

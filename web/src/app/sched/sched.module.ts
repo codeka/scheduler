@@ -14,23 +14,23 @@ import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { ServicesModule } from '../services/services.module';
 
 import { DayComponent } from './day.component';
 import { EditEventDialogComponent } from './edit-event-dialog.component';
+import { EditShiftDialogComponent } from './edit-shift-dialog.component';
 import { MonthComponent } from './month.component';
+import { ScheduleComponent } from './schedule.component';
+import { ShiftSignupDialogComponent } from './shift-signup-dialog.component';
 import { ViewSwitcherComponent } from './view-switcher.component';
 import { WeekComponent } from './week.component';
-import { EditShiftComponent } from './edit-shift.component';
 import { WidgetsModule } from '../widgets/widgets.module';
-import { ScheduleComponent } from './schedule.component';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { ShiftSignupDialogComponent } from './shift-signup-dialog.component';
 
 @NgModule({
   declarations: [
-    DayComponent, EditEventDialogComponent, EditShiftComponent, MonthComponent, ScheduleComponent,
+    DayComponent, EditEventDialogComponent, EditShiftDialogComponent, MonthComponent, ScheduleComponent,
     ShiftSignupDialogComponent, ViewSwitcherComponent, WeekComponent],
   imports: [
     BrowserAnimationsModule, CommonModule, FormsModule, MatAutocompleteModule, MatButtonModule, MatCardModule,

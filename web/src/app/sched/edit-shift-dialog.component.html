@@ -1,0 +1,40 @@
+<h2 mat-dialog-title>New shift</h2>
+
+<form [formGroup]="form" (ngSubmit)="onSave()" novalidate>
+  <div class="fields">
+    <mat-form-field class="full-width">
+      <mat-label>Group</mat-label>
+      <mat-select formControlName="groupId">
+        @for (group of groups; track group.id) {
+          <mat-option [value]="group.id">{{ group.name }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    <div class="horz">
+      <mat-form-field>
+        <mat-label>Shift date</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="date">
+        <mat-hint>MM/DD/YYYY</mat-hint>
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Start time</mat-label>
+        <time-input formControlName="startTime" />
+        <mat-hint>HH:MM tt</mat-hint>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>End time</mat-label>
+        <time-input formControlName="endTime" />
+        <mat-hint>HH:MM tt</mat-hint>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <mat-dialog-actions>
+    <div class="spacer"></div>
+    <button mat-stroked-button color="warn" *ngIf="!!data.shift" (click)="onDelete()" type="button">DELETE SHIFT</button>
+    <button mat-raised-button color="primary" type="submit">SAVE SHIFT</button>
+    <button mat-button mat-dialog-close type="button">CANCEL</button>
+  </mat-dialog-actions>
+</form>

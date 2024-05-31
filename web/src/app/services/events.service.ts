@@ -7,10 +7,6 @@ import { ENV } from '../env/environment';
 import { Event, Shift, User } from "./model";
 import { dateToString } from "../util/date.util";
 
-interface SaveShiftResponse {
-  success: boolean
-}
-
 export interface GetEventsResponse {
   events: Event[]
   shifts: Shift[]
@@ -73,11 +69,23 @@ export class EventsService {
 
   saveShift(shift: Shift): Promise<boolean> {
     return firstValueFrom(
-      this.http.post<SaveShiftResponse>(ENV.backend + "/_/shifts", shift)
-          .pipe(map((resp: SaveShiftResponse) => {
-            return resp.success
+      this.http.post<any>(ENV.backend + "/_/shifts", shift)
+          .pipe(map(() => {
+            return true
           }))
         );
+  }
+
+  deleteShift(shiftId: number): Promise<boolean> {
+    return firstValueFrom(
+      this.http.delete<any>(ENV.backend + "/_/shifts/" + shiftId)
+          .pipe(map(() => {
+            return true
+          }))
+          .pipe(catchError(map(() => {
+            return false // todo: there could be a lot of errors here?
+          })))
+      )
   }
 
   getEligibleUserForShift(shift: Shift, query: string): Promise<User[]> {
