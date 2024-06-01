@@ -12,27 +12,30 @@ export interface DialogData {
   event?: Event
 }
 
+type ShiftFormGroup = FormGroup<{
+  groupId: FormControl<number|null>,
+  startTime: FormControl<Date|null>,
+  endTime: FormControl<Date|null>,
+}>
+
+type EventFormGroup = FormGroup<{
+  title: FormControl<string|null>,
+  description: FormControl<string|null>,
+  date: FormControl<Date|null>,
+  startTime: FormControl<Date|null>,
+  endTime: FormControl<Date|null>,
+  initialShifts: FormArray<ShiftFormGroup>,
+}>
+
 @Component({
   selector: 'edit-event-dialog',
   templateUrl: './edit-event-dialog.component.html',
   styleUrls: ['./edit-event-dialog.component.scss']
 })
 export class EditEventDialogComponent implements OnInit {
-  form: FormGroup<{
-    title: FormControl<string|null>,
-    description: FormControl<string|null>,
-    date: FormControl<Date|null>,
-    startTime: FormControl<Date|null>,
-    endTime: FormControl<Date|null>,
-    shifts: FormArray/*<FormGroup<{
-      groupId: FormControl<number|null>,
-      startTime: FormControl<Date|null>,
-      endTime: FormControl<Date|null>,
-    }>>*/,
-  }>
+  form: EventFormGroup
 
   groups: Group[]
-  shifts: Shift[]
 
   constructor(private events: EventsService, private formBuilder: FormBuilder, private router: Router,
               private init: InitService,
@@ -44,10 +47,9 @@ export class EditEventDialogComponent implements OnInit {
       date: [new Date(), Validators.required],
       startTime: [new Date(1, 1, 1, 10, 0, 0), Validators.required],
       endTime: [new Date(1, 1, 1, 11, 0, 0), Validators.required],
-      shifts: this.formBuilder.array([]),
+      initialShifts: this.formBuilder.array(new Array<ShiftFormGroup>()),
     });
     this.groups = init.groups();
-    this.shifts = []
 
     // Make sure data is non-null.
     if (!this.data) {
@@ -56,39 +58,44 @@ export class EditEventDialogComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    const date = stringToDate(this.data.event?.date) || new Date()
-    const startTime = stringToTime(this.data.event?.startTime || "10:00:00")
-    const endTime = stringToTime(this.data.event?.endTime || "11:00:00")
-
     this.form.patchValue({
       title: this.data.event?.title,
       description: this.data.event?.description,
-      date: date,
-      startTime: startTime,
-      endTime: endTime,
+      date: stringToDate(this.data.event?.date) || new Date(),
+      startTime: stringToTime(this.data.event?.startTime || "10:00:00"),
+      endTime: stringToTime(this.data.event?.endTime || "11:00:00"),
     })
 
     if (this.data.event === undefined) {
       for (const group of this.init.groups()) {
         console.log("adding shift: " + group.id)
-        this.shifts.push({
-          id: 0,
-          groupId: group.id,
-          date: dateToString(date),
-          startTime: timeToString(startTime),
-          endTime: timeToString(endTime),
-          signups: [],
-        })
-        const shiftForm = this.formBuilder.group({
-          groupId: [group.id, Validators.required],
-          // TODO: offset start/end time with some default offset per-group.
-          startTime: [startTime, Validators.required],
-          endTime: [endTime, Validators.required],
-        })
-        this.form.controls.shifts.controls.push(shiftForm)
+        this.addShift(group.id)
       }
     }
   }
+
+  addShift(groupId: number) {
+    const startTime = stringToTime(this.data.event?.startTime || "10:00:00")
+    const endTime = stringToTime(this.data.event?.endTime || "11:00:00")
+
+    const shiftForm = this.formBuilder.group({
+      groupId: [groupId, Validators.required],
+      // TODO: offset start/end time with some default offset per-group.
+      startTime: [startTime, Validators.required],
+      endTime: [endTime, Validators.required],
+    })
+    this.form.controls.initialShifts.controls.push(shiftForm)
+    this.form.controls.initialShifts.markAsDirty()
+  }
+
+  deleteShiftAt(index: number) {
+    this.form.controls.initialShifts.controls.splice(index, 1)
+    this.form.controls.initialShifts.markAsDirty()
+  }
+
+  shiftControls(): ShiftFormGroup[] {
+    return this.form.controls.initialShifts.controls as ShiftFormGroup[]
+  }  
 
   onDelete() {
     const id = this.data.event?.id
@@ -108,7 +115,11 @@ export class EditEventDialogComponent implements OnInit {
     })
   }
 
-  onSave() {
+  onSaveAndClose() {
+    this.onSave(true)
+  }
+
+  onSave(close: Boolean = false) {
     if (!this.form.value.date || !this.form.value.startTime || !this.form.value.endTime || !this.form.value.title) {
       console.log("some values are not set: date=" + this.form.value.date + ", startTime=" + this.form.value.startTime)
       return
@@ -124,20 +135,23 @@ export class EditEventDialogComponent implements OnInit {
     }
 
     const initialShifts: Shift[] = [];
-    for (const shiftValue of this.form.value.shifts) {
+    for (var i = 0; i < this.form.controls.initialShifts.length; i++) {
+      const shiftValue = this.form.controls.initialShifts.at(i).value
       initialShifts.push({
         id: 0,
-        groupId: shiftValue.groupId,
+        groupId: shiftValue.groupId || 0,
         date: dateToString(this.form.value.date),
-        startTime: timeToString(shiftValue.startTime),
-        endTime: timeToString(shiftValue.endTime),
+        startTime: timeToString(shiftValue.startTime || new Date()),
+        endTime: timeToString(shiftValue.endTime || new Date()),
         signups: []
       })
     }
 
     this.events.saveEvent(event, initialShifts)
       .then(() => {
-        this.dialogRef.close(event)
+        if (close) {
+          this.dialogRef.close(event)
+        }
       })
   }
 }
