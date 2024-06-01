@@ -50,26 +50,32 @@ export function sameDay(dt1: Date, dt2: Date): boolean {
 }
 
 export function formatStartEndTime(startTime: Date, endTime: Date): string {
-  var str = "" + startTime.getHours();
+
+  var str = ""
+  if (startTime.getHours() > 12) {
+    str += "" + (startTime.getHours() - 12)
+  } else {
+    str += "" + startTime.getHours()
+  }
   if (startTime.getMinutes() != 0) {
-    str += ":" + ("0" + startTime.getMinutes()).slice(-2);
+    str += ":" + ("0" + startTime.getMinutes()).slice(-2)
   }
   if (startTime.getHours() < 12 && endTime.getHours() >= 12) {
     str += "am";
   }
   str += "-";
   if (endTime.getHours() > 12) {
-    str += "" + (endTime.getHours() - 12);
+    str += "" + (endTime.getHours() - 12)
   } else {
-    str += "" + endTime.getHours();
+    str += "" + endTime.getHours()
   }
   if (endTime.getMinutes() != 0) {
-    str += ":" + ("0" + endTime.getMinutes()).slice(-2);
+    str += ":" + ("0" + endTime.getMinutes()).slice(-2)
   }
   if (endTime.getHours() < 12) {
-    str += "am";
+    str += "am"
   } else {
-    str += "pm";
+    str += "pm"
   }
 
   return str;
