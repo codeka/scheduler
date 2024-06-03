@@ -42,7 +42,7 @@
         </div>
         <div class="group"
              *ngFor="let group of groups">
-          <div class="shift"
+          <div class="shift {{ shiftClass(shift) }}"
                *ngFor="let shift of day.shifts.get(group.id)">
             <div class="shift-time">
               <span>{{shiftTimeStr(shift)}}</span>
