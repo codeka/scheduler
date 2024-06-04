@@ -1,17 +1,17 @@
 <div class="content">
   <div class="sidebar">
     <mat-nav-list>
-      <mat-list-item [activated]="true" [routerLink]="'/admin/edit-venue'">
-         <span matListItemTitle>Venue Settings</span>
-         <button mat-icon-button matListItemMeta>
-            <mat-icon>house</mat-icon>
-         </button>
+      <mat-list-item [routerLink]="'/admin/edit-venue'">
+         <mat-icon matListItemIcon>house</mat-icon>
+         <div matListItemLine>Venue Settings</div>
       </mat-list-item>
-      <mat-list-item [activated]="false" [routerLink]="'/admin/users'">
-         <span matListItemTitle>Users</span>
-         <button mat-icon-button matListItemMeta>
-            <mat-icon>group</mat-icon>
-         </button>
+      <mat-list-item [routerLink]="'/admin/groups'">
+         <mat-icon matListItemIcon>groups</mat-icon>
+         <div matListItemLine>Groups</div>
+      </mat-list-item>
+      <mat-list-item [routerLink]="'/admin/users'">
+         <mat-icon matListItemIcon>group</mat-icon>
+         <div matListItemLine>Users</div>
       </mat-list-item>
     </mat-nav-list>
   </div>

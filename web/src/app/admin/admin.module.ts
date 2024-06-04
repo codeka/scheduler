@@ -19,9 +19,10 @@ import { AdminComponent } from "./admin.component";
 import { EditUserComponent } from "./edit-user.component";
 import { UserListComponent } from "./user-list.component";
 import { EditVenueComponent } from "./edit-venue.component";
+import { GroupsComponent } from "./groups.component";
 
 @NgModule({
-  declarations: [AdminComponent, EditUserComponent, EditVenueComponent, UserListComponent],
+  declarations: [AdminComponent, EditUserComponent, EditVenueComponent, GroupsComponent, UserListComponent],
   imports: [
     AppRoutingModule, BrowserModule, FormsModule, MatButtonModule, MatCardModule, MatFormFieldModule, MatIconModule,
     MatInputModule, MatListModule, MatSlideToggleModule, MatToolbarModule, MatTableModule, ReactiveFormsModule,

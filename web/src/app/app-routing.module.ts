@@ -14,6 +14,7 @@ import { EditUserComponent } from './admin/edit-user.component';
 import { EditVenueComponent } from './admin/edit-venue.component';
 import { NotFoundComponent } from './not-found.component';
 import { AdminComponent } from './admin/admin.component';
+import { GroupsComponent } from './admin/groups.component';
 
 const loggedIn: CanMatchFn = () => {
   return inject(AuthService).isLoggedIn();
@@ -43,6 +44,7 @@ const routes: Routes = [
     path: 'admin', canMatch: [inRole('ADMIN')], component: AdminComponent,
     children: [
       { path: 'edit-venue', component: EditVenueComponent },
+      { path: 'groups', component: GroupsComponent },
       { path: 'users', component: UserListComponent },
       { path: 'edit-user/:id', component: EditUserComponent },
       { path: 'edit-user', component: EditUserComponent },

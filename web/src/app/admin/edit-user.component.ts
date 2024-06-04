@@ -106,10 +106,10 @@ export class EditUserComponent {
         if (this.fileInfo != null) {
           this.admin.saveUserPicture(user.id, this.fileInfo.file)
             .then(() => {
-              this.router.navigate(["/users"])
+              this.router.navigate(["/admin/users"])
             })
         } else {
-          this.router.navigate(["/users"])
+          this.router.navigate(["/admin/users"])
         }
       })
   }
