@@ -1,0 +1,14 @@
+
+div.content {
+  display: flex;
+  flex-flow: row nowrap;
+  margin: 0 150pt;
+}
+
+div.sidebar {
+  flex-basis: 250pt;
+}
+
+div.maincontent {
+  flex: 1;
+}

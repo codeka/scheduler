@@ -8,11 +8,8 @@
   </button>
 </mat-toolbar>
 <mat-menu #usermenu="matMenu">
-  <button mat-menu-item [routerLink]="'/users'" *ngIf="auth.isInRole('ADMIN')">
-    <mat-icon>supervisor_account</mat-icon> Users
-  </button>
-  <button mat-menu-item [routerLink]="'/edit-venue'" *ngIf="auth.isInRole('ADMIN')">
-    <mat-icon>house</mat-icon> Venue Settings
+  <button mat-menu-item [routerLink]="'/admin/edit-venue'" *ngIf="auth.isInRole('ADMIN')">
+    <mat-icon>settings</mat-icon> Settings
   </button>
   <button mat-menu-item (click)="logout()">
     <mat-icon>logout</mat-icon> Logout

@@ -1,0 +1,21 @@
+<div class="content">
+  <div class="sidebar">
+    <mat-nav-list>
+      <mat-list-item [activated]="true" [routerLink]="'/admin/edit-venue'">
+         <span matListItemTitle>Venue Settings</span>
+         <button mat-icon-button matListItemMeta>
+            <mat-icon>house</mat-icon>
+         </button>
+      </mat-list-item>
+      <mat-list-item [activated]="false" [routerLink]="'/admin/users'">
+         <span matListItemTitle>Users</span>
+         <button mat-icon-button matListItemMeta>
+            <mat-icon>group</mat-icon>
+         </button>
+      </mat-list-item>
+    </mat-nav-list>
+  </div>
+  <div class="maincontent">
+    <router-outlet></router-outlet>
+  </div>
+</div>

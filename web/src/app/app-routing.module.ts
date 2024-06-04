@@ -13,6 +13,7 @@ import { UserListComponent } from './admin/user-list.component';
 import { EditUserComponent } from './admin/edit-user.component';
 import { EditVenueComponent } from './admin/edit-venue.component';
 import { NotFoundComponent } from './not-found.component';
+import { AdminComponent } from './admin/admin.component';
 
 const loggedIn: CanMatchFn = () => {
   return inject(AuthService).isLoggedIn();
@@ -38,11 +39,16 @@ const routes: Routes = [
   { path: 'month/:year/:month', canMatch: [loggedIn], component: MonthComponent },
 
   // Paths for admins.
-  { path: 'users', canMatch: [inRole('ADMIN')], component: UserListComponent },
-  { path: 'edit-user/:id', canMatch: [inRole('ADMIN')], component: EditUserComponent },
-  { path: 'edit-user', canMatch: [inRole('ADMIN')], component: EditUserComponent },
-  { path: 'edit-venue', canMatch: [inRole('ADMIN')], component: EditVenueComponent },
-
+  { 
+    path: 'admin', canMatch: [inRole('ADMIN')], component: AdminComponent,
+    children: [
+      { path: 'edit-venue', component: EditVenueComponent },
+      { path: 'users', component: UserListComponent },
+      { path: 'edit-user/:id', component: EditUserComponent },
+      { path: 'edit-user', component: EditUserComponent },
+    ]
+  },
+  
   // By default, we show the 'schedule' view, which shows all the events this month and everything in the future that
   // we have in the database.
   { path: '', canMatch: [loggedIn], component: ScheduleComponent, pathMatch: "full" },

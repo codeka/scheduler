@@ -59,8 +59,6 @@ CREATE TABLE user_logins (
 CREATE TABLE groups (
   id INTEGER PRIMARY KEY,
   name TEXT
-  -- TODO: default start time
-  -- TODO: default end time
 );
 
 -- Add some initial groups.
