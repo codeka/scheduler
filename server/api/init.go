@@ -36,16 +36,22 @@ func HandleInit(c *gin.Context) {
 		resp.User = MakeUser(user, roles, groups)
 	}
 
-	v, _ := store.GetVenue()
+	v, err := store.GetVenue()
+	if err != nil {
+		util.HandleError(c, http.StatusInternalServerError, err)
+		return
+	}
 	if v != nil {
 		resp.Venue = MakeVenue(v)
 	}
 
-	gs, _ := store.GetGroups()
-	if gs != nil {
-		for _, g := range gs {
-			resp.Groups = append(resp.Groups, MakeGroup(g))
-		}
+	gs, err := store.GetGroups()
+	if err != nil {
+		util.HandleError(c, http.StatusInternalServerError, err)
+		return
+	}
+	for _, g := range gs {
+		resp.Groups = append(resp.Groups, MakeGroup(g))
 	}
 
 	c.JSON(http.StatusOK, resp)

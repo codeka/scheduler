@@ -33,8 +33,9 @@ export interface Event {
 }
 
 export interface Group {
-  id: number,
+  id: number
   name: string
+  minSignups: number
 }
 
 export interface ShiftSignup {

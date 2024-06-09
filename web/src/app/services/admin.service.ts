@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { User, Venue } from "./model";
+import { Group, User, Venue } from "./model";
 import { firstValueFrom, map } from "rxjs";
 import { ENV } from "../env/environment";
 
@@ -69,6 +69,13 @@ export class AdminService {
     form.append("picture", file)
     return firstValueFrom(
       this.http.post<SaveVenuePictureResponse>(ENV.backend + "/_/admin/venue/picture", form)
+          .pipe(map(() => true))
+    )
+  }
+
+  saveGroup(group: Group): Promise<boolean> {
+    return firstValueFrom(
+      this.http.post<any>(ENV.backend + "/_/admin/groups", group)
           .pipe(map(() => true))
     )
   }

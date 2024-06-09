@@ -120,9 +120,18 @@ func EventToStore(event *Event) (*store.Event, error) {
 }
 
 type Group struct {
-	ID   int64  `json:"id"`
-	Name string `json:"name"`
+	ID         int64  `json:"id"`
+	Name       string `json:"name"`
+	MinSignups int32  `json:"minSignups"`
 	// TODO: default start time, default end time, description etc.
+}
+
+func GroupToStore(g *Group) *store.Group {
+	return &store.Group{
+		ID:         g.ID,
+		Name:       g.Name,
+		MinSignups: g.MinSignups,
+	}
 }
 
 func MakeGroup(group *store.Group) *Group {
@@ -131,8 +140,9 @@ func MakeGroup(group *store.Group) *Group {
 	}
 
 	return &Group{
-		ID:   group.ID,
-		Name: group.Name,
+		ID:         group.ID,
+		Name:       group.Name,
+		MinSignups: group.MinSignups,
 	}
 }
 

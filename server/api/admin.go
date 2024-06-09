@@ -229,6 +229,27 @@ func HandleAdminVenuePicturePost(c *gin.Context) {
 	c.AbortWithStatus(http.StatusOK)
 }
 
+func HandleAdminGroupsPost(c *gin.Context) {
+	if !IsInRole(c, "ADMIN") {
+		c.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
+
+	var g Group
+	if err := c.BindJSON(&g); err != nil {
+		util.HandleError(c, http.StatusBadRequest, err)
+		return
+	}
+	group := GroupToStore(&g)
+	err := store.SaveGroup(group)
+	if err != nil {
+		util.HandleError(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	c.AbortWithStatus(http.StatusOK)
+}
+
 func setupAdmin(g *gin.Engine) error {
 	g.GET("_/admin/users", HandleAdminUsersGet)
 	g.GET("_/admin/users/:id", HandleAdminUserGet)
@@ -236,6 +257,7 @@ func setupAdmin(g *gin.Engine) error {
 	g.POST("_/admin/users", HandleAdminUsersPost)
 	g.POST("_/admin/venue", HandleAdminVenuePost)
 	g.POST("_/admin/venue/picture", HandleAdminVenuePicturePost)
+	g.POST("_/admin/groups", HandleAdminGroupsPost)
 
 	return nil
 }

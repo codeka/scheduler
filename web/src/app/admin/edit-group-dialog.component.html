@@ -1,0 +1,22 @@
+<h2 mat-dialog-title *ngIf="!!data.group">Edit {{data.group.name}}</h2>
+<h2 mat-dialog-title *ngIf="!data.group">New group</h2>
+
+<form [formGroup]="form" (ngSubmit)="onSaveAndClose()" novalidate>
+  <div class="fields">
+    <mat-form-field class="full-width">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" />
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Required signups</mat-label>
+      <input matInput formControlName="minSignups" type="number" />
+    </mat-form-field>
+  </div>
+
+  <mat-dialog-actions>
+    <div class="spacer"></div>
+    <button mat-stroked-button color="warn" *ngIf="!!data.group" (click)="onDelete()" type="button">DELETE GROUP</button>
+    <button mat-raised-button color="primary" type="submit">SAVE GROUP</button>
+    <button mat-button mat-dialog-close>CANCEL</button>
+  </mat-dialog-actions>
+</form>

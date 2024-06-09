@@ -3,6 +3,7 @@ import { BrowserModule } from "@angular/platform-browser";
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
+import { MatDialogModule } from "@angular/material/dialog";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
@@ -20,13 +21,16 @@ import { EditUserComponent } from "./edit-user.component";
 import { UserListComponent } from "./user-list.component";
 import { EditVenueComponent } from "./edit-venue.component";
 import { GroupsComponent } from "./groups.component";
+import { EditGroupDialogComponent } from "./edit-group-dialog.component";
 
 @NgModule({
-  declarations: [AdminComponent, EditUserComponent, EditVenueComponent, GroupsComponent, UserListComponent],
+  declarations: [
+    AdminComponent, EditGroupDialogComponent, EditUserComponent, EditVenueComponent, GroupsComponent,
+    UserListComponent],
   imports: [
-    AppRoutingModule, BrowserModule, FormsModule, MatButtonModule, MatCardModule, MatFormFieldModule, MatIconModule,
-    MatInputModule, MatListModule, MatSlideToggleModule, MatToolbarModule, MatTableModule, ReactiveFormsModule,
-    ServicesModule, WidgetsModule],
+    AppRoutingModule, BrowserModule, FormsModule, MatButtonModule, MatCardModule, MatDialogModule, MatFormFieldModule,
+    MatIconModule, MatInputModule, MatListModule, MatSlideToggleModule, MatToolbarModule, MatTableModule,
+    ReactiveFormsModule, ServicesModule, WidgetsModule],
   providers: [],
   bootstrap: []
 })

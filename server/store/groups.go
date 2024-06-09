@@ -8,7 +8,7 @@ import (
 
 func makeGroup(row *sql.Rows) (*Group, error) {
 	group := &Group{}
-	if err := row.Scan(&group.ID, &group.Name); err != nil {
+	if err := row.Scan(&group.ID, &group.Name, &group.MinSignups); err != nil {
 		return nil, err
 	}
 
@@ -19,7 +19,7 @@ func makeGroup(row *sql.Rows) (*Group, error) {
 func GetGroups() ([]*Group, error) {
 	rows, err := db.Query(`
 			SELECT
-				id, name
+				id, name, min_signups
 			FROM groups`)
 	if err != nil {
 		return nil, fmt.Errorf("error querying events in date range: %v", err)
@@ -37,4 +37,27 @@ func GetGroups() ([]*Group, error) {
 		groups = append(groups, group)
 	}
 	return groups, nil
+}
+
+func SaveGroup(group *Group) error {
+	if group.ID == 0 {
+		_, err := db.Query(`
+		  INSERT INTO groups (name, min_signups) VALUES (?, ?)`,
+			group.Name, group.MinSignups)
+		if err != nil {
+			return err
+		}
+	} else {
+		_, err := db.Query(`
+		  UPDATE groups SET
+			  name = ?,
+				min_signups = ?
+			WHERE id = ?`,
+			group.Name, group.MinSignups, group.ID)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

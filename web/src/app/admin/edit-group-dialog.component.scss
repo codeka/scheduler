@@ -1,0 +1,14 @@
+
+
+div.fields {
+  margin: 20pt 20pt 0 20pt;
+  min-width: 400pt;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+div.fields mat-form-field.full-width {
+  align-self: stretch;
+}

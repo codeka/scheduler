@@ -29,8 +29,9 @@ type Event struct {
 }
 
 type Group struct {
-	ID   int64
-	Name string
+	ID         int64
+	Name       string
+	MinSignups int32
 }
 
 type Shift struct {
