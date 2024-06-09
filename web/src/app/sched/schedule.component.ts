@@ -134,16 +134,14 @@ export class ScheduleComponent implements OnInit {
    * Given a shift, returns a class name that will ensure the shift is colored based on whether the shift is filled
    * or not.
    */
-  shiftClass(shift: Shift): string {
+  shiftClass(shift: Shift, group: Group): string {
     if (shift.signups == null) {
       return "shift-empty"
     }
 
-    // TODO: the shift group will have a different 'min requirement', e.g. CIC only needs 1, SSG needs 2.
-
     if (shift.signups.length == 0) {
       return "shift-empty"
-    } else if (shift.signups.length < 2) {
+    } else if (shift.signups.length < group.minSignups) {
       return "shift-partial"
     } else {
       return "shift-full"
