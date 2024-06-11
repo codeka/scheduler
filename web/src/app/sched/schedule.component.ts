@@ -41,8 +41,7 @@ export class ScheduleComponent implements OnInit {
   constructor(public auth: AuthService, private dialog: MatDialog, private route: ActivatedRoute, private router: Router,
               private init: InitService, private eventsService: EventsService) {
     this.groups = init.groups().filter((group) => {
-      // TODO: include some groups always (e.g. should always shows 'center in charge')
-      return init.user()?.groups.includes(group.id)
+      return group.alwaysShow || init.user()?.groups.includes(group.id)
     })
   }
 
