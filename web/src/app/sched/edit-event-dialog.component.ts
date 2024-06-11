@@ -68,10 +68,11 @@ export class EditEventDialogComponent implements OnInit {
 
     if (this.data.event === undefined) {
       for (const group of this.init.groups()) {
-        console.log("adding shift: " + group.id)
         this.addShift(group.id)
       }
     }
+
+    this.updateShiftTimes()
   }
 
   addShift(groupId: number) {
@@ -95,7 +96,37 @@ export class EditEventDialogComponent implements OnInit {
 
   shiftControls(): ShiftFormGroup[] {
     return this.form.controls.initialShifts.controls as ShiftFormGroup[]
-  }  
+  }
+
+  updateShiftTimes() {
+    const startTime = this.form.controls.startTime.value ?? new Date()
+    const endTime = this.form.controls.endTime.value ?? new Date()
+
+    for (var i = 0; i < this.form.controls.initialShifts.length; i++) {
+      const shiftControls = this.form.controls.initialShifts.at(i).controls
+      const groupId = shiftControls.groupId.value
+      for (var group of this.init.groups()) {
+        if (group.id == groupId) {
+          var shiftStartTime = new Date(startTime)
+          if (group.shiftStartOffset < 0) {
+            shiftStartTime = new Date(endTime)
+            shiftStartTime.setMinutes(endTime.getMinutes() + (group.shiftStartOffset * 60.0))
+          } else {
+            shiftStartTime.setMinutes(startTime.getMinutes() - (group.shiftStartOffset * 60.0))
+          }
+          var shiftEndTime = new Date(endTime)
+          if (group.shiftEndOffset < 0) {
+            shiftEndTime = new Date(endTime)
+            shiftEndTime.setMinutes(endTime.getMinutes() + (group.shiftEndOffset * 60.0))
+          } else {
+            shiftEndTime.setMinutes(endTime.getMinutes() - (group.shiftEndOffset * 60.0))
+          }
+          shiftControls.startTime.patchValue(shiftStartTime)
+          shiftControls.endTime.patchValue(shiftEndTime)
+        }
+      }
+    }
+  }
 
   onDelete() {
     const id = this.data.event?.id

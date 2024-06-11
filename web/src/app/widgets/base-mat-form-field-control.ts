@@ -26,6 +26,8 @@ export abstract class BaseMatFormFieldControl<T>
 
   private static nextId: number = 0;
 
+  public focused = false;
+
   @HostBinding()
   public id: string = `${this.controlType}-${BaseMatFormFieldControl.nextId++}`;
 
@@ -35,7 +37,7 @@ export abstract class BaseMatFormFieldControl<T>
   constructor(
       public readonly controlType: string, protected readonly _focusMonitor: FocusMonitor,
       protected readonly _elementRef: ElementRef, ngControl: NgControl, parentForm: NgForm,
-      parentFormGroup: FormGroupDirective, defaultErrorStateMatcher: ErrorStateMatcher  ) {
+      parentFormGroup: FormGroupDirective, defaultErrorStateMatcher: ErrorStateMatcher) {
     super(defaultErrorStateMatcher, parentForm, parentFormGroup, ngControl);
 
     if (this.ngControl) {
@@ -73,21 +75,12 @@ export abstract class BaseMatFormFieldControl<T>
     this.value = value;
   }
 
-  private _value!: T;
-
-  public set value(value: T) {
-    this._value = value;
-    if (this.onChange) {
-      this.onChange(value);
-    }
-  }
-
-  public get value(): T {
-    return this._value;
-  }
+  public abstract set value(value: T)
+  public abstract get value(): T
+  public abstract focus(): void;
 
   public get empty(): boolean {
-    return !this._value;
+    return !this.value;
   }
 
   public setDescribedByIds(ids: string[]): void {
@@ -136,10 +129,6 @@ export abstract class BaseMatFormFieldControl<T>
     }
     return this._disabled;
   }
-
-  public focused = false;
-
-  public abstract focus(): void;
 
   @HostListener("focusout")
   onBlur() {

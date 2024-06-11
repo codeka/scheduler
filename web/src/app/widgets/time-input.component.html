@@ -1,9 +1,7 @@
 <div role="group"
      class="time-input"
      [formGroup]="fg"
-     [attr.aria-labelledby]="_ff.getLabelId()"
-     (focusin)="onFocusIn($event)"
-     (focusout)="onFocusOut($event)">
+     [attr.aria-labelledby]="_ff.getLabelId()">
   <input type="time"
          formControlName="time"
          (input)="_handleInput()"
