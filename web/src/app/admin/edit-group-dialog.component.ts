@@ -18,6 +18,9 @@ export class EditGroupDialogComponent implements OnInit {
   form: FormGroup<{
     name: FormControl<string|null>,
     minSignups: FormControl<number|null>,
+    alwaysShow: FormControl<boolean|null>,
+    shiftStartOffset: FormControl<number|null>,
+    shiftEndOffset: FormControl<number|null>,
   }>
 
   constructor(private admin: AdminService, private formBuilder: FormBuilder, private init: InitService,
@@ -26,6 +29,9 @@ export class EditGroupDialogComponent implements OnInit {
     this.form = this.formBuilder.group({
       name: ["", Validators.required],
       minSignups: [2, Validators.required],
+      alwaysShow: [false, Validators.required],
+      shiftStartOffset: [0, Validators.required],
+      shiftEndOffset: [0, Validators.required],
     });
 
     // Make sure data is non-null.
@@ -38,6 +44,9 @@ export class EditGroupDialogComponent implements OnInit {
     this.form.patchValue({
       name: this.data.group?.name,
       minSignups: this.data.group?.minSignups,
+      alwaysShow: this.data.group?.alwaysShow,
+      shiftStartOffset: this.data.group?.shiftStartOffset,
+      shiftEndOffset: this.data.group?.shiftEndOffset,
     })
   }
 
@@ -54,7 +63,11 @@ export class EditGroupDialogComponent implements OnInit {
       id: this.data.group?.id || 0,
       name: this.form.value.name ?? "",
       minSignups: this.form.value.minSignups ?? 2,
+      alwaysShow: this.form.value.alwaysShow ?? false,
+      shiftStartOffset: +(this.form.value.shiftStartOffset ?? 0),
+      shiftEndOffset: +(this.form.value.shiftEndOffset ?? 0)
     }
+    console.log("always show == " + this.form.value.alwaysShow)
 
     this.admin.saveGroup(group)
       .then(() => {

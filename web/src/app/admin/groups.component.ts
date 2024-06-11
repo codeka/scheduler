@@ -10,7 +10,9 @@ import { MatDialog } from "@angular/material/dialog";
   styleUrls: ['./groups.component.scss']
 })
 export class GroupsComponent {
-  displayedColumns: string[] = ['name', 'required_signups', 'actions'];
+  displayedColumns: string[] = [
+    'name', 'required_signups', 'always_show', 'shift_start_offset', 'shift_end_offset', 'actions'
+  ];
   groups: Group[] = []
 
   constructor(public init: InitService, private dialog: MatDialog) {
@@ -22,8 +24,8 @@ export class GroupsComponent {
       data: { group: group },
     })
     dialogRef.afterClosed().subscribe(() => {
-          // We want to actually reload the page so that the init call happens again.
-          window.location.reload();
+      // We want to actually reload the page so that the init call happens again.
+      window.location.reload();
     })
   }
 }

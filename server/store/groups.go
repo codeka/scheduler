@@ -4,13 +4,21 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"time"
 )
 
 func makeGroup(row *sql.Rows) (*Group, error) {
 	group := &Group{}
-	if err := row.Scan(&group.ID, &group.Name, &group.MinSignups); err != nil {
+	shiftBeginOffsetMin := 0.0
+	shiftEndOffsetMin := 0.0
+
+	if err := row.Scan(
+		&group.ID, &group.Name, &group.MinSignups, &group.AlwaysShow, &shiftBeginOffsetMin, &shiftEndOffsetMin); err != nil {
 		return nil, err
 	}
+
+	group.ShiftStartOffset = time.Duration(shiftBeginOffsetMin * float64(time.Minute))
+	group.ShiftEndOffset = time.Duration(shiftEndOffsetMin * float64(time.Minute))
 
 	return group, nil
 }
@@ -19,7 +27,7 @@ func makeGroup(row *sql.Rows) (*Group, error) {
 func GetGroups() ([]*Group, error) {
 	rows, err := db.Query(`
 			SELECT
-				id, name, min_signups
+				id, name, min_signups, always_show, shift_begin_offset_min, shift_end_offset_min
 			FROM groups`)
 	if err != nil {
 		return nil, fmt.Errorf("error querying events in date range: %v", err)
@@ -42,8 +50,8 @@ func GetGroups() ([]*Group, error) {
 func SaveGroup(group *Group) error {
 	if group.ID == 0 {
 		_, err := db.Query(`
-		  INSERT INTO groups (name, min_signups) VALUES (?, ?)`,
-			group.Name, group.MinSignups)
+		  INSERT INTO groups (name, min_signups, always_show, shift_begin_offset_min, shift_end_offset_min) VALUES (?, ?, ?, ?, ?)`,
+			group.Name, group.MinSignups, group.AlwaysShow, group.ShiftStartOffset.Minutes(), group.ShiftEndOffset.Minutes())
 		if err != nil {
 			return err
 		}
@@ -51,9 +59,13 @@ func SaveGroup(group *Group) error {
 		_, err := db.Query(`
 		  UPDATE groups SET
 			  name = ?,
-				min_signups = ?
+				min_signups = ?,
+				always_show = ?,
+				shift_begin_offset_min = ?,
+				shift_end_offset_min = ?
 			WHERE id = ?`,
-			group.Name, group.MinSignups, group.ID)
+			group.Name, group.MinSignups, group.AlwaysShow, group.ShiftStartOffset.Minutes(), group.ShiftEndOffset.Minutes(),
+			group.ID)
 		if err != nil {
 			return err
 		}

@@ -40,7 +40,10 @@ export class ScheduleComponent implements OnInit {
 
   constructor(public auth: AuthService, private dialog: MatDialog, private route: ActivatedRoute, private router: Router,
               private init: InitService, private eventsService: EventsService) {
-    this.groups = init.groups()
+    this.groups = init.groups().filter((group) => {
+      // TODO: include some groups always (e.g. should always shows 'center in charge')
+      return init.user()?.groups.includes(group.id)
+    })
   }
 
   public ngOnInit(): void {
@@ -146,6 +149,10 @@ export class ScheduleComponent implements OnInit {
     } else {
       return "shift-full"
     }
+  }
+
+  isInGroup(group: Group) {
+    return this.init.user()?.groups.includes(group.id) || false
   }
 
   onShiftSignup(group: Group, shift: Shift) {

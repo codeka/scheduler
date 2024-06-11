@@ -29,9 +29,12 @@ type Event struct {
 }
 
 type Group struct {
-	ID         int64
-	Name       string
-	MinSignups int32
+	ID               int64
+	Name             string
+	MinSignups       int32
+	AlwaysShow       bool
+	ShiftStartOffset time.Duration
+	ShiftEndOffset   time.Duration
 }
 
 type Shift struct {

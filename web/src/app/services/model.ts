@@ -36,6 +36,9 @@ export interface Group {
   id: number
   name: string
   minSignups: number
+  alwaysShow: boolean
+  shiftStartOffset: number
+  shiftEndOffset: number
 }
 
 export interface ShiftSignup {

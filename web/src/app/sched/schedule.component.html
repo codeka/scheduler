@@ -46,9 +46,9 @@
                *ngFor="let shift of day.shifts.get(group.id)">
             <div class="shift-time">
               <span>{{shiftTimeStr(shift)}}</span>
-              <!-- TODO: only if you're allowed to sign up -->
               <button mat-icon-button class="icon-small" (click)="onShiftSignup(group, shift)"
-                      matTooltip="Sign up for {{shiftTimeStr(shift)}} shift">
+                      matTooltip="Sign up for {{shiftTimeStr(shift)}} shift"
+                      *ngIf="isInGroup(group)">
                 <mat-icon>edit_calendar</mat-icon>
               </button>
               <button mat-icon-button class="icon-small" (click)="onEditShift(shift)" matTooltip="Edit shift"

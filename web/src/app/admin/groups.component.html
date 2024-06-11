@@ -14,6 +14,18 @@
     <th mat-header-cell *matHeaderCellDef>Required signups</th>
     <td mat-cell *matCellDef="let group">{{group.minSignups}}</td>
   </ng-container>
+  <ng-container matColumnDef="always_show">
+    <th mat-header-cell *matHeaderCellDef>Always show</th>
+    <td mat-cell *matCellDef="let group">{{group.alwaysShow}}</td>
+  </ng-container>
+  <ng-container matColumnDef="shift_start_offset">
+    <th mat-header-cell *matHeaderCellDef>Shift start offset</th>
+    <td mat-cell *matCellDef="let group">{{group.shiftStartOffset}}</td>
+  </ng-container>
+  <ng-container matColumnDef="shift_end_offset">
+    <th mat-header-cell *matHeaderCellDef>Shift end offset</th>
+    <td mat-cell *matCellDef="let group">{{group.shiftEndOffset}}</td>
+  </ng-container>
   <ng-container matColumnDef="actions">
     <th mat-header-cell *matHeaderCellDef>&nbsp;</th>
     <td mat-cell *matCellDef="let group" class="actions-column">
