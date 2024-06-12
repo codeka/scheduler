@@ -9,6 +9,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ShiftSignupDialogComponent } from './shift-signup-dialog.component';
 import { EditEventDialogComponent } from './edit-event-dialog.component';
 import { EditShiftDialogComponent } from './edit-shift-dialog.component';
+import { MatCheckboxChange } from '@angular/material/checkbox';
 
 class ScheduleDay {
   events = new Array<Event>()
@@ -34,15 +35,14 @@ export class ScheduleComponent implements OnInit {
   today = new Date()
   monthStart = new Date(this.today.getFullYear(), this.today.getMonth(), 1)
 
+  showAll = false
   events: Array<Event> = []
   months: Array<ScheduleMonth> = []
   groups: Array<Group> = []
 
   constructor(public auth: AuthService, private dialog: MatDialog, private route: ActivatedRoute, private router: Router,
               private init: InitService, private eventsService: EventsService) {
-    this.groups = init.groups().filter((group) => {
-      return group.alwaysShow || init.user()?.groups.includes(group.id)
-    })
+    this.refreshGroups();
   }
 
   public ngOnInit(): void {
@@ -150,8 +150,21 @@ export class ScheduleComponent implements OnInit {
     }
   }
 
+  private refreshGroups() {
+    const user = this.init.user()
+    this.groups = this.init.groups().filter((group) => {
+      return this.showAll || group.alwaysShow || user?.groups.includes(group.id)
+    })
+  }
+
+
   isInGroup(group: Group) {
     return this.init.user()?.groups.includes(group.id) || false
+  }
+
+  onShowAllChanged(event: MatCheckboxChange) {
+    this.showAll = event.checked
+    this.refreshGroups()
   }
 
   onShiftSignup(group: Group, shift: Shift) {

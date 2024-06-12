@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete'
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule } from '@angular/material/dialog'
@@ -34,9 +35,9 @@ import { WidgetsModule } from '../widgets/widgets.module';
     ShiftSignupDialogComponent, ViewSwitcherComponent, WeekComponent],
   imports: [
     BrowserAnimationsModule, CommonModule, FormsModule, MatAutocompleteModule, MatButtonModule, MatCardModule,
-    MatChipsModule, MatDatepickerModule, MatDialogModule, MatFormFieldModule, MatIconModule, MatInputModule, 
-    MatNativeDateModule, MatSelectModule, MatToolbarModule, MatTooltipModule, ReactiveFormsModule, ServicesModule,
-    WidgetsModule,
+    MatCheckboxModule, MatChipsModule, MatDatepickerModule, MatDialogModule, MatFormFieldModule, MatIconModule,
+    MatInputModule, MatNativeDateModule, MatSelectModule, MatToolbarModule, MatTooltipModule, ReactiveFormsModule,
+    ServicesModule, WidgetsModule,
   ],
   providers: [],
   bootstrap: []
