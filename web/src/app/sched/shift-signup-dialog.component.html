@@ -5,7 +5,7 @@
       on <strong>{{ shiftDateStr(data.shift) }}</strong>
       from <strong>{{ shiftTimeStr(data.shift) }}</strong>?</p>
     <div class="fields">
-      <mat-form-field>
+      <mat-form-field *ngIf="auth.isInRole('SHIFT_MANAGER')">
         <mat-label>User</mat-label>
         <input matInput formControlName="userId" [matAutocomplete]="auto">
         <mat-autocomplete #auto="matAutocomplete">

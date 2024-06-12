@@ -4,9 +4,11 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from "@angular/material/dial
 import { Group, Shift, ShiftSignup, User } from "../services/model";
 import { formatStartEndTime, stringToDate, stringToTime } from "../util/date.util";
 import { AbstractControl, AsyncValidatorFn, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from "@angular/forms";
-import { Observable, debounceTime, distinctUntilChanged, map, of, startWith, switchMap } from "rxjs";
+import { EMPTY, Observable, debounceTime, distinctUntilChanged, map, of, startWith, switchMap } from "rxjs";
 import { EventsService } from "../services/events.service";
 import { confirmAction } from "../widgets/confirm-dialog";
+import { AuthService } from "../services/auth.service";
+import { InitService } from "../services/init.service";
 
 // TODO: include proper stuff here.
 export interface DialogData {
@@ -31,33 +33,40 @@ export class ShiftSignupDialogComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<ShiftSignupDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    private dialog: MatDialog, private formBuilder: FormBuilder, private eventsService: EventsService
+    private dialog: MatDialog, private formBuilder: FormBuilder, private eventsService: EventsService,
+    private init: InitService, public auth: AuthService
   ) {
     this.form = this.formBuilder.group({
-      userId: [{value: "", disabled: !!data.signup}, Validators.required, this.isUserEligibleValidator()],
+      userId: [
+        {value: this.init.user()?.name || "", disabled: !!data.signup},
+        Validators.required, this.isUserEligibleValidator()],
       notes: [""],
     });
 
-    this.eligibleUsers = this.form.controls.userId.valueChanges
-        .pipe(
-           startWith(''),
-           debounceTime(400),
-           distinctUntilChanged(),
-           switchMap(value => eventsService.getEligibleUserForShift(data.shift, value?.toString() ?? "")))
-    this.eligibleUsers
-        .pipe(
-            map((users) => {
-              // The first time we're called, it will include all eligible users, so save them for validation.
-              if (this.allEligibleUsers == null) {
-                this.allEligibleUsers = users
-              }
-            })
-        ).subscribe()
+    if (auth.isInRole("SHIFT_MANAGER")) {
+      this.eligibleUsers = this.form.controls.userId.valueChanges
+          .pipe(
+            startWith(''),
+            debounceTime(400),
+            distinctUntilChanged(),
+            switchMap(value => eventsService.getEligibleUserForShift(data.shift, value?.toString() ?? "")))
+      this.eligibleUsers
+          .pipe(
+              map((users) => {
+                // The first time we're called, it will include all eligible users, so save them for validation.
+                if (this.allEligibleUsers == null) {
+                  this.allEligibleUsers = users
+                }
+              })
+          ).subscribe()
+    } else {
+      this.eligibleUsers = EMPTY
+    }
   }
 
   public ngOnInit(): void {
     this.form.patchValue({
-      userId: this.data.signup?.user.name || "",
+      userId: this.auth.isInRole("SHIFT_MANAGER") ? this.data.signup?.user.name : null,
       notes: this.data.signup?.notes || ""
     })
   }
@@ -74,13 +83,15 @@ export class ShiftSignupDialogComponent implements OnInit {
   }
 
   onSave(): void {
-    var user: User|undefined
+    var user: User|undefined = this.init.user()
 
-    this.allEligibleUsers?.forEach(value => {
-      if (value.name == this.form.value.userId) {
-        user = value
-      }
-    })
+    if (this.auth.isInRole("SHIFT_MANAGER")) {
+      this.allEligibleUsers?.forEach(value => {
+        if (value.name == this.form.value.userId) {
+          user = value
+        }
+      })
+    }
 
     this.eventsService.shiftSignup(this.data.shift, user, this.form.value.notes ?? "")
 
