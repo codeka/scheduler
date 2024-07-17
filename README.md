@@ -1,7 +1,7 @@
 # scheduler
 A web app for scheduling shifts
 
-# Requirements
+## Requirements
 
 Requiremenst for the python build/install scripts:
 
@@ -21,8 +21,13 @@ Requirements for web:
 
     $ npm install
 
-Running locally:
+## Running locally
 
     python ./run.py --datadir=/some/path
 
+## Deploying
+
+Builds the app and copies scheduler.zip to the 'scp-dest' server
+
+    python ./deploy.py --scp-dest=user@server:/path
 

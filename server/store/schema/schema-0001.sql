@@ -11,7 +11,7 @@ CREATE TABLE venue (
   name TEXT,
   short_name TEXT,
   address TEXT,
-  picture_name TEXT,
+  picture_name TEXT
 );
 
 -- Create an initial fake entry. There should be exact one entry in this table at all times.

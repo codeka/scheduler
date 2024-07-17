@@ -36,5 +36,9 @@ func main() {
 		panic(err)
 	}
 
-	log.Fatal(router.Run("localhost:8080"))
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+	log.Fatal(router.Run("localhost:" + port))
 }
