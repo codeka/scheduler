@@ -36,13 +36,14 @@
         </div>
       </div>
 
-      <image-picker [initialImg]="img.imageUrl(user?.pictureName)" (picked)="imageUpdated($event)" />
+      <image-picker [initialImg]="img.imageUrl(data.user?.pictureName)" (picked)="imageUpdated($event)" />
     </div>
 
     <mat-card-actions>
       <div class="spacer"></div>
-      <button mat-raised-button color="primary" type="submit"><mat-icon>save</mat-icon> Save</button>
-      <button mat-raised-button [routerLink]="'/admin/users'"><mat-icon>cancel</mat-icon> Cancel</button>
+      <button mat-stroked-button color="warn" *ngIf="!!data.user" (click)="onDelete()" type="button"><mat-icon>delete</mat-icon> DELETE USER</button>
+      <button mat-raised-button color="primary" type="submit"><mat-icon>save</mat-icon> SAVE USER</button>
+      <button mat-button mat-dialog-close>CANCEL</button>
     </mat-card-actions>
   </form>
 </mat-card>

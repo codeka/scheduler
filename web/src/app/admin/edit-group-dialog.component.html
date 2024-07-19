@@ -24,8 +24,8 @@
 
   <mat-dialog-actions>
     <div class="spacer"></div>
-    <button mat-stroked-button color="warn" *ngIf="!!data.group" (click)="onDelete()" type="button">DELETE GROUP</button>
-    <button mat-raised-button color="primary" type="submit">SAVE GROUP</button>
+    <button mat-stroked-button color="warn" *ngIf="!!data.group" (click)="onDelete()" type="button"><mat-icon>delete</mat-icon> DELETE GROUP</button>
+    <button mat-raised-button color="primary" type="submit"><mat-icon>save</mat-icon> SAVE GROUP</button>
     <button mat-button mat-dialog-close>CANCEL</button>
   </mat-dialog-actions>
 </form>

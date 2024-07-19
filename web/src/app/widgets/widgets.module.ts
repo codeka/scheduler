@@ -13,13 +13,14 @@ import { TimeInputComponent } from "./time-input.component";
 import { PhoneNoComponent } from "./phone-no.component";
 import { ConfirmationDialogComponent } from "./confirm-dialog.component";
 import { MatCardModule } from "@angular/material/card";
+import { SafeHtmlPipe } from "../util/safe-html-pipe";
 
 @NgModule({
   declarations: [ConfirmationDialogComponent, ImagePickerComponent, PhoneNoComponent, TimeInputComponent],
   exports: [ConfirmationDialogComponent, ImagePickerComponent, PhoneNoComponent, TimeInputComponent],
   imports: [
     BrowserAnimationsModule, CommonModule, FormsModule, MatButton, MatCardModule, MatFormFieldModule, MatIconModule,
-    MatInputModule, ReactiveFormsModule
+    MatInputModule, ReactiveFormsModule, SafeHtmlPipe,
   ],
   providers: [],
   bootstrap: []

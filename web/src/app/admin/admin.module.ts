@@ -18,7 +18,7 @@ import { ServicesModule } from "../services/services.module";
 import { WidgetsModule } from "../widgets/widgets.module";
 
 import { AdminComponent } from "./admin.component";
-import { EditUserComponent } from "./edit-user.component";
+import { EditUserDialogComponent } from "./edit-user-dialog.component";
 import { UserListComponent } from "./user-list.component";
 import { EditVenueComponent } from "./edit-venue.component";
 import { GroupsComponent } from "./groups.component";
@@ -26,7 +26,7 @@ import { EditGroupDialogComponent } from "./edit-group-dialog.component";
 
 @NgModule({
   declarations: [
-    AdminComponent, EditGroupDialogComponent, EditUserComponent, EditVenueComponent, GroupsComponent,
+    AdminComponent, EditGroupDialogComponent, EditUserDialogComponent, EditVenueComponent, GroupsComponent,
     UserListComponent],
   imports: [
     AppRoutingModule, BrowserModule, FormsModule, MatButtonModule, MatCardModule, MatCheckboxModule, MatDialogModule,

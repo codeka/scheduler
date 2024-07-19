@@ -86,6 +86,28 @@ func HandleAdminUserGet(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
+func HandleAdminUserDelete(c *gin.Context) {
+	if !IsInRole(c, "ADMIN") {
+		c.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
+
+	userIdStr := c.Param("id")
+	userId, err := strconv.ParseInt(userIdStr, 10, 64)
+	if err != nil {
+		util.HandleError(c, http.StatusBadRequest, err)
+		return
+	}
+
+	err = store.DeleteUser(userId)
+	if err != nil {
+		util.HandleError(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	c.AbortWithStatus(http.StatusOK)
+}
+
 func HandleAdminUsersPost(c *gin.Context) {
 	if !IsInRole(c, "ADMIN") {
 		c.AbortWithStatus(http.StatusUnauthorized)
@@ -253,6 +275,7 @@ func HandleAdminGroupsPost(c *gin.Context) {
 func setupAdmin(g *gin.Engine) error {
 	g.GET("_/admin/users", HandleAdminUsersGet)
 	g.GET("_/admin/users/:id", HandleAdminUserGet)
+	g.DELETE("_/admin/users/:id", HandleAdminUserDelete)
 	g.POST("_/admin/users/:id/picture", HandleAdminUserPicturePost)
 	g.POST("_/admin/users", HandleAdminUsersPost)
 	g.POST("_/admin/venue", HandleAdminVenuePost)

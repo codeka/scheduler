@@ -57,7 +57,8 @@ func GetUserByConfirmationCode(code string) (*User, error) {
 			SELECT id, name, email, phone, picture_name
 			FROM users INNER JOIN	user_logins
 		    ON users.id = user_id
-			WHERE confirmation_code = ?`,
+			WHERE confirmation_code = ?
+			  AND users.deleted = 0`,
 		code)
 	if err != nil {
 		return nil, err
@@ -76,7 +77,8 @@ func GetUserBySecret(secretKey string) (*User, error) {
 			SELECT id, name, email, phone, picture_name
 			FROM users INNER JOIN	user_logins
 		    ON users.id = user_id
-			WHERE secret_key = ?`,
+			WHERE secret_key = ?
+			  AND users.deleted = 0`,
 		secretKey)
 	if err != nil {
 		return nil, err
@@ -92,7 +94,8 @@ func GetUserBySecret(secretKey string) (*User, error) {
 func GetUsers() ([]*User, error) {
 	rows, err := db.Query(`
 			SELECT id, name, email, phone, picture_name
-			FROM users`)
+			FROM users
+			WHERE deleted = 0`)
 	if err != nil {
 		return []*User{}, err
 	}
@@ -132,6 +135,7 @@ func GetEligibleUsers(shift *Shift, query string) ([]*User, error) {
 			FROM users INNER JOIN user_groups ON users.id = user_groups.user_id
 			WHERE user_groups.group_id = ?
 			  AND name LIKE ?
+				AND deleted = 0
 	  `, shift.GroupID, query+"%")
 	if err != nil {
 		return []*User{}, err
@@ -285,6 +289,35 @@ func SaveUser(user *User) error {
 		if err != nil {
 			return util.ForwardError("update users: %v", err)
 		}
+	}
+
+	return nil
+}
+
+func DeleteUser(userID int64) error {
+	// Delete the user from all their roles...
+	_, err := db.Exec(`DELETE FROM user_roles WHERE user_id = ?`, userID)
+	if err != nil {
+		return util.ForwardError("delete user roles: %v", err)
+	}
+
+	// ... and groups
+	_, err = db.Exec(`DELETE FROM user_groups WHERE user_id = ?`, userID)
+	if err != nil {
+		return util.ForwardError("delete user groups: %v", err)
+	}
+
+	// ... then update their PII
+	_, err = db.Exec(`
+		UPDATE users SET
+			name = 'Deleted user',
+			email = '',
+			phone = '',
+			picture_name = '',
+			deleted = 1
+		WHERE id = ?`, userID)
+	if err != nil {
+		return util.ForwardError("delete user: %v", err)
 	}
 
 	return nil

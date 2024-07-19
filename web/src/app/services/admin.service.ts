@@ -48,6 +48,13 @@ export class AdminService {
     )
   }
 
+  deleteUser(userId: number): Promise<boolean> {
+    return firstValueFrom(
+      this.http.delete<SaveUserResponse>(ENV.backend + "/_/admin/users/" + userId)
+        .pipe(map(() => true))
+    )
+  }
+
   saveUserPicture(userId: number, file: File): Promise<boolean> {
     const form = new FormData()
     form.append("picture", file)

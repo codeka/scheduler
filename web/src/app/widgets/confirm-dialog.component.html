@@ -4,7 +4,7 @@
     <mat-card-title>{{data.title || "Confirm"}}</mat-card-title>
   </mat-card-header>
 
-  <p>{{data.msg}}</p>
+  <p [innerHTML]="data.msg | safeHtml"></p>
 
   <mat-card-actions>
     <div class="spacer"></div>

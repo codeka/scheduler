@@ -1,7 +1,6 @@
 
 
 #edit-user-card {
-  margin: 28pt auto 0 auto;
   max-width: 800pt;
 }
 
@@ -48,4 +47,8 @@ div.groups-container h3 {
 div.groups-container mat-slide-toggle {
   align-self: stretch;
   margin-top: 8pt;
+}
+
+div.group-row {
+  margin-left: 20pt;
 }

@@ -1,9 +1,10 @@
-import { Component } from "@angular/core";
-import { Router } from "@angular/router";
+import { Component, OnInit } from "@angular/core";
 
-import { AdminService } from "../services/admin.service";
-import { AuthService } from "../services/auth.service";
+import { MatDialog } from "@angular/material/dialog";
+
+import { EditUserDialogComponent } from "./edit-user-dialog.component";
 import { User } from "../services/model";
+import { AdminService } from "../services/admin.service";
 import { InitService } from "../services/init.service";
 import { ImageService } from "../services/image.service";
 
@@ -12,12 +13,15 @@ import { ImageService } from "../services/image.service";
   templateUrl: './user-list.component.html',
   styleUrls: ['./user-list.component.scss']
 })
-export class UserListComponent {
+export class UserListComponent implements OnInit {
   displayedColumns: string[] = ['picture', 'name', 'mail', 'phone', 'roles', 'groups', 'actions'];
   users: User[] = []
 
-  constructor(public img: ImageService, private init: InitService, admin: AdminService) {
-    admin.getUsers()
+  constructor(
+    public img: ImageService, private init: InitService, private admin: AdminService, private dialog: MatDialog) { }
+
+  public ngOnInit(): void {
+     this.admin.getUsers()
         .then((users) => {
           this.users = users
         })
@@ -34,5 +38,26 @@ export class UserListComponent {
     }
 
     return groupsStrings.join(", ")
+  }
+
+  onAddUser() {
+    const dialogRef = this.dialog.open(EditUserDialogComponent, {
+      width: '700pt',
+    })
+    dialogRef.afterClosed().subscribe(result => {
+      // Refresh the page.
+      this.ngOnInit();
+    })
+  }
+
+  onEditUser(user: User) {
+    const dialogRef = this.dialog.open(EditUserDialogComponent, {
+      width: '700pt',
+      data: { user: user },
+    })
+    dialogRef.afterClosed().subscribe(result => {
+      // Refresh the page.
+      this.ngOnInit();
+    })
   }
 }

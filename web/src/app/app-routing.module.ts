@@ -10,7 +10,6 @@ import { DayComponent } from './sched/day.component';
 import { MonthComponent } from './sched/month.component';
 import { ScheduleComponent } from './sched/schedule.component';
 import { UserListComponent } from './admin/user-list.component';
-import { EditUserComponent } from './admin/edit-user.component';
 import { EditVenueComponent } from './admin/edit-venue.component';
 import { NotFoundComponent } from './not-found.component';
 import { AdminComponent } from './admin/admin.component';
@@ -46,8 +45,6 @@ const routes: Routes = [
       { path: 'edit-venue', component: EditVenueComponent },
       { path: 'groups', component: GroupsComponent },
       { path: 'users', component: UserListComponent },
-      { path: 'edit-user/:id', component: EditUserComponent },
-      { path: 'edit-user', component: EditUserComponent },
     ]
   },
   
