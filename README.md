@@ -27,7 +27,7 @@ Requirements for web:
 
 ## Deploying
 
-Builds the app and copies scheduler.zip to the 'scp-dest' server
+Builds the app and copies scheduler.zip to the 'scpdest' server
 
-    python ./deploy.py --scp-dest=user@server:/path
+    python ./deploy.py --scpdest=user@server:/path
 
