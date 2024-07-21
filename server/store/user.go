@@ -266,9 +266,9 @@ func SaveUser(user *User) error {
 	if user.ID == 0 {
 		res, err := db.Exec(`
 			INSERT INTO users
-			  (name, email, phone, picture_name)
+			  (name, email, phone, picture_name, deleted)
 			VALUES
-			  (?, ?, ?, ?)`,
+			  (?, ?, ?, ?, 0)`,
 			user.Name, user.Email, user.Phone, user.PictureName)
 		if err != nil {
 			return util.ForwardError("insert into users: %v", err)
