@@ -12,6 +12,10 @@ from watchdog.events import LoggingEventHandler
 
 argParser = argparse.ArgumentParser()
 argParser.add_argument("-d", "--datadir", help="Data directory.")
+argParser.add_argument(
+  "-t", "--twilio",
+   help=("Twilio auth parameters, should be 'ACCOUNT_SID:AUTH_TOKEN'. " +
+         "See https://console.twilio.com/us1/account/keys-credentials/api-keys"))
 args = argParser.parse_args()
 
 # TODO: if on linux, make this "server" without the .exe
@@ -58,11 +62,15 @@ def runServer():
   if p.returncode != 0:
     return None
 
+  (twilioAccountSid, twilioAuthToken) = args.twilio.split(":")
+
   print(f"{bcolors.BLUE}Running server...{bcolors.ENDC}")
   cmd = [os.path.join(args.datadir, serverExeName)]
   env = os.environ.copy()
   env['DATA_DIR'] = args.datadir
   env['DEBUG'] = '1'
+  env['TWILIO_ACCOUNT_SID'] = twilioAccountSid
+  env['TWILIO_AUTH_TOKEN'] = twilioAuthToken
   return subprocess.Popen(cmd, cwd=cwd, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
 

@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"com.codeka/scheduler/server/api"
+	"com.codeka/scheduler/server/notify"
 	"com.codeka/scheduler/server/store"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -33,6 +34,9 @@ func main() {
 		panic(err)
 	}
 	if err := api.Setup(router); err != nil {
+		panic(err)
+	}
+	if err := notify.Setup(); err != nil {
 		panic(err)
 	}
 

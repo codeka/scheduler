@@ -1,10 +1,10 @@
 package api
 
 import (
-	"log"
+	"fmt"
 	"net/http"
-	"strings"
 
+	"com.codeka/scheduler/server/notify"
 	"com.codeka/scheduler/server/store"
 	"com.codeka/scheduler/server/util"
 	"github.com/gin-gonic/gin"
@@ -50,18 +50,19 @@ func HandleSendConfirmation(c *gin.Context) {
 	resp := ConfirmationSentResponse{}
 	var user *store.User
 	var err error
-	isEmail := strings.Contains(req.EmailOrPhone, "@")
-	// TODO: if it's not an email and not a phone number, that's an error
 
-	if isEmail {
+	if util.IsEmailAddress(req.EmailOrPhone) {
 		resp.destination = "EMAIL"
 		user, err = store.GetUserByEmail(req.EmailOrPhone)
-	} else {
+	} else if util.IsPhoneNumber(req.EmailOrPhone) {
 		resp.destination = "PHONE"
 		user, err = store.GetUserByPhone(req.EmailOrPhone)
+	} else {
+		util.HandleError(c, http.StatusBadRequest, fmt.Errorf("invalid email or phone number"))
+		return
 	}
 	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
+		util.HandleError(c, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -72,22 +73,13 @@ func HandleSendConfirmation(c *gin.Context) {
 		return
 	}
 
-	code, err := util.RandomSequence(ConfirmationCodeSize, ConfirmationCodeLetters)
+	sid, err := notify.SendVerificationRequest(notify.VerificationRequest{Dest: req.EmailOrPhone})
 	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
+		util.HandleError(c, http.StatusInternalServerError, err)
 		return
 	}
 
-	// TODO: make sure this code is not already assigned to someone else.
-
-	if isEmail {
-		// Assume it's an email, try to send the email.
-		log.Printf("TODO: send email with code %s", code)
-	} else {
-		log.Printf("TODO: send SMS with code %s", code)
-	}
-
-	err = store.CreateUserLogin(user, code)
+	err = store.CreateUserLogin(user, sid)
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 		return
@@ -108,7 +100,16 @@ func HandleVerifyConfirmation(c *gin.Context) {
 
 	resp := VerifyConfirmationResponse{}
 
-	user, err := store.GetUserByConfirmationCode(req.ConfirmationCode)
+	sid, err := notify.ConfirmVerification(notify.ConfirmationRequest{
+		Dest: "email here?", // TODO: this should be in the request
+		Code: req.ConfirmationCode,
+	})
+	if err != nil {
+		util.HandleError(c, http.StatusBadRequest, fmt.Errorf("bad conde"))
+		return
+	}
+
+	user, err := store.GetUserByConfirmationCode(sid)
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 		return
@@ -140,7 +141,7 @@ func HandleVerifyConfirmation(c *gin.Context) {
 		return
 	}
 
-	err = store.SaveSecret(resp.User.ID, req.ConfirmationCode, resp.SecretKey)
+	err = store.SaveSecret(resp.User.ID, sid, resp.SecretKey)
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 		return
