@@ -33,7 +33,8 @@ class ScheduleMonth {
 })
 export class ScheduleComponent implements OnInit {
   today = new Date()
-  monthStart = new Date(this.today.getFullYear(), this.today.getMonth(), 1)
+  // The date we want to start populating the schedule from. Basically, today.
+  scheduleStartDate = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate())
 
   showAll = false
   events: Array<Event> = []
@@ -47,7 +48,7 @@ export class ScheduleComponent implements OnInit {
 
   public ngOnInit(): void {
     // Get all events into the next year, just to make sure we cover ~everything in the future.
-    this.eventsService.getEvents(this.monthStart, new Date(this.today.getFullYear() + 1, 1, 1))
+    this.eventsService.getEvents(this.scheduleStartDate, new Date(this.today.getFullYear() + 1, 1, 1))
         .then((resp) => {
           this.events = resp.events;
 
