@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Event, Group, Shift, ShiftSignup } from '../services/model';
 import { AuthService } from '../services/auth.service';
@@ -10,6 +10,10 @@ import { ShiftSignupDialogComponent } from './shift-signup-dialog.component';
 import { EditEventDialogComponent } from './edit-event-dialog.component';
 import { EditShiftDialogComponent } from './edit-shift-dialog.component';
 import { MatCheckboxChange } from '@angular/material/checkbox';
+import { fromEvent } from 'rxjs/internal/observable/fromEvent';
+import { throttleTime } from 'rxjs/internal/operators/throttleTime';
+import { map } from 'rxjs/internal/operators/map';
+import { Observable, startWith } from 'rxjs';
 
 class ScheduleDay {
   events = new Array<Event>()
@@ -26,11 +30,11 @@ class ScheduleMonth {
   constructor(public date: Date) {}
 }
 
-@Component({
-  selector: 'schedule',
-  templateUrl: './schedule.component.html',
-  styleUrls: ['./schedule.component.scss']
-})
+/**
+ * Base class for ScheduleMobileComponent and ScheduleDesktopComponent. We want quite different HTML/layout for the
+ * different sized browsers.
+ */
+@Component({template:''})
 export class ScheduleComponent implements OnInit {
   today = new Date()
   // The date we want to start populating the schedule from. Basically, today.
@@ -40,10 +44,16 @@ export class ScheduleComponent implements OnInit {
   events: Array<Event> = []
   months: Array<ScheduleMonth> = []
   groups: Array<Group> = []
+  useMobileContent: Observable<boolean>
 
   constructor(public auth: AuthService, private dialog: MatDialog, private route: ActivatedRoute, private router: Router,
               private init: InitService, private eventsService: EventsService) {
     this.refreshGroups();
+
+    // TODO: should this be in some common component?
+    const checkScreenSize = () => document.body.offsetWidth < 800;
+    const screenSizeChanged = fromEvent(window, 'resize').pipe(throttleTime(500)).pipe(map(checkScreenSize));
+    this.useMobileContent = screenSizeChanged.pipe(startWith(checkScreenSize()));
   }
 
   public ngOnInit(): void {

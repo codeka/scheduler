@@ -1,0 +1,39 @@
+@import "../theme-colors";
+
+div.schedule-month {
+  margin-left: 10pt;
+}
+
+span.event-title {
+  margin-right: 10pt;
+}
+span.event-time {
+  margin-right: 20pt;
+}
+
+div.event-day {
+  border-top: solid 1px black;
+  font-weight: bold;
+  margin-top: 20pt;
+}
+
+span.group-name { 
+  margin-right: 10pt;
+}
+
+div.shift {
+  margin-top: 10pt;
+  margin-right: 10pt;
+}
+div.shift span.group-name {
+  font-weight: bold;
+}
+.shift-empty {
+  background-color: $bg-shift-empty;
+}
+.shift-partial {
+  background-color: $bg-shift-partial;
+}
+.shift-full {
+  background-color: $bg-shift-filled;
+}

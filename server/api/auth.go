@@ -101,11 +101,11 @@ func HandleVerifyConfirmation(c *gin.Context) {
 	resp := VerifyConfirmationResponse{}
 
 	sid, err := notify.ConfirmVerification(notify.ConfirmationRequest{
-		Dest: "email here?", // TODO: this should be in the request
+		Dest: "dean@codeka.com", // TODO: this should be in the request
 		Code: req.ConfirmationCode,
 	})
 	if err != nil {
-		util.HandleError(c, http.StatusBadRequest, fmt.Errorf("bad conde"))
+		util.HandleError(c, http.StatusBadRequest, fmt.Errorf("bad code"))
 		return
 	}
 

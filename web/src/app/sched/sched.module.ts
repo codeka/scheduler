@@ -23,16 +23,17 @@ import { DayComponent } from './day.component';
 import { EditEventDialogComponent } from './edit-event-dialog.component';
 import { EditShiftDialogComponent } from './edit-shift-dialog.component';
 import { MonthComponent } from './month.component';
-import { ScheduleComponent } from './schedule.component';
+import { ScheduleDesktopComponent } from './schedule-desktop.component';
 import { ShiftSignupDialogComponent } from './shift-signup-dialog.component';
 import { ViewSwitcherComponent } from './view-switcher.component';
 import { WeekComponent } from './week.component';
 import { WidgetsModule } from '../widgets/widgets.module';
+import { ScheduleMobileComponent } from './schedule-mobile.component';
 
 @NgModule({
   declarations: [
-    DayComponent, EditEventDialogComponent, EditShiftDialogComponent, MonthComponent, ScheduleComponent,
-    ShiftSignupDialogComponent, ViewSwitcherComponent, WeekComponent],
+    DayComponent, EditEventDialogComponent, EditShiftDialogComponent, MonthComponent, ScheduleDesktopComponent,
+    ScheduleMobileComponent, ShiftSignupDialogComponent, ViewSwitcherComponent, WeekComponent],
   imports: [
     BrowserAnimationsModule, CommonModule, FormsModule, MatAutocompleteModule, MatButtonModule, MatCardModule,
     MatCheckboxModule, MatChipsModule, MatDatepickerModule, MatDialogModule, MatFormFieldModule, MatIconModule,

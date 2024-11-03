@@ -8,12 +8,13 @@ import { LoginComponent } from './auth/login.component';
 import { AuthService } from './services/auth.service';
 import { DayComponent } from './sched/day.component';
 import { MonthComponent } from './sched/month.component';
-import { ScheduleComponent } from './sched/schedule.component';
 import { UserListComponent } from './admin/user-list.component';
 import { EditVenueComponent } from './admin/edit-venue.component';
 import { NotFoundComponent } from './not-found.component';
 import { AdminComponent } from './admin/admin.component';
 import { GroupsComponent } from './admin/groups.component';
+import { ScheduleDesktopComponent } from './sched/schedule-desktop.component';
+import { ScheduleMobileComponent } from './sched/schedule-mobile.component';
 
 const loggedIn: CanMatchFn = () => {
   return inject(AuthService).isLoggedIn();
@@ -23,6 +24,13 @@ function inRole(roleName: string): CanMatchFn {
   return () => {
     return inject(AuthService).isInRole(roleName);
   }
+}
+
+const isMobile: CanMatchFn = () => {
+  return document.body.offsetWidth < 1024
+}
+const isNotMobile: CanMatchFn = () => {
+  return document.body.offsetWidth >= 1024
 }
 
 const routes: Routes = [
@@ -50,7 +58,8 @@ const routes: Routes = [
   
   // By default, we show the 'schedule' view, which shows all the events this month and everything in the future that
   // we have in the database.
-  { path: '', canMatch: [loggedIn], component: ScheduleComponent, pathMatch: "full" },
+  { path: '', canMatch: [loggedIn, isMobile], component: ScheduleMobileComponent, pathMatch: "full" },
+  { path: '', canMatch: [loggedIn, isNotMobile], component: ScheduleDesktopComponent, pathMatch: "full" },
 
   { path: '**', canMatch: [loggedIn], component: NotFoundComponent },
   { path: '**', redirectTo: '/login' },
