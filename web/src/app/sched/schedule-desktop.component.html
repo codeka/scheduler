@@ -46,11 +46,6 @@
                *ngFor="let shift of day.shifts.get(group.id)">
             <div class="shift-time">
               <span>{{shiftTimeStr(shift)}}</span>
-              <button mat-icon-button class="icon-small" (click)="onShiftSignup(group, shift)"
-                      matTooltip="Sign up for {{shiftTimeStr(shift)}} shift"
-                      *ngIf="isInGroup(group)">
-                <mat-icon>edit_calendar</mat-icon>
-              </button>
               <button mat-icon-button class="icon-small" (click)="onEditShift(shift)" matTooltip="Edit shift"
                       *ngIf="auth.isInRole('EVENT_MANAGER') || auth.isInRole('SHIFT_MANAGER')">
                 <mat-icon>edit</mat-icon>
@@ -61,6 +56,11 @@
                    *ngFor="let signup of shift.signups">
                 {{ signup.user.name }}
               </mat-chip>
+              <button mat-icon-button (click)="onShiftSignup(group, shift)"
+                      matTooltip="Sign up for {{shiftTimeStr(shift)}} shift"
+                      *ngIf="isInGroup(group)">
+                <mat-icon>edit_calendar</mat-icon>
+              </button>
             </mat-chip-set>
             @for (signup of shift.signups ; track signup.user.id) {
               <div class="signup-note" *ngIf="signup.notes != ''">
