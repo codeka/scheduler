@@ -28,6 +28,14 @@ func SendVerificationRequest(request VerificationRequest) (string, error) {
 	params := &verify.CreateVerificationParams{}
 	if util.IsEmailAddress(request.Dest) {
 		params.SetChannel("email")
+
+		params.SetChannelConfiguration(map[string]interface{}{
+			"from":      "svbc@codeka.com",
+			"from_name": "SVBC Scheduler",
+			"substitutions": map[string]interface{}{
+				"dest": request.Dest,
+			},
+		})
 	} else if util.IsPhoneNumber(request.Dest) {
 		params.SetChannel("sms")
 	} else {

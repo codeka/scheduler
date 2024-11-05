@@ -21,6 +21,11 @@ export class ConfirmComponent implements OnInit {
   ngOnInit(): void {
     this.route.queryParamMap.pipe(map(value => {
       this.onEmailOrPhoneChange(value.get("emailOrPhone") || "")
+      this.code = value.get("code") || ""
+
+      if (value.get("action") == "submit") {
+        this.onConfirm()
+      }
     })).subscribe()
   }
 
