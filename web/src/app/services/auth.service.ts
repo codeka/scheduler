@@ -21,6 +21,7 @@ interface ConfirmationSentResponse {
 }
 
 interface VerifyConfirmationRequest {
+  emailOrPhone: string
   confirmationCode: string
 }
 
@@ -73,8 +74,9 @@ export class AuthService {
 
   // Verifies that the confirmation is correct. If it is, we save the secret and all subsequent requests (even from
   // different browser sessions) will use it. Returns a boolean success as a promise
-  verifyConfirmation(code: string): Promise<Boolean> {
+  verifyConfirmation(emailOrPhone: string, code: string): Promise<Boolean> {
     const req: VerifyConfirmationRequest = {
+      emailOrPhone: emailOrPhone,
       confirmationCode: code
     };
     return firstValueFrom(

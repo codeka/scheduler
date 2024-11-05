@@ -22,6 +22,7 @@
     "@angular/router": "^17.1.0",
     "fflate": "^0.8.1",
     "hammerjs": "^2.0.8",
+    "libphonenumber-js": "^1.11.12",
     "rxjs": "~7.8.1",
     "tslib": "^2.6.2",
     "zone.js": "~0.14.3"

@@ -6,6 +6,10 @@
   <mat-card-content>
     <p>Enter the confirmation code we just sent you.</p>
     <mat-form-field>
+      <mat-label>Email or Phone</mat-label>
+      <input matInput required [ngModel]="emailOrPhone" (ngModelChange)="onEmailOrPhoneChange($event)">
+    </mat-form-field>
+    <mat-form-field>
       <mat-label>Confirmation code</mat-label>
       <input matInput required [(ngModel)]="code">
     </mat-form-field>

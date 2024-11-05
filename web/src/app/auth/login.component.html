@@ -7,7 +7,7 @@
     <p>To log in, enter your email address or phone number below.</p>
     <mat-form-field>
       <mat-label>Email or phone number</mat-label>
-      <input matInput required [(ngModel)]="emailOrPhone">
+      <input matInput required [ngModel]="emailOrPhone" (ngModelChange)="onEmailOrPhoneChange($event)">
     </mat-form-field>
   </mat-card-content>
   <mat-card-actions>

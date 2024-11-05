@@ -1,19 +1,48 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../services/auth.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { map } from 'rxjs';
+import { AsYouType, parsePhoneNumber } from 'libphonenumber-js';
 
 @Component({
   selector: 'confirm',
   templateUrl: './confirm.component.html',
   styleUrls: ['./confirm.component.scss']
 })
-export class ConfirmComponent {
+export class ConfirmComponent implements OnInit {
   code = "";
+  emailOrPhone = "";
 
-  constructor(private auth: AuthService, private router: Router) {}
+  // Quick regex to validate that what we have looks phone-number-ish.
+  private isPhoneNumberExpr = new RegExp("^[0-9\\(\\)\\- \+]+$")
+
+  constructor(private auth: AuthService, private router: Router, private route: ActivatedRoute) {}
+
+  ngOnInit(): void {
+    this.route.queryParamMap.pipe(map(value => {
+      this.onEmailOrPhoneChange(value.get("emailOrPhone") || "")
+    })).subscribe()
+  }
+
+  onEmailOrPhoneChange(newValue: string) {
+    if (this.isPhoneNumberExpr.test(newValue)) {
+      const formatted = new AsYouType("US").input(newValue)
+      this.emailOrPhone = formatted
+    } else {
+      this.emailOrPhone = newValue
+    }
+  }
 
   onConfirm() {
-    this.auth.verifyConfirmation(this.code).then((success: Boolean) => {
+    var identifier = this.emailOrPhone
+    if (this.isPhoneNumberExpr.test(identifier)) {
+      const phoneNumber = parsePhoneNumber(identifier, "US")
+      if (phoneNumber.isValid()) {
+        identifier = phoneNumber.number
+      }
+    }
+
+    this.auth.verifyConfirmation(identifier, this.code).then((success: Boolean) => {
       location.href = "/"
     }, (error) => {
       // TODO:L handle error.
