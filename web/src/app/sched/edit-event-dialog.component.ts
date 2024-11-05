@@ -108,19 +108,9 @@ export class EditEventDialogComponent implements OnInit {
       for (var group of this.init.groups()) {
         if (group.id == groupId) {
           var shiftStartTime = new Date(startTime)
-          if (group.shiftStartOffset < 0) {
-            shiftStartTime = new Date(endTime)
-            shiftStartTime.setMinutes(endTime.getMinutes() + (group.shiftStartOffset * 60.0))
-          } else {
-            shiftStartTime.setMinutes(startTime.getMinutes() - (group.shiftStartOffset * 60.0))
-          }
+          shiftStartTime.setMinutes(endTime.getMinutes() + (group.shiftStartOffset * 60.0))
           var shiftEndTime = new Date(endTime)
-          if (group.shiftEndOffset < 0) {
-            shiftEndTime = new Date(endTime)
-            shiftEndTime.setMinutes(endTime.getMinutes() + (group.shiftEndOffset * 60.0))
-          } else {
-            shiftEndTime.setMinutes(endTime.getMinutes() - (group.shiftEndOffset * 60.0))
-          }
+          shiftEndTime.setMinutes(endTime.getMinutes() + (group.shiftEndOffset * 60.0))
           shiftControls.startTime.patchValue(shiftStartTime)
           shiftControls.endTime.patchValue(shiftEndTime)
         }
