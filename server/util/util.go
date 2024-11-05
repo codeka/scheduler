@@ -22,11 +22,15 @@ func RandomSequence(n int, letters []rune) (string, error) {
 
 // IsEmailAddress returns true if the given string appears to be an email address.
 func IsEmailAddress(str string) bool {
-	return strings.Index(str, "@") >= 0
+	return strings.Contains(str, "@")
 }
 
 // IsPhoneNumber returns true if the given string appears to be a phone number.
 func IsPhoneNumber(str string) bool {
+	if len(str) < 2 {
+		return false
+	}
+
 	if str[0] != '+' {
 		return false
 	}

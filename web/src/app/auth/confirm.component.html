@@ -1,21 +1,23 @@
 
-<mat-card class="confirm-card">
-  <mat-card-header>
-    <mat-card-title>Confirm</mat-card-title>
-  </mat-card-header>
-  <mat-card-content>
-    <p>Enter the confirmation code we just sent you.</p>
-    <mat-form-field>
-      <mat-label>Email or Phone</mat-label>
-      <input matInput required [ngModel]="emailOrPhone" (ngModelChange)="onEmailOrPhoneChange($event)">
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Confirmation code</mat-label>
-      <input matInput required [(ngModel)]="code">
-    </mat-form-field>
-  </mat-card-content>
-  <mat-card-actions>
-    <div class="spacer"></div>
-    <button mat-raised-button color="primary" (click)="onConfirm()">Confirm</button>
-  </mat-card-actions>
-</mat-card>
+  <form (ngSubmit)="onConfirm()">
+  <mat-card class="confirm-card">
+    <mat-card-header>
+      <mat-card-title>Confirm</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <p>Enter the confirmation code we just sent you.</p>
+      <mat-form-field>
+        <mat-label>Email or Phone</mat-label>
+        <input matInput required name="emailOrPhone" [ngModel]="emailOrPhone" (ngModelChange)="onEmailOrPhoneChange($event)">
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Confirmation code</mat-label>
+        <input matInput required name="code" [(ngModel)]="code">
+      </mat-form-field>
+    </mat-card-content>
+    <mat-card-actions>
+      <div class="spacer"></div>
+      <button mat-raised-button color="primary" type="submit">Confirm</button>
+    </mat-card-actions>
+  </mat-card>
+</form>

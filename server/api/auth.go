@@ -20,9 +20,8 @@ type ConfirmationSentResponse struct {
 }
 
 type VerifyConfirmationRequest struct {
+	EmailOrPhone     string `json:"emailOrPhone"`
 	ConfirmationCode string `json:"confirmationCode"`
-
-	// TODO: should we include the email/phone you were trying to confirm? Maybe not?
 }
 
 type VerifyConfirmationResponse struct {
@@ -101,7 +100,7 @@ func HandleVerifyConfirmation(c *gin.Context) {
 	resp := VerifyConfirmationResponse{}
 
 	sid, err := notify.ConfirmVerification(notify.ConfirmationRequest{
-		Dest: "dean@codeka.com", // TODO: this should be in the request
+		Dest: req.EmailOrPhone,
 		Code: req.ConfirmationCode,
 	})
 	if err != nil {

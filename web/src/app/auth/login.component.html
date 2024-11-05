@@ -1,17 +1,20 @@
 
-<mat-card class="login-card">
-  <mat-card-header>
-    <mat-card-title>Login</mat-card-title>
-  </mat-card-header>
-  <mat-card-content>
-    <p>To log in, enter your email address or phone number below.</p>
-    <mat-form-field>
-      <mat-label>Email or phone number</mat-label>
-      <input matInput required [ngModel]="emailOrPhone" (ngModelChange)="onEmailOrPhoneChange($event)">
-    </mat-form-field>
-  </mat-card-content>
-  <mat-card-actions>
-    <div class="spacer"></div>
-    <button mat-raised-button color="primary" (click)="onLogin()">Log in</button>
-  </mat-card-actions>
-</mat-card>
+<form (ngSubmit)="onLogin()">
+  <mat-card class="login-card">
+    <mat-card-header>
+      <mat-card-title>Login</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <p>To log in, enter your email address or phone number below.</p>
+      <form (ngSubmit)="onLogin()"></form>
+      <mat-form-field>
+        <mat-label>Email or phone number</mat-label>
+        <input matInput required name="emailOrPhone" [ngModel]="emailOrPhone" (ngModelChange)="onEmailOrPhoneChange($event)">
+      </mat-form-field>
+    </mat-card-content>
+    <mat-card-actions>
+      <div class="spacer"></div>
+      <button mat-raised-button color="primary" type="submit">Log in</button>
+    </mat-card-actions>
+  </mat-card>
+</form>
