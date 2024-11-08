@@ -11,11 +11,12 @@ import { ServicesModule } from '../services/services.module';
 
 import { ConfirmComponent } from './confirm.component';
 import { LoginComponent } from './login.component';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [ConfirmComponent, LoginComponent],
   imports: [
-    FormsModule, MatButtonModule, MatCardModule, MatFormFieldModule, MatIconModule, MatInputModule,
+    CommonModule, FormsModule, MatButtonModule, MatCardModule, MatFormFieldModule, MatIconModule, MatInputModule,
     MatSlideToggleModule, ServicesModule],
   providers: [],
   bootstrap: []

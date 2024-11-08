@@ -12,6 +12,7 @@ import { AsYouType, parsePhoneNumber } from 'libphonenumber-js';
 export class ConfirmComponent implements OnInit {
   code = "";
   emailOrPhone = "";
+  error = "";
 
   // Quick regex to validate that what we have looks phone-number-ish.
   private isPhoneNumberExpr = new RegExp("^[0-9\\(\\)\\- \+]+$")
@@ -47,10 +48,10 @@ export class ConfirmComponent implements OnInit {
       }
     }
 
-    this.auth.verifyConfirmation(identifier, this.code).then((success: Boolean) => {
+    this.auth.verifyConfirmation(identifier.trim(), this.code.trim()).then((success: Boolean) => {
       location.href = "/"
     }, (error) => {
-      // TODO:L handle error.
+      this.error = "Wrong code. Please try again."
     });
   }
 }

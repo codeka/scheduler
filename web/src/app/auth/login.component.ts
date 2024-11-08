@@ -10,6 +10,7 @@ import { AsYouType, parsePhoneNumber } from 'libphonenumber-js';
 })
 export class LoginComponent {
   emailOrPhone = "";
+  error = "";
 
   // Quick regex to validate that what we have looks phone-number-ish.
   private isPhoneNumberExpr = new RegExp("^[0-9\\(\\)\\- \+]+$")
@@ -37,8 +38,9 @@ export class LoginComponent {
     this.auth.sendConfirmationCode(identifier).then(resp => {
       this.router.navigate(["/login/confirm"], {queryParams: {emailOrPhone: this.emailOrPhone}});
     }, (error) => {
-      // TODO: handle errors better.
-      console.log("error: " + JSON.stringify(error));
+      // Most likely the error is either an invalid email/phone number or the user doesn't
+      // exist. We'll just give a generic error message.
+      this.error = "No user with that phone/email exists."
     });
   }
 }

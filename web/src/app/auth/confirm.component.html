@@ -16,6 +16,7 @@
       </mat-form-field>
     </mat-card-content>
     <mat-card-actions>
+      <span class="error" *ngIf="error"><mat-icon>error</mat-icon> {{error}}</span>
       <div class="spacer"></div>
       <button mat-raised-button color="primary" type="submit">Confirm</button>
     </mat-card-actions>
