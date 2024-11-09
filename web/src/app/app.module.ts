@@ -10,6 +10,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { AppRoutingModule } from './app-routing.module';
 import { AdminModule } from './admin/admin.module';
 import { AuthModule } from './auth/auth.module';
+import { ProfileModule } from './profile/profile.module';
 import { ServicesModule } from './services/services.module';
 import { SchedModule } from './sched/sched.module';
 
@@ -22,7 +23,7 @@ import { NotFoundComponent } from './not-found.component';
   ],
   imports: [
     AdminModule, AppRoutingModule, AuthModule, BrowserModule, BrowserAnimationsModule, MatButtonModule, MatIconModule,
-    MatMenuModule, MatToolbarModule, ServicesModule, SchedModule
+    MatMenuModule, MatToolbarModule, ProfileModule, ServicesModule, SchedModule
   ],
   providers: [],
   bootstrap: [AppComponent]

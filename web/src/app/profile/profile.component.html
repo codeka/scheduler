@@ -1,0 +1,31 @@
+<mat-card class="profile-card">
+  <mat-card-header>
+    <mat-card-title>Profile</mat-card-title>
+  </mat-card-header>
+
+  <form [formGroup]="form" (ngSubmit)="onSaveProfile()" novalidate>
+    <div class="row">
+      <image-picker [initialImg]="img.imageUrl(user.pictureName)" (picked)="imageUpdated($event)" />
+
+      <div class="fields">
+        <mat-form-field>
+          <mat-label>Name</mat-label>
+          <input matInput formControlName="name" />
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email" />
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Phone number</mat-label>
+          <input matInput formControlName="phoneNumber" />
+        </mat-form-field>
+      </div>
+    </div>
+    <mat-card-actions>
+      <div class="spacer"></div>
+      <button mat-raised-button color="primary" type="submit"><mat-icon>save</mat-icon> Save</button>
+    </mat-card-actions>
+  </form>
+</mat-card>
+

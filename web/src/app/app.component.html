@@ -8,6 +8,9 @@
   </button>
 </mat-toolbar>
 <mat-menu #usermenu="matMenu">
+  <button mat-menu-item [routerLink]="'/profile'">
+    <mat-icon>person</mat-icon> Profile
+  </button>
   <button mat-menu-item [routerLink]="'/admin/edit-venue'" *ngIf="auth.isInRole('ADMIN')">
     <mat-icon>settings</mat-icon> Settings
   </button>

@@ -13,6 +13,7 @@ import { EditVenueComponent } from './admin/edit-venue.component';
 import { NotFoundComponent } from './not-found.component';
 import { AdminComponent } from './admin/admin.component';
 import { GroupsComponent } from './admin/groups.component';
+import { ProfileComponent } from './profile/profile.component';
 import { ScheduleDesktopComponent } from './sched/schedule-desktop.component';
 import { ScheduleMobileComponent } from './sched/schedule-mobile.component';
 
@@ -54,6 +55,10 @@ const routes: Routes = [
       { path: 'groups', component: GroupsComponent },
       { path: 'users', component: UserListComponent },
     ]
+  },
+
+  {
+    path: 'profile', canMatch: [loggedIn], component: ProfileComponent,
   },
   
   // By default, we show the 'schedule' view, which shows all the events this month and everything in the future that

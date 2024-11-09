@@ -23,6 +23,9 @@ func Setup(g *gin.Engine) error {
 	if err := setupImage(g); err != nil {
 		return err
 	}
+	if err := setupProfile(g); err != nil {
+		return err
+	}
 
 	return nil
 }
