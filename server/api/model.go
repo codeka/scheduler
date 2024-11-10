@@ -3,6 +3,7 @@ package api
 import (
 	"time"
 
+	"com.codeka/scheduler/server/notify"
 	"com.codeka/scheduler/server/store"
 )
 
@@ -218,4 +219,36 @@ func MakeShift(shift *store.Shift, signups []*store.ShiftSignup, users map[int64
 		EndTime:   shift.EndTime.Format(time.TimeOnly),
 		Signups:   su,
 	}
+}
+
+type NotificationSetting struct {
+	NotificationID          string `json:"notificationId"`
+	NotificationDescription string `json:"notificationDescription"`
+	EmailEnabled            bool   `json:"emailEnabled"`
+	SMSEnabled              bool   `json:"smsEnabled"`
+}
+
+func NotificationSettingToStore(user *store.User, setting NotificationSetting) store.NotificationSetting {
+	return store.NotificationSetting{
+		UserID:         user.ID,
+		NotificationID: setting.NotificationID,
+		EmailEnabled:   setting.EmailEnabled,
+		SMSEnabled:     setting.SMSEnabled,
+	}
+}
+
+func MakeNotificationSettings(settings map[string]*store.NotificationSetting) []*NotificationSetting {
+	var values []*NotificationSetting
+	for _, notificationType := range notify.NotificationTypes {
+		setting := settings[notificationType.ID]
+
+		values = append(values, &NotificationSetting{
+			NotificationID:          notificationType.ID,
+			NotificationDescription: notificationType.Description,
+			EmailEnabled:            setting.EmailEnabled,
+			SMSEnabled:              setting.SMSEnabled,
+		})
+	}
+
+	return values
 }

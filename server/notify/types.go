@@ -2,7 +2,7 @@ package notify
 
 import "com.codeka/scheduler/server/store"
 
-var notificationTypes = []store.NotificationType{
+var NotificationTypes = []store.NotificationType{
 	{
 		ID:                  "shift_24hrs",
 		Description:         "Shift reminder, sent 24 hours before the shift.",
@@ -38,7 +38,7 @@ func EnsureNotificationSettings() error {
 			continue
 		}
 
-		for _, notificationType := range notificationTypes {
+		for _, notificationType := range NotificationTypes {
 			_, ok := settings[notificationType.ID]
 			if !ok {
 				store.SaveNotificationSetting(store.NotificationSetting{

@@ -35,10 +35,25 @@
   </mat-card-header>
 
   <form [formGroup]="notificationsForm" (ngSubmit)="onSaveNotifications()" novalidate>
+    <p>Below are the notification settings. You can choose to receive a notification via email, SMS or both. Note:
+      in order to receive SMS notifications, you must provide your phone number above.</p>
     <div class="row">
-      <div class="fields">
-        
-      </div>
+      <table class="notifications">
+        <tr>
+          <th>Notification</th>
+          <th>Email</th>
+          <th>SMS</th>
+        </tr>
+        <ng-container formArrayName="notifications">
+          <ng-container *ngFor="let notification of notificationsControls; let i = index">
+            <tr class="notification-row" [formGroup]="notification">
+              <td>{{ allNotifications.get(notification.value.notificationId ?? "") }}</td>
+              <td><mat-slide-toggle formControlName="emailEnabled"></mat-slide-toggle></td>
+              <td><mat-slide-toggle formControlName="smsEnabled"></mat-slide-toggle></td>
+            </tr>
+          </ng-container>
+        </ng-container>
+      </table>
     </div>
     <mat-card-actions>
       <div class="spacer"></div>

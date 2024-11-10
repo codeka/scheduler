@@ -54,3 +54,10 @@ export interface Shift {
   endTime: string
   signups: ShiftSignup[]
 }
+
+export interface NotificationSetting {
+  notificationId: string
+	notificationDescription?: string
+	emailEnabled: boolean
+	smsEnabled: boolean
+}

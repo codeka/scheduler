@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { AsYouType, parsePhoneNumberWithError } from "libphonenumber-js";
 
@@ -7,7 +7,13 @@ import { InitService } from "../services/init.service";
 import { ImageService } from "../services/image.service";
 import { FileInfo } from "../widgets/image-picker.component";
 import { ProfileService } from "../services/profile.service";
-import { User } from "../services/model";
+import { NotificationSetting, User } from "../services/model";
+
+type NotificationSettingFormGroup = FormGroup<{
+  notificationId: FormControl<string|null>,
+  emailEnabled: FormControl<boolean|null>,
+  smsEnabled: FormControl<boolean|null>
+}>
 
 @Component({
   selector: 'profile',
@@ -21,13 +27,23 @@ export class ProfileComponent {
     phoneNumber: FormControl<string|null>,
   }>
 
-  notificationsForm: FormGroup<{}>
+  notificationsForm: FormGroup<{
+    notifications: FormArray<NotificationSettingFormGroup>
+  }>
+  allNotifications = new Map<string, string>()
+  get notifications(): FormArray<NotificationSettingFormGroup> {
+    return this.notificationsForm.controls.notifications
+  }
+  get notificationsControls(): NotificationSettingFormGroup[] {
+    return this.notificationsForm.controls.notifications.controls as NotificationSettingFormGroup[]
+  }
+
 
   private fileInfo: FileInfo|null = null
   user: User
 
   constructor(
-    private formBuilder: FormBuilder, public init: InitService, private profileSerivce: ProfileService,
+    private formBuilder: FormBuilder, public init: InitService, private profileService: ProfileService,
     private router: Router, public img: ImageService) {
 
     this.user = init.user()!!
@@ -38,7 +54,9 @@ export class ProfileComponent {
       email: [this.user.email, Validators.required],
       phoneNumber: [phoneNumber.formatNational()],
     });
-    this.notificationsForm = this.formBuilder.group({});
+    this.notificationsForm = this.formBuilder.group({
+      notifications: this.formBuilder.array<NotificationSettingFormGroup>([])
+    })
 
     this.profileForm.controls.phoneNumber.valueChanges.subscribe(newValue => {
       const formatted = new AsYouType('US').input(newValue ?? '')
@@ -46,6 +64,20 @@ export class ProfileComponent {
         this.profileForm.controls.phoneNumber.patchValue(formatted)
       }
     })
+
+    this.profileService.fetchNotificationSettings().then(
+      (notifications) => {
+        this.notificationsForm.controls.notifications.clear()
+        for (var n of notifications) {
+          this.allNotifications.set(n.notificationId, n.notificationDescription ?? "")
+          this.notificationsForm.controls.notifications.push(this.formBuilder.group({
+            notificationId: [n.notificationId],
+            emailEnabled: [n.emailEnabled, Validators.required],
+            smsEnabled: [n.smsEnabled, Validators.required],
+          }))
+        }
+      }
+    )
   }
 
   onSaveProfile() {
@@ -53,10 +85,10 @@ export class ProfileComponent {
     this.user.email = this.profileForm.value.email ?? this.user.email
     this.user.phone = parsePhoneNumberWithError(this.profileForm.value.phoneNumber ?? this.user.phone, 'US').number
 
-    this.profileSerivce.saveProfile(this.user)
+    this.profileService.saveProfile(this.user)
       .then(() => {
         if (this.fileInfo != null) {
-          this.profileSerivce.saveProfilePicture(this.fileInfo.file)
+          this.profileService.saveProfilePicture(this.fileInfo.file)
             .then(() => {
               //??
             })
@@ -67,7 +99,19 @@ export class ProfileComponent {
   }
   
   onSaveNotifications() {
+    var settings: Array<NotificationSetting> = []
+    this.notificationsControls.forEach((ctrl, index) => {
+      const emailEnable = ctrl.value.emailEnabled ?? false
+      const smsEnable = ctrl.value.smsEnabled ?? false
+      const notificationId = ctrl.value.notificationId ?? ""
+      settings.push({
+        notificationId: notificationId,
+        emailEnabled: emailEnable,
+        smsEnabled: smsEnable,
+      });
+    })
 
+    this.profileService.saveNotificationSettings(settings)
   }
 
   imageUpdated(file: FileInfo) {
