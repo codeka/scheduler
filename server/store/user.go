@@ -260,6 +260,50 @@ func GetAllUserGroups() (map[int64][]int64, error) {
 	return groupMap, nil
 }
 
+// GetUserNotificationSettings returns a map of notification ID to the notification setting for all notification
+// settings of the given user.
+func GetUserNotificationSettings(userID int64) (map[string]*NotificationSetting, error) {
+	rows, err := db.Query(`
+		SELECT user_id, notification_id, enable_email, enable_sms
+		FROM notification_settings
+		WHERE user_id = ?`, userID)
+	if err != nil {
+		return map[string]*NotificationSetting{}, err
+	}
+	defer rows.Close()
+
+	settings := make(map[string]*NotificationSetting)
+	for rows.Next() {
+		setting := NotificationSetting{}
+		if err = rows.Scan(&setting.UserID, &setting.NotificationID, &setting.EmailEnabled, &setting.SMSEnabled); err != nil {
+			continue
+		}
+
+		settings[setting.NotificationID] = &setting
+	}
+
+	return settings, nil
+}
+
+func SaveNotificationSetting(setting NotificationSetting) error {
+	// Just delete and re-create the setting.
+	// TODO: actually have a unique index or something?
+	_, err := db.Exec(`
+	  DELETE FROM notification_settings
+		WHERE user_id = ? AND notification_id = ?`,
+		setting.UserID, setting.NotificationID)
+	if err != nil {
+		return err
+	}
+
+	_, err = db.Exec(`
+	  INSERT INTO notification_settings
+		  (user_id, notification_id, enable_email, enable_sms)
+		VALUES (?, ?, ?, ?)`,
+		setting.UserID, setting.NotificationID, setting.EmailEnabled, setting.SMSEnabled)
+	return err
+}
+
 // SaveUser saves the given user to the data store. If the user does not have an ID (ID is 0), then a new user is
 // inserted and the user is updated with the correct ID.
 func SaveUser(user *User) error {

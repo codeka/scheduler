@@ -15,11 +15,13 @@ import { User } from "../services/model";
   styleUrls: ['./profile.component.scss']
 })
 export class ProfileComponent {
-  form: FormGroup<{
+  profileForm: FormGroup<{
     name: FormControl<string|null>,
     email: FormControl<string|null>,
     phoneNumber: FormControl<string|null>,
   }>
+
+  notificationsForm: FormGroup<{}>
 
   private fileInfo: FileInfo|null = null
   user: User
@@ -31,24 +33,25 @@ export class ProfileComponent {
     this.user = init.user()!!
 
     const phoneNumber = parsePhoneNumberWithError(this.user.phone, 'US')
-    this.form = this.formBuilder.group({
+    this.profileForm = this.formBuilder.group({
       name: [this.user.name, Validators.required],
       email: [this.user.email, Validators.required],
       phoneNumber: [phoneNumber.formatNational()],
     });
+    this.notificationsForm = this.formBuilder.group({});
 
-    this.form.controls.phoneNumber.valueChanges.subscribe(newValue => {
+    this.profileForm.controls.phoneNumber.valueChanges.subscribe(newValue => {
       const formatted = new AsYouType('US').input(newValue ?? '')
       if (formatted != newValue) {
-        this.form.controls.phoneNumber.patchValue(formatted)
+        this.profileForm.controls.phoneNumber.patchValue(formatted)
       }
     })
   }
 
   onSaveProfile() {
-    this.user.name = this.form.value.name ?? this.user.name
-    this.user.email = this.form.value.email ?? this.user.email
-    this.user.phone = parsePhoneNumberWithError(this.form.value.phoneNumber ?? this.user.phone, 'US').number
+    this.user.name = this.profileForm.value.name ?? this.user.name
+    this.user.email = this.profileForm.value.email ?? this.user.email
+    this.user.phone = parsePhoneNumberWithError(this.profileForm.value.phoneNumber ?? this.user.phone, 'US').number
 
     this.profileSerivce.saveProfile(this.user)
       .then(() => {
@@ -63,6 +66,10 @@ export class ProfileComponent {
       })
   }
   
+  onSaveNotifications() {
+
+  }
+
   imageUpdated(file: FileInfo) {
     this.fileInfo = file
   }

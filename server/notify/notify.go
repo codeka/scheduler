@@ -14,5 +14,10 @@ func Setup() error {
 		return fmt.Errorf("could not create twilio client")
 	}
 
+	err := EnsureNotificationSettings()
+	if err != nil {
+		return err
+	}
+
 	return nil
 }

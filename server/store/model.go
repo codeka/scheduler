@@ -50,3 +50,32 @@ type ShiftSignup struct {
 	UserID  int64
 	Notes   string
 }
+
+// NotificationType describes a single notification. For example, the notification that is send the day before a shift,
+// or the notification that is sent a week before a shift if it's not full, etc.
+type NotificationType struct {
+	// Id is the identifier of this notification, and semi-user readable string that we
+	// can use to refer to the notification in code.
+	ID string
+
+	// Description is the human-readable description of the notification, shown to the
+	// user to decide whether they want to receive it or not.
+	Description string
+
+	// Whether email/SMS is enabled for this reminder by default, for any new user who signs up.
+	DefaultEmailEnabled bool
+	DefaultSMSEnabled   bool
+}
+
+// NotificationSetting is a single user's setting for whether and how they want to receive a particular notification.
+type NotificationSetting struct {
+	// UserID is the ID of the user this setting is for.
+	UserID int64
+
+	// NotificationID is the ID of the notification this setting is for.
+	NotificationID string
+
+	// Whether the user has email and/or SMS enabled for this notification.
+	EmailEnabled bool
+	SMSEnabled   bool
+}

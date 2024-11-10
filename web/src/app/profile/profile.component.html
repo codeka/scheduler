@@ -3,7 +3,7 @@
     <mat-card-title>Profile</mat-card-title>
   </mat-card-header>
 
-  <form [formGroup]="form" (ngSubmit)="onSaveProfile()" novalidate>
+  <form [formGroup]="profileForm" (ngSubmit)="onSaveProfile()" novalidate>
     <div class="row">
       <image-picker [initialImg]="img.imageUrl(user.pictureName)" (picked)="imageUpdated($event)" />
 
@@ -29,3 +29,20 @@
   </form>
 </mat-card>
 
+<mat-card class="profile-card">
+  <mat-card-header>
+    <mat-card-title>Notification Settings</mat-card-title>
+  </mat-card-header>
+
+  <form [formGroup]="notificationsForm" (ngSubmit)="onSaveNotifications()" novalidate>
+    <div class="row">
+      <div class="fields">
+        
+      </div>
+    </div>
+    <mat-card-actions>
+      <div class="spacer"></div>
+      <button mat-raised-button color="primary" type="submit"><mat-icon>save</mat-icon> Save</button>
+    </mat-card-actions>
+  </form>
+</mat-card>
