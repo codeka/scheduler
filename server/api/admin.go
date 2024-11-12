@@ -359,6 +359,10 @@ func HandleAdminCronJobRunPost(c *gin.Context) {
 	}
 
 	job, err := store.LoadCrobJob(cronJobId)
+	if err != nil {
+		util.HandleError(c, http.StatusBadRequest, err)
+		return
+	}
 	if err := cron.RunCronJob(c, time.Now(), job); err != nil {
 		util.HandleError(c, http.StatusBadRequest, err)
 		return
