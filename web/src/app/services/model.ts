@@ -1,5 +1,4 @@
 
-
 export interface Venue {
   name: string
   shortName: string
@@ -60,4 +59,15 @@ export interface NotificationSetting {
 	notificationDescription?: string
 	emailEnabled: boolean
 	smsEnabled: boolean
+}
+
+export interface CronJob {
+  id: number
+	name: string
+	schedule: string
+	enabled: boolean
+
+  // nextRun can be null if the job isn't going to run (e.g. it's disabled) or we haven't yet calculated when it will
+  // run (e.g. we're about to save it).
+	nextRun: Date|null
 }

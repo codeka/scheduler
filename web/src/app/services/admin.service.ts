@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Group, User, Venue } from "./model";
+import { CronJob, Group, User, Venue } from "./model";
 import { firstValueFrom, map } from "rxjs";
 import { ENV } from "../env/environment";
 
@@ -18,6 +18,10 @@ interface SaveVenuePictureResponse {
 
 interface GetUsersResponse {
   users: User[]
+}
+
+interface GetCronJobsResponse {
+  jobs: CronJob[]
 }
 
 // AdminService is responsible for admin functions, listing users, creating users and so on.
@@ -83,6 +87,27 @@ export class AdminService {
   saveGroup(group: Group): Promise<boolean> {
     return firstValueFrom(
       this.http.post<any>(ENV.backend + "/_/admin/groups", group)
+          .pipe(map(() => true))
+    )
+  }
+
+  getCronJobs(): Promise<CronJob[]> {
+    return firstValueFrom(
+      this.http.get<GetCronJobsResponse>(ENV.backend + "/_/admin/cron-jobs")
+        .pipe(map((resp) => resp.jobs))
+    )
+  }
+
+  saveCronJob(cronJob: CronJob): Promise<boolean> {
+    return firstValueFrom(
+      this.http.post<any>(ENV.backend + "/_/admin/cron-jobs", cronJob)
+          .pipe(map(() => true))
+    )
+  }
+
+  deleteCronJob(id: number): Promise<boolean> {
+    return firstValueFrom(
+      this.http.delete<any>(ENV.backend + "/_/admin/cron-jobs/" + id)
           .pipe(map(() => true))
     )
   }

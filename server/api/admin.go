@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"com.codeka/scheduler/server/cron"
 	"com.codeka/scheduler/server/store"
 	"com.codeka/scheduler/server/util"
 	"github.com/gin-gonic/gin"
@@ -272,6 +273,77 @@ func HandleAdminGroupsPost(c *gin.Context) {
 	c.AbortWithStatus(http.StatusOK)
 }
 
+type cronJobsResponse struct {
+	Jobs []CronJob `json:"jobs"`
+}
+
+func HandleAdminCronJobGet(c *gin.Context) {
+	if !IsInRole(c, "ADMIN") {
+		c.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
+
+	jobs, err := store.LoadCrobJobs()
+	if err != nil {
+		util.HandleError(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	resp := cronJobsResponse{}
+	for _, job := range jobs {
+		resp.Jobs = append(resp.Jobs, MakeCronJob(*job))
+	}
+
+	c.JSON(http.StatusOK, resp)
+}
+
+func HandleAdminCronJobPost(c *gin.Context) {
+	if !IsInRole(c, "ADMIN") {
+		c.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
+
+	var j CronJob
+	if err := c.BindJSON(&j); err != nil {
+		util.HandleError(c, http.StatusBadRequest, err)
+		return
+	}
+	job := CronJobToStore(j)
+	if err := cron.UpdateNextRun(&job); err != nil {
+		util.HandleError(c, http.StatusBadRequest, err)
+		return
+	}
+	err := store.SaveCronJob(&job)
+	if err != nil {
+		util.HandleError(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	c.AbortWithStatus(http.StatusOK)
+}
+
+func HandleAdminCronJobDelete(c *gin.Context) {
+	if !IsInRole(c, "ADMIN") {
+		c.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
+
+	cronJobIStr := c.Param("id")
+	cronJobId, err := strconv.ParseInt(cronJobIStr, 10, 64)
+	if err != nil {
+		util.HandleError(c, http.StatusBadRequest, err)
+		return
+	}
+
+	err = store.DeleteCronJob(cronJobId)
+	if err != nil {
+		util.HandleError(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	c.AbortWithStatus(http.StatusOK)
+}
+
 func setupAdmin(g *gin.Engine) error {
 	g.GET("_/admin/users", HandleAdminUsersGet)
 	g.GET("_/admin/users/:id", HandleAdminUserGet)
@@ -281,6 +353,9 @@ func setupAdmin(g *gin.Engine) error {
 	g.POST("_/admin/venue", HandleAdminVenuePost)
 	g.POST("_/admin/venue/picture", HandleAdminVenuePicturePost)
 	g.POST("_/admin/groups", HandleAdminGroupsPost)
+	g.GET("_/admin/cron-jobs", HandleAdminCronJobGet)
+	g.POST("_/admin/cron-jobs", HandleAdminCronJobPost)
+	g.DELETE("_/admin/cron-jobs/:id", HandleAdminCronJobDelete)
 
 	return nil
 }

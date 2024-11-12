@@ -79,3 +79,12 @@ type NotificationSetting struct {
 	EmailEnabled bool
 	SMSEnabled   bool
 }
+
+// CronJob is a job that we want to run regularly.
+type CronJob struct {
+	ID       int64
+	Name     string
+	Schedule string
+	Enabled  bool
+	NextRun  *time.Time
+}

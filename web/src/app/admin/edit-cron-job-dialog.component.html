@@ -1,0 +1,26 @@
+<h2 mat-dialog-title *ngIf="!!data.cronJob">Edit {{data.cronJob.name}}</h2>
+<h2 mat-dialog-title *ngIf="!data.cronJob">New Job</h2>
+
+<form [formGroup]="form" (ngSubmit)="onSave()" novalidate>
+  <div class="fields">
+    <mat-form-field class="full-width">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name">
+    </mat-form-field>
+    <mat-form-field class="full-width">
+      <mat-label>Schedule</mat-label>
+      <input matInput formControlName="schedule" />
+      <mat-hint>"every 6 hours", "every 2nd day", "every 1 day at 9:00:00" etc.</mat-hint>
+    </mat-form-field>
+    <div class="toggle-container">
+      <mat-slide-toggle formControlName="enabled">Enabled</mat-slide-toggle>
+    </div>
+  </div>
+
+  <mat-dialog-actions>
+    <button mat-stroked-button color="warn" *ngIf="!!data.cronJob" (click)="onDelete()" type="button">DELETE JOB</button>
+    <div class="spacer"></div>
+    <button mat-raised-button color="primary" type="submit">SAVE JOB</button>
+    <button mat-button mat-dialog-close type="button">CANCEL</button>
+  </mat-dialog-actions>
+</form>

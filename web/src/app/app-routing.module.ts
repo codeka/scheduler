@@ -6,6 +6,7 @@ import { ConfirmComponent } from './auth/confirm.component';
 import { LoginComponent } from './auth/login.component';
 
 import { AuthService } from './services/auth.service';
+import { CronComponent } from './admin/cron.component';
 import { DayComponent } from './sched/day.component';
 import { MonthComponent } from './sched/month.component';
 import { UserListComponent } from './admin/user-list.component';
@@ -54,6 +55,7 @@ const routes: Routes = [
       { path: 'edit-venue', component: EditVenueComponent },
       { path: 'groups', component: GroupsComponent },
       { path: 'users', component: UserListComponent },
+      { path: 'cron', component: CronComponent },
     ]
   },
 

@@ -252,3 +252,31 @@ func MakeNotificationSettings(settings map[string]*store.NotificationSetting) []
 
 	return values
 }
+
+type CronJob struct {
+	ID       int64      `json:"id"`
+	Name     string     `json:"name"`
+	Schedule string     `json:"schedule"`
+	Enabled  bool       `json:"enabled"`
+	NextRun  *time.Time `json:"nextRun"`
+}
+
+func CronJobToStore(cronJob CronJob) store.CronJob {
+	return store.CronJob{
+		ID:       cronJob.ID,
+		Name:     cronJob.Name,
+		Schedule: cronJob.Schedule,
+		Enabled:  cronJob.Enabled,
+		NextRun:  cronJob.NextRun,
+	}
+}
+
+func MakeCronJob(cronJob store.CronJob) CronJob {
+	return CronJob{
+		ID:       cronJob.ID,
+		Name:     cronJob.Name,
+		Schedule: cronJob.Schedule,
+		Enabled:  cronJob.Enabled,
+		NextRun:  cronJob.NextRun,
+	}
+}

@@ -1,0 +1,9 @@
+
+CREATE TABLE cron (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  job_name TEXT NOT NULL,
+  enabled BOOLEAN NOT NULL,
+  schedule TEXT NOT NULL,
+  next_run TEXT
+);
+
