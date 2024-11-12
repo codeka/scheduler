@@ -3,6 +3,7 @@ package api
 import (
 	"net/http"
 	"strconv"
+	"time"
 
 	"com.codeka/scheduler/server/cron"
 	"com.codeka/scheduler/server/store"
@@ -344,6 +345,33 @@ func HandleAdminCronJobDelete(c *gin.Context) {
 	c.AbortWithStatus(http.StatusOK)
 }
 
+func HandleAdminCronJobRunPost(c *gin.Context) {
+	if !IsInRole(c, "ADMIN") {
+		c.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
+
+	cronJobIStr := c.Param("id")
+	cronJobId, err := strconv.ParseInt(cronJobIStr, 10, 64)
+	if err != nil {
+		util.HandleError(c, http.StatusBadRequest, err)
+		return
+	}
+
+	job, err := store.LoadCrobJob(cronJobId)
+	if err := cron.RunCronJob(c, time.Now(), job); err != nil {
+		util.HandleError(c, http.StatusBadRequest, err)
+		return
+	}
+	err = store.SaveCronJob(job)
+	if err != nil {
+		util.HandleError(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	c.AbortWithStatus(http.StatusOK)
+}
+
 func setupAdmin(g *gin.Engine) error {
 	g.GET("_/admin/users", HandleAdminUsersGet)
 	g.GET("_/admin/users/:id", HandleAdminUserGet)
@@ -356,6 +384,7 @@ func setupAdmin(g *gin.Engine) error {
 	g.GET("_/admin/cron-jobs", HandleAdminCronJobGet)
 	g.POST("_/admin/cron-jobs", HandleAdminCronJobPost)
 	g.DELETE("_/admin/cron-jobs/:id", HandleAdminCronJobDelete)
+	g.POST("_/admin/cron-jobs/:id/run", HandleAdminCronJobRunPost)
 
 	return nil
 }

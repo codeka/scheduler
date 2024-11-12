@@ -6,6 +6,7 @@ import { EditCronJobDialogComponent } from "./edit-cron-job-dialog.component";
 import { AdminService } from "../services/admin.service";
 import { InitService } from "../services/init.service";
 import { CronJob } from "../services/model";
+import { confirmAction } from "../widgets/confirm-dialog";
 
 @Component({
   selector: 'cron',
@@ -41,6 +42,19 @@ export class CronComponent implements OnInit {
     dialogRef.afterClosed().subscribe(() => {
       // Refresh the page.
       this.ngOnInit();
+    })
+  }
+
+  onRunJob(job: CronJob) {
+    confirmAction(this.dialog, {
+      msg: "Run this job now?",
+      title: "Run Job",
+      confirmButtonLabel: "RUN JOB"
+    }).then(() => {
+      this.adminService.runJob(job.id)
+      .then(_ => {
+        this.ngOnInit();
+      })
     })
   }
 }

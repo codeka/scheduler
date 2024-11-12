@@ -111,4 +111,11 @@ export class AdminService {
           .pipe(map(() => true))
     )
   }
+
+  runJob(id: number): Promise<boolean> {
+    return firstValueFrom(
+      this.http.post<any>(ENV.backend + "/_/admin/cron-jobs/" + id + "/run", { /* todo: parameters? */})
+          .pipe(map(() => true))
+    )
+  }
 }
