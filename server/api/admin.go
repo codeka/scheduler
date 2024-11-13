@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"com.codeka/scheduler/server/cron"
+	"com.codeka/scheduler/server/notify"
 	"com.codeka/scheduler/server/store"
 	"com.codeka/scheduler/server/util"
 	"github.com/gin-gonic/gin"
@@ -376,6 +377,49 @@ func HandleAdminCronJobRunPost(c *gin.Context) {
 	c.AbortWithStatus(http.StatusOK)
 }
 
+type notificationTypesResponse struct {
+	NotificationTypes []NotificationType `json:"notificationTypes"`
+}
+
+func HandleAdminNotificationTypesGet(c *gin.Context) {
+	if !IsInRole(c, "ADMIN") {
+		c.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
+
+	notificationTypes := notify.GetNotificationTypes()
+	resp := notificationTypesResponse{}
+	for _, notificationType := range notificationTypes {
+		resp.NotificationTypes = append(resp.NotificationTypes, MakeNotificationType(notificationType))
+	}
+
+	c.JSON(http.StatusOK, resp)
+}
+
+func HandleAdminNotificationTypesPost(c *gin.Context) {
+	if !IsInRole(c, "ADMIN") {
+		c.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
+
+	var nt NotificationType
+	if err := c.BindJSON(&nt); err != nil {
+		util.HandleError(c, http.StatusBadRequest, err)
+		return
+	}
+	notificationType := NotificationTypeToStore(nt)
+	err := store.SaveNotificationType(notificationType)
+	if err != nil {
+		util.HandleError(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	// Make sure we re-load the notification types.
+	notify.EnsureNotificationTypes()
+
+	c.AbortWithStatus(http.StatusOK)
+}
+
 func setupAdmin(g *gin.Engine) error {
 	g.GET("_/admin/users", HandleAdminUsersGet)
 	g.GET("_/admin/users/:id", HandleAdminUserGet)
@@ -389,6 +433,8 @@ func setupAdmin(g *gin.Engine) error {
 	g.POST("_/admin/cron-jobs", HandleAdminCronJobPost)
 	g.DELETE("_/admin/cron-jobs/:id", HandleAdminCronJobDelete)
 	g.POST("_/admin/cron-jobs/:id/run", HandleAdminCronJobRunPost)
+	g.GET("_/admin/notifications/types", HandleAdminNotificationTypesGet)
+	g.POST("_/admin/notifications/types", HandleAdminNotificationTypesPost)
 
 	return nil
 }

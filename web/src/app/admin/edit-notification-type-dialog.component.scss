@@ -1,0 +1,23 @@
+
+div.fields {
+  margin: 20pt 20pt 0 20pt;
+  min-width: 400pt;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+div.toggle-container {
+  height: 48pt;
+  line-height: 48pt;
+  margin-left: 12pt;
+}
+
+div.fields mat-form-field.full-width {
+  align-self: stretch;
+}
+
+div.fields mat-checkbox {
+  margin-bottom: 12pt;
+}

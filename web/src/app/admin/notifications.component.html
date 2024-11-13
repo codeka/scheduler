@@ -1,0 +1,30 @@
+<mat-toolbar class="header">
+  <h1>Notifications</h1>
+</mat-toolbar>
+
+<table mat-table [dataSource]="notifications" class="mat-elevation-z8">
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef>Name</th>
+    <td mat-cell *matCellDef="let notification">{{notification.id}}</td>
+  </ng-container>
+  <ng-container matColumnDef="description">
+    <th mat-header-cell *matHeaderCellDef>Description</th>
+    <td mat-cell *matCellDef="let notification">{{notification.desription}}</td>
+  </ng-container>
+  <ng-container matColumnDef="emailTemplateId">
+    <th mat-header-cell *matHeaderCellDef>Email Template ID</th>
+    <td mat-cell *matCellDef="let notification">{{notification.defaultEmailEnable}} {{notification.emailTemplateId}}</td>
+  </ng-container>
+  <ng-container matColumnDef="smsTemplate">
+    <th mat-header-cell *matHeaderCellDef>SMS Template</th>
+    <td mat-cell *matCellDef="let notification">{{notification.defaultSmsEnable}} {{notification.smsTemplate}}</td>
+  </ng-container>
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef>&nbsp;</th>
+    <td mat-cell *matCellDef="let notification" class="actions-column">
+      <button mat-icon-button (click)="onEditNotificationType(notification)"><mat-icon>edit</mat-icon></button>
+    </td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>

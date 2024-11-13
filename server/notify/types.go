@@ -1,27 +1,48 @@
 package notify
 
-import "com.codeka/scheduler/server/store"
+import (
+	"com.codeka/scheduler/server/store"
+)
 
-var NotificationTypes = []store.NotificationType{
-	{
-		ID:                  "shift_24hrs",
-		Description:         "Shift reminder, sent 24 hours before the shift.",
-		DefaultEmailEnabled: false,
-		DefaultSMSEnabled:   true,
-	},
-	{
-		ID:                  "shift_3days",
-		Description:         "Shift reminder, sent 3 days before the shift.",
-		DefaultEmailEnabled: true,
-		DefaultSMSEnabled:   false,
-	},
-	{
-		ID:                  "empty_shift_1week",
-		Description:         "Notification of a shift that isn't full, sent 1 week before the shift.",
-		DefaultEmailEnabled: false,
-		DefaultSMSEnabled:   false,
-	},
-	// TODO: add more?
+var notificationTypeNames = []string{
+	"shift_24hours", "shift_3days", "empty_shift_1week",
+}
+
+var notificationTypes []store.NotificationType
+
+func EnsureNotificationTypes() error {
+	var err error
+	notificationTypes, err = store.LoadNotificationTypes()
+	if err != nil {
+		return err
+	}
+
+	needReload := false
+	for _, notificationTypeName := range notificationTypeNames {
+		found := false
+		for _, notificationType := range notificationTypes {
+			if notificationType.ID == notificationTypeName {
+				found = true
+			}
+		}
+
+		if !found {
+			notificationType := store.NotificationType{
+				ID: notificationTypeName,
+			}
+			store.SaveNotificationType(notificationType)
+			needReload = true
+		}
+	}
+
+	if needReload {
+		notificationTypes, err = store.LoadNotificationTypes()
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 // EnsureNotificationSettings is called at startup to make sure all users have a NotificationSetting created for each
@@ -38,14 +59,14 @@ func EnsureNotificationSettings() error {
 			continue
 		}
 
-		for _, notificationType := range NotificationTypes {
+		for _, notificationType := range notificationTypes {
 			_, ok := settings[notificationType.ID]
 			if !ok {
 				store.SaveNotificationSetting(store.NotificationSetting{
 					UserID:         user.ID,
 					NotificationID: notificationType.ID,
-					EmailEnabled:   notificationType.DefaultEmailEnabled,
-					SMSEnabled:     notificationType.DefaultSMSEnabled,
+					EmailEnabled:   notificationType.DefaultEmailEnable,
+					SMSEnabled:     notificationType.DefaultSMSEnable,
 				})
 			}
 		}
@@ -54,4 +75,9 @@ func EnsureNotificationSettings() error {
 	}
 
 	return nil
+}
+
+// GetNotificationTypes gets all the notification types.
+func GetNotificationTypes() []store.NotificationType {
+	return notificationTypes
 }

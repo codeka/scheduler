@@ -17,6 +17,7 @@ import { GroupsComponent } from './admin/groups.component';
 import { ProfileComponent } from './profile/profile.component';
 import { ScheduleDesktopComponent } from './sched/schedule-desktop.component';
 import { ScheduleMobileComponent } from './sched/schedule-mobile.component';
+import { NotificationsComponent } from './admin/notifications.component';
 
 const loggedIn: CanMatchFn = () => {
   return inject(AuthService).isLoggedIn();
@@ -56,6 +57,7 @@ const routes: Routes = [
       { path: 'groups', component: GroupsComponent },
       { path: 'users', component: UserListComponent },
       { path: 'cron', component: CronComponent },
+      { path: 'notifications', component: NotificationsComponent },
     ]
   },
 

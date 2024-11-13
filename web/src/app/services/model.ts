@@ -71,3 +71,12 @@ export interface CronJob {
   // run (e.g. we're about to save it).
 	nextRun: Date|null
 }
+
+export interface NotificationType {
+  id: string
+	description: string
+	emailTemplateId: string
+	smsTemplate: string
+  defaultEmailEnable: boolean
+  defaultSmsEnable: boolean
+}

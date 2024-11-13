@@ -23,13 +23,16 @@ import { EditGroupDialogComponent } from "./edit-group-dialog.component";
 import { EditUserDialogComponent } from "./edit-user-dialog.component";
 import { EditVenueComponent } from "./edit-venue.component";
 import { GroupsComponent } from "./groups.component";
+import { NotificationsComponent } from "./notifications.component";
 import { UserListComponent } from "./user-list.component";
 import { EditCronJobDialogComponent } from "./edit-cron-job-dialog.component";
+import { EditNotificationTypeDialogComponent } from "./edit-notification-type-dialog.component";
 
 @NgModule({
   declarations: [
-    AdminComponent, CronComponent, EditCronJobDialogComponent, EditGroupDialogComponent, EditUserDialogComponent,
-    EditVenueComponent, GroupsComponent, UserListComponent],
+    AdminComponent, CronComponent, EditCronJobDialogComponent, EditGroupDialogComponent,
+    EditNotificationTypeDialogComponent, EditUserDialogComponent, EditVenueComponent, GroupsComponent,
+    NotificationsComponent, UserListComponent],
   imports: [
     AppRoutingModule, BrowserModule, FormsModule, MatButtonModule, MatCardModule, MatCheckboxModule, MatDialogModule,
     MatFormFieldModule, MatIconModule, MatInputModule, MatListModule, MatSlideToggleModule, MatToolbarModule,

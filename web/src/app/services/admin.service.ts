@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { CronJob, Group, User, Venue } from "./model";
+import { CronJob, Group, NotificationType, User, Venue } from "./model";
 import { firstValueFrom, map } from "rxjs";
 import { ENV } from "../env/environment";
 
@@ -22,6 +22,10 @@ interface GetUsersResponse {
 
 interface GetCronJobsResponse {
   jobs: CronJob[]
+}
+
+interface GetNotificationTypesResponse {
+  notificationTypes: NotificationType[]
 }
 
 // AdminService is responsible for admin functions, listing users, creating users and so on.
@@ -115,6 +119,20 @@ export class AdminService {
   runJob(id: number): Promise<boolean> {
     return firstValueFrom(
       this.http.post<any>(ENV.backend + "/_/admin/cron-jobs/" + id + "/run", { /* todo: parameters? */})
+          .pipe(map(() => true))
+    )
+  }
+  
+  getNotificationTypes(): Promise<NotificationType[]> {
+    return firstValueFrom(
+      this.http.get<GetNotificationTypesResponse>(ENV.backend + "/_/admin/notifications/types")
+        .pipe(map((resp) => resp.notificationTypes))
+    )
+  }
+
+  saveNotificationType(notificationType: NotificationType): Promise<boolean> {
+    return firstValueFrom(
+      this.http.post<any>(ENV.backend + "/_/admin/notifications/types", notificationType)
           .pipe(map(() => true))
     )
   }

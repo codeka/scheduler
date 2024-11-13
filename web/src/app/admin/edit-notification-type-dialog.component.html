@@ -1,0 +1,30 @@
+<h2 mat-dialog-title>Edit {{data.notificationType?.id}}</h2>
+
+<form [formGroup]="form" (ngSubmit)="onSave()" novalidate>
+  <div class="fields">
+    <mat-form-field class="full-width">
+      <mat-label>Description</mat-label>
+      <input matInput formControlName="description">
+    </mat-form-field>
+    <mat-form-field class="full-width">
+      <mat-label>Email Template ID</mat-label>
+      <input matInput formControlName="emailTemplateId">
+    </mat-form-field>
+    <div class="toggle-container">
+      <mat-slide-toggle formControlName="defaultEmailEnable">Email enabled by default</mat-slide-toggle>
+    </div>
+    <mat-form-field class="full-width">
+      <mat-label>SMS Template</mat-label>
+      <textarea matInput formControlName="smsTemplate"></textarea>
+    </mat-form-field>
+    <div class="toggle-container">
+      <mat-slide-toggle formControlName="defaultSmsEnable">SMS enabled by default</mat-slide-toggle>
+    </div>
+  </div>
+
+  <mat-dialog-actions>
+    <div class="spacer"></div>
+    <button mat-raised-button color="primary" type="submit">SAVE JOB</button>
+    <button mat-button mat-dialog-close type="button">CANCEL</button>
+  </mat-dialog-actions>
+</form>

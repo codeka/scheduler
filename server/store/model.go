@@ -63,8 +63,13 @@ type NotificationType struct {
 	Description string
 
 	// Whether email/SMS is enabled for this reminder by default, for any new user who signs up.
-	DefaultEmailEnabled bool
-	DefaultSMSEnabled   bool
+	DefaultEmailEnable bool
+	DefaultSMSEnable   bool
+
+	// The email template ID on SendGrid for the email to send.
+	EmailTemplateID string
+	// The full SMS template for sending SMSs.
+	SmsTemplate string
 }
 
 // NotificationSetting is a single user's setting for whether and how they want to receive a particular notification.

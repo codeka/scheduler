@@ -16,6 +16,9 @@ argParser.add_argument(
   "-t", "--twilio",
    help=("Twilio auth parameters, should be 'ACCOUNT_SID:AUTH_TOKEN'. " +
          "See https://console.twilio.com/us1/account/keys-credentials/api-keys"))
+argParser.add_argument(
+  "-s", "--sendgrid",
+  help="SendGrid API key, see https://app.sendgrid.com/settings/api_keys")
 args = argParser.parse_args()
 
 # TODO: if on linux, make this "server" without the .exe
@@ -71,6 +74,7 @@ def runServer():
   env['DEBUG'] = '1'
   env['TWILIO_ACCOUNT_SID'] = twilioAccountSid
   env['TWILIO_AUTH_TOKEN'] = twilioAuthToken
+  env['SENDGRID_API_KEY'] = args.sendgrid
   return subprocess.Popen(cmd, cwd=cwd, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
 

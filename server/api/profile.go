@@ -112,7 +112,7 @@ func HandleNotificationSettingsPost(c *gin.Context) {
 	for _, s := range req.NotificationSettings {
 		settings[s.NotificationID] = s
 	}
-	for _, n := range notify.NotificationTypes {
+	for _, n := range notify.GetNotificationTypes() {
 		setting, ok := settings[n.ID]
 		if !ok {
 			continue

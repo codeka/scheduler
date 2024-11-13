@@ -239,7 +239,7 @@ func NotificationSettingToStore(user *store.User, setting NotificationSetting) s
 
 func MakeNotificationSettings(settings map[string]*store.NotificationSetting) []*NotificationSetting {
 	var values []*NotificationSetting
-	for _, notificationType := range notify.NotificationTypes {
+	for _, notificationType := range notify.GetNotificationTypes() {
 		setting := settings[notificationType.ID]
 
 		values = append(values, &NotificationSetting{
@@ -251,6 +251,37 @@ func MakeNotificationSettings(settings map[string]*store.NotificationSetting) []
 	}
 
 	return values
+}
+
+type NotificationType struct {
+	ID                 string `json:"id"`
+	Description        string `json:"description"`
+	EmailTemplateID    string `json:"emailTemplateId"`
+	SMSTemplate        string `json:"smsTemplate"`
+	DefaultEmailEnable bool   `json:"defaultEmailEnable"`
+	DefaultSMSEnable   bool   `json:"defaultSmsEnable"`
+}
+
+func NotificationTypeToStore(notificationType NotificationType) store.NotificationType {
+	return store.NotificationType{
+		ID:                 notificationType.ID,
+		Description:        notificationType.Description,
+		EmailTemplateID:    notificationType.EmailTemplateID,
+		SmsTemplate:        notificationType.SMSTemplate,
+		DefaultEmailEnable: notificationType.DefaultEmailEnable,
+		DefaultSMSEnable:   notificationType.DefaultSMSEnable,
+	}
+}
+
+func MakeNotificationType(notificationType store.NotificationType) NotificationType {
+	return NotificationType{
+		ID:                 notificationType.ID,
+		Description:        notificationType.Description,
+		EmailTemplateID:    notificationType.EmailTemplateID,
+		SMSTemplate:        notificationType.SmsTemplate,
+		DefaultEmailEnable: notificationType.DefaultEmailEnable,
+		DefaultSMSEnable:   notificationType.DefaultSMSEnable,
+	}
 }
 
 type CronJob struct {
