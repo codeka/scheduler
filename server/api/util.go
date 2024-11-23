@@ -18,6 +18,10 @@ func AuthMiddleware(c *gin.Context) {
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return
 		}
+		if user == nil {
+			c.Status(http.StatusUnauthorized)
+			return
+		}
 		c.Set("user", user)
 
 		roles, err := store.GetUserRoles(user.ID)
