@@ -1,10 +1,7 @@
 <mat-toolbar class="header">
-  <h1>Schedule</h1>
   <div class="spacer"></div>
   <mat-checkbox class="show-all" (change)="onShowAllChanged($event)">Show all groups</mat-checkbox>
   <view-switcher></view-switcher>
-  <button class="admin-button" mat-raised-button *ngIf="auth.isInRole('EVENT_MANAGER')" (click)="onCreateEvent()"><mat-icon>event</mat-icon>Create Event</button>
-  <button class="admin-button" mat-raised-button *ngIf="auth.isInRole('ADMIN')" (click)="onCreateShift()"><mat-icon>event</mat-icon>Create Shift</button>
 </mat-toolbar>
 <div class="schedule">
   <div class="schedule-month"
@@ -21,32 +18,33 @@
           <span class="event-time">{{eventTimeStr(event)}}</span>
         </div>
       </div>
-      <ng-container *ngFor="let group of groups">
-        <div class="shift {{ shiftClass(shift, group) }}"
-              *ngFor="let shift of day.shifts.get(group.id)">
-          <div class="shift-header">
-            <span class="group-name">{{group.name}}</span>
-            <span>{{shiftTimeStr(shift)}}</span>
-          </div>
-          <mat-chip-set role="list">
-            <mat-chip role="listitem" class="shift-signup" (click)="onSignupClick(group, shift, signup)"
-                  *ngFor="let signup of shift.signups">
-              {{ signup.user.name }}
-            </mat-chip>
-            <button mat-icon-button (click)="onShiftSignup(group, shift)"
-                    matTooltip="Sign up for {{shiftTimeStr(shift)}} shift"
-                    *ngIf="isInGroup(group)">
-              <mat-icon>edit_calendar</mat-icon>
-            </button>
-          </mat-chip-set>
-          @for (signup of shift.signups ; track signup.user.id) {
-            <div class="signup-note" *ngIf="signup.notes != ''">
-              <strong>{{ signup.user.name }}:</strong> {{ signup.notes }}
+      <div class="shift-bucket" *ngFor="let bucket of day.shiftBuckets">
+        <ng-container *ngFor="let group of groups">
+          <div class="shift {{ shiftClass(shift, group) }}"
+            *ngFor="let shift of bucket.shifts.get(group.id)">
+            <div class="shift-header">
+              <span class="group-name">{{group.name}}</span>
+              <span>{{shiftTimeStr(shift)}}</span>
             </div>
-          }
-
-        </div>
-      </ng-container>
+            <mat-chip-set role="list">
+              <mat-chip role="listitem" class="shift-signup" (click)="onSignupClick(group, shift, signup)"
+                *ngFor="let signup of shift.signups">
+                {{ signup.user.name }}
+              </mat-chip>
+              <button mat-icon-button (click)="onShiftSignup(group, shift)"
+                matTooltip="Sign up for {{shiftTimeStr(shift)}} shift"
+                *ngIf="isInGroup(group)">
+                <mat-icon>edit_calendar</mat-icon>
+              </button>
+            </mat-chip-set>
+            @for (signup of shift.signups ; track signup.user.id) {
+              <div class="signup-note" *ngIf="signup.notes != ''">
+                <strong>{{ signup.user.name }}:</strong> {{ signup.notes }}
+              </div>
+            }
+          </div>
+        </ng-container>
+      </div>
     </div>
   </div>
 </div>

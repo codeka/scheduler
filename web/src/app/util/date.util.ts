@@ -34,7 +34,6 @@ export function stringToDate(str?: string): Date|undefined {
   return new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]), 0, 0, 0, 0);
 }
 
-
 export function stringToTime(str: string): Date {
   const parts = str.split(":");
   if (parts.length != 3) {
@@ -50,7 +49,6 @@ export function sameDay(dt1: Date, dt2: Date): boolean {
 }
 
 export function formatStartEndTime(startTime: Date, endTime: Date): string {
-
   var str = ""
   if (startTime.getHours() > 12) {
     str += "" + (startTime.getHours() - 12)
@@ -79,4 +77,26 @@ export function formatStartEndTime(startTime: Date, endTime: Date): string {
   }
 
   return str;
+}
+
+// Calculates how much the two date ranges overlap, returning the number of milliseconds of overlap.
+export function calculateOverlap(start1Dt: Date, end1Dt: Date, start2Dt: Date, end2Dt: Date): number {
+  const start1 = start1Dt.valueOf()
+  const end1 = end1Dt.valueOf()
+  const start2 = start2Dt.valueOf()
+  const end2 = end2Dt.valueOf()
+
+  // If there's no overlap, return 0.
+  if (end1 <= start2 || end2 <= start1) {
+    return 0;
+  }
+
+  const overlapStart = Math.max(start1, start2);
+  const overlapEnd = Math.min(end1, end2);
+  return overlapEnd - overlapStart;
+}
+
+// Returns the number of milliseconds between these two dates.
+export function calculateDuration(startDt: Date, endDt: Date): number {
+  return endDt.valueOf() - startDt.valueOf()
 }

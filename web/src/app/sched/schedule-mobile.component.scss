@@ -2,6 +2,11 @@
 
 div.schedule-month {
   margin-left: 10pt;
+  margin-bottom: 30pt;
+}
+
+div.schedule-day {
+  margin-bottom: 40pt;
 }
 
 span.event-title {
@@ -14,11 +19,15 @@ span.event-time {
 div.event-day {
   border-top: solid 1px black;
   font-weight: bold;
-  margin-top: 20pt;
 }
 
 span.group-name { 
   margin-right: 10pt;
+}
+
+.month h1 {
+  margin: 0;
+  padding: 0;
 }
 
 div.shift {
@@ -36,4 +45,13 @@ div.shift span.group-name {
 }
 .shift-full {
   background-color: $bg-shift-filled;
+}
+
+.shift-bucket {
+  border-top: dotted 1px black;
+  margin-top: 10pt;
+}
+// Don't give the first shift bucket (which is the 3rd child after the date and meeting list) a border.
+.shift-bucket:nth-child(3) {
+  border-top: solid 0px;
 }

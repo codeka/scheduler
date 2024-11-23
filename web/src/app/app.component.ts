@@ -17,6 +17,10 @@ export class AppComponent {
     this.user = init.user()
   }
 
+  isMobile() {
+    return document.body.offsetWidth < 1024
+  }
+
   logout() {
     this.auth.logout()
   }

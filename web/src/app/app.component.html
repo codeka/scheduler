@@ -1,7 +1,8 @@
 
 <mat-toolbar class="header" color="primary">
   <img height="40" alt="Logo" src="/assets/img/logo.svg" />
-  <a [routerLink]="'/'">Scheduler &bull; {{venue.name}}</a>
+  <a [routerLink]="'/'" *ngIf="!isMobile()">Scheduler &bull; {{venue.name}}</a>
+  <a [routerLink]="'/'" *ngIf="isMobile()">{{venue.shortName}}</a>
   <div class="spacer"></div>
   <button mat-button [matMenuTriggerFor]="usermenu" *ngIf="user">
     {{user.name}} <mat-icon iconPositionEnd>arrow_drop_down</mat-icon>

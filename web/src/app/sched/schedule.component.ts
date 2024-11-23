@@ -2,7 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Event, Group, Shift, ShiftSignup } from '../services/model';
 import { AuthService } from '../services/auth.service';
-import { formatStartEndTime, sameDay, stringToDate, stringToTime } from '../util/date.util';
+import { calculateDuration, calculateOverlap, formatStartEndTime, sameDay, stringToDate, stringToTime } from '../util/date.util';
 import { EventsService } from '../services/events.service';
 import { InitService } from '../services/init.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -15,10 +15,42 @@ import { throttleTime } from 'rxjs/internal/operators/throttleTime';
 import { map } from 'rxjs/internal/operators/map';
 import { Observable, startWith } from 'rxjs';
 
+// A shift "bucket" is a collection of shifts that overlap and consitite one set of people. For example, it's common
+// to have a bunch of shifts in the morning, then a bunch more in the afternoon. Because shifts are not really
+// "associated" with meetings directly (i.e. one shift could cover 2 meetings, etc), this is a way we can group
+// associated shifts together.
+class ShiftBucket {
+  shifts = new Map<number, Array<Shift>>()
+
+  startTime: Date
+  endTime: Date
+
+  constructor(initialShift: Shift) {
+    this.shifts.set(initialShift.groupId, [initialShift])
+    this.startTime = stringToTime(initialShift.startTime)
+    this.endTime = stringToTime(initialShift.endTime)
+  }
+
+  public addShift(shift: Shift) {
+    var shifts = this.shifts.get(shift.groupId)
+    if (!shifts) {
+      shifts = [shift]
+    } else {
+      shifts.push(shift)
+    }
+    this.shifts.set(shift.groupId, shifts)
+    const shiftStart = stringToTime(shift.startTime)
+    const shiftEnd = stringToTime(shift.endTime)
+    this.startTime = (this.startTime.valueOf() < shiftStart.valueOf()) ? this.startTime : shiftStart
+    this.endTime = (this.endTime.valueOf() > shiftEnd.valueOf()) ? this.endTime : shiftEnd
+  }
+}
+
 class ScheduleDay {
   events = new Array<Event>()
   groups = new Array<Group>()
   shifts = new Map<number, Array<Shift>>() // map of string group ID to list of shifts for that group
+  shiftBuckets = new Array<ShiftBucket>()
 
   constructor(public date: Date) {}
 }
@@ -44,6 +76,7 @@ export class ScheduleComponent implements OnInit {
   events: Array<Event> = []
   months: Array<ScheduleMonth> = []
   groups: Array<Group> = []
+  groupMap = new Map<number, Group>()
   useMobileContent: Observable<boolean>
 
   constructor(public auth: AuthService, private dialog: MatDialog, private route: ActivatedRoute, private router: Router,
@@ -85,6 +118,8 @@ export class ScheduleComponent implements OnInit {
 
           if (resp.shifts) for (const shift of resp.shifts) {
             const shiftDate = stringToDate(shift.date)
+            const shiftStart = stringToTime(shift.startTime)
+            const shiftEnd = stringToTime(shift.endTime)
             const day = this.findDay(months, shiftDate)
             if (day == null) {
               // It should exist... this is weird. Just ignore it.
@@ -97,6 +132,22 @@ export class ScheduleComponent implements OnInit {
               day.shifts.set(shift.groupId, shifts)
             }
             shifts.push(shift)
+
+            // Figure out if this shift belongs to an existing bucket or not.
+            var existingBucket = false
+            for (const bucket of day.shiftBuckets) {
+              // If the shift overlaps the bucket by more than 3/4 of the shift, then it belongs in this bucket.
+              const overlap = calculateOverlap(bucket.startTime, bucket.endTime, shiftStart, shiftEnd)
+              const shiftDuration = calculateDuration(shiftStart, shiftEnd)
+              if (overlap > shiftDuration * 0.75) {
+                existingBucket = true
+                bucket.addShift(shift)
+              }
+            }
+            if (!existingBucket) {
+              // Make a new bucket
+              day.shiftBuckets.push(new ShiftBucket(shift))
+            }
           }
           this.months = months
         });
@@ -166,6 +217,10 @@ export class ScheduleComponent implements OnInit {
     this.groups = this.init.groups().filter((group) => {
       return this.showAll || group.alwaysShow || user?.groups.includes(group.id)
     })
+    this.groupMap.clear()
+    for (const group of this.groups) {
+      this.groupMap.set(group.id, group)
+    }
   }
 
 
