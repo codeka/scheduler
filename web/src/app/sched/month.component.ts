@@ -29,8 +29,6 @@ export class MonthComponent {
     this.month =
         this.route.params
             .pipe(map((p) => {
-              console.log("here");
-
               if (!p["year"] || !p["month"]) {
                 const today = new Date();
                 // No year/month specifed, redirect to today.
@@ -38,13 +36,10 @@ export class MonthComponent {
               }
               this.monthStart = new Date(parseInt(p["year"]), parseInt(p["month"]) - 1, 1);
 
-              console.log("foo: " + this.monthStart);
-
               this.monthEnd = new Date(this.monthStart);
               this.monthEnd.setMonth(this.monthEnd.getMonth() + 1);
               this.monthEnd.setDate(-1);
 
-              console.log("huh: " + JSON.stringify(this.weeks));
               var weekStart = -this.monthStart.getDay();
               this.weeks = [];
               while (weekStart <= this.monthEnd.getDate()) {
@@ -59,7 +54,7 @@ export class MonthComponent {
 
               return this.monthStart;
             }));
-    this.month.subscribe((date) => { console.log(date) })
+    this.month.subscribe()
   }
 
   // We want to pass this to the keyvalue pipe so that it doesn't sort our dates.

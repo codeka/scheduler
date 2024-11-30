@@ -16,6 +16,8 @@ import { SchedModule } from './sched/sched.module';
 
 import { AppComponent } from './app.component';
 import { NotFoundComponent } from './not-found.component';
+import { ShiftsTitleStrategy } from './title-strategy';
+import { TitleStrategy } from '@angular/router';
 
 @NgModule({
   declarations: [
@@ -25,7 +27,9 @@ import { NotFoundComponent } from './not-found.component';
     AdminModule, AppRoutingModule, AuthModule, BrowserModule, BrowserAnimationsModule, MatButtonModule, MatIconModule,
     MatMenuModule, MatToolbarModule, ProfileModule, ServicesModule, SchedModule
   ],
-  providers: [],
+  providers: [
+    {provide: TitleStrategy, useClass: ShiftsTitleStrategy},
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {

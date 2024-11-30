@@ -19,11 +19,12 @@ Requirements for web:
     $ npm --version
     9.8.1
 
+    $ cd web
     $ npm install
 
 ## Running locally
 
-    python ./run.py --datadir=/some/path
+    python ./run.py --datadir=/some/path --twilio=ACCOUNT_SID:AUTH_TOKEN --sendgrid=API_KEY
 
 ## Deploying
 

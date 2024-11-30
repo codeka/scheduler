@@ -108,7 +108,6 @@ export class WeekComponent {
   // this.firstHour.
   eventTop(event: Event, hourHeight: number): string {
     const time = stringToTime(event.startTime);
-    console.log("event.title=" + event.title + " startTime=" + event.startTime);
     return (9 + (time.getHours() + (time.getMinutes() / 60.0) - this.hours[0]) * hourHeight) + "pt";
   }
 

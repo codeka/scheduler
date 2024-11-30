@@ -38,37 +38,37 @@ const isNotMobile: CanMatchFn = () => {
 
 const routes: Routes = [
   // Login can match any time.
-  { path: 'login', component: LoginComponent },
-  { path: 'login/confirm', component: ConfirmComponent },
+  { path: 'login', title: 'Login"', component: LoginComponent },
+  { path: 'login/confirm', title: 'Login - Confirm', component: ConfirmComponent },
 
   // Most paths will only match if you're logged in.
-  { path: 'day', canMatch: [loggedIn], component: DayComponent },
-  { path: 'day/:year/:month/:day', canMatch: [loggedIn], component: DayComponent },
-  { path: 'week', canMatch: [loggedIn], component: WeekComponent },
-  { path: 'week/:year/:month/:day', canMatch: [loggedIn], component: WeekComponent },
-  { path: 'month', canMatch: [loggedIn], component: MonthComponent },
-  { path: 'month/:year/:month', canMatch: [loggedIn], component: MonthComponent },
+  { path: 'day', title: 'Daily', canMatch: [loggedIn], component: DayComponent },
+  { path: 'day/:year/:month/:day', title: 'Shifts - Daily', canMatch: [loggedIn], component: DayComponent },
+  { path: 'week', title: 'Weekly', canMatch: [loggedIn], component: WeekComponent },
+  { path: 'week/:year/:month/:day', title: 'Weekly', canMatch: [loggedIn], component: WeekComponent },
+  { path: 'month', title: 'Monthly', canMatch: [loggedIn], component: MonthComponent },
+  { path: 'month/:year/:month', title: 'Monthly', canMatch: [loggedIn], component: MonthComponent },
 
   // Paths for admins.
   { 
-    path: 'admin', canMatch: [inRole('ADMIN')], component: AdminComponent,
+    path: 'admin', title: 'Shifts - Admin', canMatch: [inRole('ADMIN')], component: AdminComponent,
     children: [
-      { path: 'edit-venue', component: EditVenueComponent },
-      { path: 'groups', component: GroupsComponent },
-      { path: 'users', component: UserListComponent },
-      { path: 'cron', component: CronComponent },
-      { path: 'notifications', component: NotificationsComponent },
+      { path: 'edit-venue', title: 'Admin - Edit Venue', component: EditVenueComponent },
+      { path: 'groups', title: 'Admin - Groups', component: GroupsComponent },
+      { path: 'users', title: 'Admin - Users', component: UserListComponent },
+      { path: 'cron', title: 'Admin - Cron', component: CronComponent },
+      { path: 'notifications', title: 'Notifications', component: NotificationsComponent },
     ]
   },
 
   {
-    path: 'profile', canMatch: [loggedIn], component: ProfileComponent,
+    path: 'profile', title: 'Profile', canMatch: [loggedIn], component: ProfileComponent,
   },
   
   // By default, we show the 'schedule' view, which shows all the events this month and everything in the future that
   // we have in the database.
-  { path: '', canMatch: [loggedIn, isMobile], component: ScheduleMobileComponent, pathMatch: "full" },
-  { path: '', canMatch: [loggedIn, isNotMobile], component: ScheduleDesktopComponent, pathMatch: "full" },
+  { path: '', title: 'Schedule', canMatch: [loggedIn, isMobile], component: ScheduleMobileComponent, pathMatch: "full" },
+  { path: '', title: 'Schedule', canMatch: [loggedIn, isNotMobile], component: ScheduleDesktopComponent, pathMatch: "full" },
 
   { path: '**', canMatch: [loggedIn], component: NotFoundComponent },
   { path: '**', redirectTo: '/login' },
