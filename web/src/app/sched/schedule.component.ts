@@ -95,6 +95,7 @@ export class ScheduleComponent implements OnInit {
         .then((resp) => {
           this.events = resp.events;
 
+          console.log("hello world")
           var months = new Array<ScheduleMonth>()
           var currMonth: ScheduleMonth|null = null
           var currDay: ScheduleDay|null = null
@@ -142,6 +143,7 @@ export class ScheduleComponent implements OnInit {
               if (overlap > shiftDuration * 0.75) {
                 existingBucket = true
                 bucket.addShift(shift)
+                break
               }
             }
             if (!existingBucket) {
