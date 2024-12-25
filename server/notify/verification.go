@@ -59,12 +59,12 @@ func ConfirmVerification(request ConfirmationRequest) (string, error) {
 
 	resp, err := client.VerifyV2.CreateVerificationCheck(VerificationServiceSID, params)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("error creating checkL %v", err)
 	}
 
 	if resp.Status != nil && *resp.Status == "approved" {
 		return *resp.Sid, nil
 	} else {
-		return "", fmt.Errorf("wrong code")
+		return "", fmt.Errorf("verification status: %v", *resp.Status)
 	}
 }

@@ -65,7 +65,7 @@ export class AuthService {
 
   sendConfirmationCode(emailOrPhone: string): Promise<ConfirmationSentResponse> {
     const req: ConfirmationSendRequest = {
-      emailOrPhone: emailOrPhone
+      emailOrPhone: this.sanitizeEmailOrPhone(emailOrPhone)
     };
     return firstValueFrom(
         this.http.post<ConfirmationSentResponse>(ENV.backend + "/_/auth/send-confirmation", req)
@@ -76,7 +76,7 @@ export class AuthService {
   // different browser sessions) will use it. Returns a boolean success as a promise
   verifyConfirmation(emailOrPhone: string, code: string): Promise<Boolean> {
     const req: VerifyConfirmationRequest = {
-      emailOrPhone: emailOrPhone,
+      emailOrPhone: this.sanitizeEmailOrPhone(emailOrPhone),
       confirmationCode: code
     };
     return firstValueFrom(
@@ -95,5 +95,9 @@ export class AuthService {
             }
           }))
     )
+  }
+
+  private sanitizeEmailOrPhone(emailOrPhone: string): string {
+    return emailOrPhone.trim().toLowerCase()
   }
 }
