@@ -38,6 +38,9 @@
                     *ngIf="auth.isInRole('EVENT_MANAGER')">
               <mat-icon>edit</mat-icon>
             </button>
+            <div class="desc" *ngIf="event.description != ''">
+              {{event.description}}
+            </div>
           </div>
         </div>
         <div class="group"
