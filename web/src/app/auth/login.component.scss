@@ -5,6 +5,14 @@
   margin: 28pt auto 0 auto;
 }
 
+@media (max-width: 1024px) {
+  .login-card {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
 mat-form-field {
   width: 100%;
 }
+
