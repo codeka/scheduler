@@ -1,0 +1,12 @@
+<h2 mat-dialog-title>{{ data.user.name }}</h2>
+<mat-dialog-content>
+  <img src="{{ img.imageUrl(data.user.pictureName) }}" width="200">
+  <div class="details">
+    <p><strong>Email:</strong> &nbsp; <a href="mailto:{{ data.user.email }}">{{ data.user.email }}</a></p>
+    <p *ngIf="data.user.phone != ''"><strong>Phone:</strong> &nbsp; <a href="tel:{{ data.user.phone }}">{{ displayPhoneNumber() }}</a></p>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <div class="spacer"></div>
+  <button mat-button (click)="onCloseClick()" type="button">CLOSE</button>
+</mat-dialog-actions>

@@ -14,6 +14,7 @@ import { fromEvent } from 'rxjs/internal/observable/fromEvent';
 import { throttleTime } from 'rxjs/internal/operators/throttleTime';
 import { map } from 'rxjs/internal/operators/map';
 import { Observable, startWith } from 'rxjs';
+import { ViewProfileDialogComponent } from '../profile/view-profile-dialog.component';
 
 // A shift "bucket" is a collection of shifts that overlap and consitite one set of people. For example, it's common
 // to have a bunch of shifts in the morning, then a bunch more in the afternoon. Because shifts are not really
@@ -95,7 +96,6 @@ export class ScheduleComponent implements OnInit {
         .then((resp) => {
           this.events = resp.events;
 
-          console.log("hello world")
           var months = new Array<ScheduleMonth>()
           var currMonth: ScheduleMonth|null = null
           var currDay: ScheduleDay|null = null
@@ -246,13 +246,24 @@ export class ScheduleComponent implements OnInit {
   }
 
   onSignupClick(group: Group, shift: Shift, signup: ShiftSignup) {
-    const dialogRef = this.dialog.open(ShiftSignupDialogComponent, {
-      data: { group: group, shift: shift, signup: signup },
-    })
-    dialogRef.afterClosed().subscribe(result => {
-      // Refresh the page.
-      this.ngOnInit();
-    })
+    var canEditSignup = (signup.user.id == this.init.user()?.id)
+    canEditSignup ||= this.auth.isInRole("SHIFT_MANAGER") && this.isInGroup(group)
+    canEditSignup ||= this.auth.isInRole("ADMIN")
+    if (canEditSignup) {
+      // If you're allowed to manage this signup, show the signup dialog.
+      const dialogRef = this.dialog.open(ShiftSignupDialogComponent, {
+        data: { group: group, shift: shift, signup: signup },
+      })
+      dialogRef.afterClosed().subscribe(result => {
+        // Refresh the page.
+        this.ngOnInit();
+      })
+    } else {
+      // You cannot edit this sign up, so show the user's profile info instead.
+      this.dialog.open(ViewProfileDialogComponent, {
+        data: { user: signup.user },
+      })
+    }
   }
 
   onEditEvent(event: Event) {

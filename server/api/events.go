@@ -271,7 +271,7 @@ func HandleShiftsSignupPost(c *gin.Context) {
 	}
 	userId := *req.UserID
 
-	if IsCurrentUser(c, userId) && !CanManageGroup(c, shift.GroupID) {
+	if !IsCurrentUser(c, userId) && !CanManageGroup(c, shift.GroupID) {
 		log.Printf("signing up a different user, and not in ADMIN or SHIFT_MANAGER roles")
 		c.AbortWithStatus(http.StatusUnauthorized)
 		return

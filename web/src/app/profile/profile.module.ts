@@ -18,10 +18,11 @@ import { ServicesModule } from "../services/services.module";
 import { WidgetsModule } from "../widgets/widgets.module";
 
 import { ProfileComponent } from "./profile.component";
+import { ViewProfileDialogComponent } from "./view-profile-dialog.component";
 
 @NgModule({
   declarations: [
-    ProfileComponent],
+    ProfileComponent, ViewProfileDialogComponent],
   imports: [
     AppRoutingModule, BrowserModule, FormsModule, MatButtonModule, MatCardModule, MatCheckboxModule, MatDialogModule,
     MatFormFieldModule, MatIconModule, MatInputModule, MatListModule, MatSlideToggleModule, MatToolbarModule,
