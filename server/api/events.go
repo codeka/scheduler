@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"time"
 
+	"com.codeka/scheduler/server/notify"
 	"com.codeka/scheduler/server/store"
 	"com.codeka/scheduler/server/util"
 	"github.com/gin-gonic/gin"
@@ -295,6 +296,14 @@ func HandleShiftsSignupPost(c *gin.Context) {
 		notes = *req.Notes
 	}
 	store.SaveShiftUser(shift.ID, user.ID, notes)
+
+	// And send them a notification that they've been signed up.
+	err = notify.SendShiftSignupNotification(shift, user)
+	if err != nil {
+		// Just log, but we're essentially done anyway so don't cancel at this point
+		log.Printf("error sending notification: %v", err)
+	}
+
 	c.AbortWithStatus(http.StatusOK)
 }
 

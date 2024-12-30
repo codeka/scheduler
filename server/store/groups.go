@@ -23,6 +23,22 @@ func makeGroup(row *sql.Rows) (*Group, error) {
 	return group, nil
 }
 
+// GetGroup returns the group with the given ID.
+func GetGroup(groupID int64) (*Group, error) {
+	groups, err := GetGroups()
+	if err != nil {
+		return nil, err
+	}
+
+	for _, group := range groups {
+		if group.ID == groupID {
+			return group, nil
+		}
+	}
+
+	return nil, fmt.Errorf("no such group %d", groupID)
+}
+
 // GetGroups gets all the groups in the data store.
 func GetGroups() ([]*Group, error) {
 	rows, err := db.Query(`
