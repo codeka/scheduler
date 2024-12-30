@@ -7,7 +7,7 @@
     <div class="fields">
       <mat-form-field *ngIf="auth.isInRole('SHIFT_MANAGER')">
         <mat-label>User</mat-label>
-        <input matInput formControlName="userId" [matAutocomplete]="auto">
+        <input #userId matInput formControlName="userId" [matAutocomplete]="auto" (click)="selectUser()">
         <mat-autocomplete #auto="matAutocomplete">
           <mat-option *ngFor="let user of eligibleUsers | async" [value]="user.name">
             {{user.name}}

@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from "@angular/core";
+import { Component, ElementRef, Inject, OnInit, ViewChild } from "@angular/core";
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from "@angular/material/dialog";
 
 import { Group, Shift, ShiftSignup, User } from "../services/model";
@@ -10,7 +10,6 @@ import { confirmAction } from "../widgets/confirm-dialog";
 import { AuthService } from "../services/auth.service";
 import { InitService } from "../services/init.service";
 
-// TODO: include proper stuff here.
 export interface DialogData {
   group: Group
   shift: Shift
@@ -30,6 +29,7 @@ export class ShiftSignupDialogComponent implements OnInit {
   }>
   eligibleUsers: Observable<User[]>
   allEligibleUsers: User[]|null = null
+  @ViewChild('userId') userIdElementRef!: ElementRef;
 
   constructor(
     public dialogRef: MatDialogRef<ShiftSignupDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: DialogData,
@@ -65,6 +65,12 @@ export class ShiftSignupDialogComponent implements OnInit {
       userId: this.auth.isInRole("SHIFT_MANAGER") && this.data.signup?.user.name ? this.data.signup?.user.name : this.init.user()?.name,
       notes: this.data.signup?.notes || ""
     })
+  }
+
+  selectUser(): void {
+    console.log("hello");
+    this.userIdElementRef.nativeElement.select();
+//    (<any>this.form.controls.userId).nativeElement.select()
   }
 
   shiftTimeStr(shift: Shift): string {
