@@ -19,10 +19,12 @@ import { WidgetsModule } from "../widgets/widgets.module";
 
 import { ProfileComponent } from "./profile.component";
 import { ViewProfileDialogComponent } from "./view-profile-dialog.component";
+import { ViewProfileComponent } from "./view-profile.component";
 
 @NgModule({
   declarations: [
-    ProfileComponent, ViewProfileDialogComponent],
+    ProfileComponent, ViewProfileComponent, ViewProfileDialogComponent],
+  exports: [ViewProfileComponent],
   imports: [
     AppRoutingModule, BrowserModule, FormsModule, MatButtonModule, MatCardModule, MatCheckboxModule, MatDialogModule,
     MatFormFieldModule, MatIconModule, MatInputModule, MatListModule, MatSlideToggleModule, MatToolbarModule,

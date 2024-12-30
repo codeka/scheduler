@@ -1,9 +1,12 @@
-<h2 mat-dialog-title>Shift signup</h2>
 <form [formGroup]="form" (ngSubmit)="onSave()" novalidate>
   <mat-dialog-content>
-    <p>Sign up for shift <strong>{{ data.group.name }}</strong>
+    <view-profile *ngIf="!!data.signup" [user]="data.signup.user"></view-profile>
+    <p *ngIf="!data.signup">Sign up for shift <strong>{{ data.group.name }}</strong>
       on <strong>{{ shiftDateStr(data.shift) }}</strong>
       from <strong>{{ shiftTimeStr(data.shift) }}</strong>?</p>
+    <p *ngIf="!!data.signup"><strong>{{ data.group.name }}</strong>
+      on <strong>{{ shiftDateStr(data.shift) }}</strong>
+      from <strong>{{ shiftTimeStr(data.shift) }}</strong></p>
     <div class="fields">
       <mat-form-field *ngIf="auth.isInRole('SHIFT_MANAGER')">
         <mat-label>User</mat-label>

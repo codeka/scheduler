@@ -29,6 +29,7 @@ import { ViewSwitcherComponent } from './view-switcher.component';
 import { WeekComponent } from './week.component';
 import { WidgetsModule } from '../widgets/widgets.module';
 import { ScheduleMobileComponent } from './schedule-mobile.component';
+import { ProfileModule } from '../profile/profile.module';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,7 @@ import { ScheduleMobileComponent } from './schedule-mobile.component';
     BrowserAnimationsModule, CommonModule, FormsModule, MatAutocompleteModule, MatButtonModule, MatCardModule,
     MatCheckboxModule, MatChipsModule, MatDatepickerModule, MatDialogModule, MatFormFieldModule, MatIconModule,
     MatInputModule, MatNativeDateModule, MatSelectModule, MatToolbarModule, MatTooltipModule, ReactiveFormsModule,
-    ServicesModule, WidgetsModule,
+    ServicesModule, WidgetsModule, ProfileModule,
   ],
   providers: [],
   bootstrap: []

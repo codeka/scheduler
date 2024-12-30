@@ -1,0 +1,9 @@
+<div class="view-profile">
+  <img *ngIf="user.pictureName != ''" src="{{ img.imageUrl(user.pictureName) }}" width="200">
+  <div class="details">
+    <p><strong>{{ user.name }}</strong></p>
+    <p *ngIf="user.email != ''"><strong>Email:</strong> &nbsp; <a href="mailto:{{ user.email }}">{{ user.email }}</a></p>
+    <p *ngIf="user.phone != ''"><strong>Phone:</strong> &nbsp; <a href="tel:{{ user.phone }}">{{ displayPhoneNumber() }}</a></p>
+  </div>
+</div>
+
