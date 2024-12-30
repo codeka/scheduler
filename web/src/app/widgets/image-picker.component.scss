@@ -1,5 +1,5 @@
 div.image-picker {
-  width: 300pt;
+  margin: 0 10pt;
   height: 300pt;
   border: solid 1px black;
  
@@ -15,4 +15,8 @@ div.image-picker button {
 // The image starts off hidden.
 div.image-picker img {
   display: none;
+}
+
+img {
+  margin: 0 auto;
 }

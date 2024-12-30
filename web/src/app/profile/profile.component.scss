@@ -5,13 +5,20 @@
   margin-bottom: 20pt;
 }
 
-div.row {
+div#profile-fields {
   display: flex;
   flex-direction: row;
 }
 
 image-picker {
+  flex: 1;
   margin-left: 10pt;
+}
+
+@media (max-width: 800px) {
+  div#profile-fields {
+    flex-direction: column;
+  }
 }
 
 div.fields {

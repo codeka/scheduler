@@ -4,7 +4,7 @@
   </mat-card-header>
 
   <form [formGroup]="profileForm" (ngSubmit)="onSaveProfile()" novalidate>
-    <div class="row">
+    <div id="profile-fields">
       <image-picker [initialImg]="img.imageUrl(user.pictureName)" (picked)="imageUpdated($event)" />
 
       <div class="fields">
