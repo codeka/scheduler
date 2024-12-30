@@ -48,7 +48,7 @@ func IsInRole(c *gin.Context, role string) bool {
 	}
 
 	for _, r := range roles {
-		if strings.ToLower(role) == strings.ToLower(r) {
+		if strings.EqualFold(role, r) {
 			return true
 		}
 	}
@@ -81,6 +81,33 @@ func IsInGroup(c *gin.Context, groupID int64) bool {
 		}
 	}
 	return false
+}
+
+// CanManageGroup returns true if the currently authenticated user can manage the group with the
+// given ID. That is, if the current user is ADMIN or GROUP_MANAGER and also belongs to the group.
+func CanManageGroup(c *gin.Context, groupID int64) bool {
+	if IsInRole(c, "ADMIN") {
+		// ADMIN can manage any group
+		return true
+	}
+
+	// If you're not a shift manager, you cannot manage any shifts.
+	if !IsInRole(c, "SHIFT_MANAGER") {
+		return false
+	}
+
+	// Even if you are a shift manager, you can only manage shifts you belong to.
+	return IsInGroup(c, groupID)
+}
+
+// IsCurrentUser returns true if the given userID is the currently authenticated user.
+func IsCurrentUser(c *gin.Context, userID int64) bool {
+	currUser := GetUser(c)
+	if currUser == nil {
+		return false
+	}
+
+	return currUser.ID == userID
 }
 
 // GetUser returns the authenticated user, or nil if not authenticated.

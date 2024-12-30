@@ -163,6 +163,12 @@ func HandleShiftsPost(c *gin.Context) {
 		return
 	}
 
+	if !CanManageGroup(c, shift.GroupID) {
+		log.Printf("Cannot save shift that we cannot manage")
+		c.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
+
 	if err := store.SaveShift(shift); err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 		return
@@ -176,6 +182,18 @@ func HandleShiftDelete(c *gin.Context) {
 	shiftID, err := strconv.ParseInt(shiftIDStr, 10, 64)
 	if err != nil {
 		util.HandleError(c, http.StatusBadRequest, err)
+		return
+	}
+
+	shift, err := store.GetShift(shiftID)
+	if err != nil {
+		util.HandleError(c, http.StatusNotFound, err)
+		return
+	}
+
+	if !CanManageGroup(c, shift.GroupID) {
+		log.Printf("Not ADMIN, or not SHIFT_MANAGER for this group, cannot delete shift.")
+		c.AbortWithStatus(http.StatusUnauthorized)
 		return
 	}
 
@@ -253,19 +271,10 @@ func HandleShiftsSignupPost(c *gin.Context) {
 	}
 	userId := *req.UserID
 
-	if userId != authUser.ID && (!IsInRole(c, "ADMIN") && !IsInRole(c, "SHIFT_MANAGER")) {
+	if IsCurrentUser(c, userId) && !CanManageGroup(c, shift.GroupID) {
 		log.Printf("signing up a different user, and not in ADMIN or SHIFT_MANAGER roles")
 		c.AbortWithStatus(http.StatusUnauthorized)
 		return
-	}
-
-	if userId != authUser.ID && IsInRole(c, "SHIFT_MANAGER") && !IsInRole(c, "ADMIN") {
-		// Make sure the shift manager is in the shift's group. You cannot manage other group's shifts.
-		if !IsInGroup(c, shift.GroupID) {
-			log.Printf("signing up a different user as SHIFT_MANAGER, but not in shift's group")
-			c.AbortWithStatus(http.StatusUnauthorized)
-			return
-		}
 	}
 
 	// Make sure the user we're adding to this shift is eligible for this shift.
@@ -318,10 +327,22 @@ func HandleShiftsSignupDelete(c *gin.Context) {
 		return
 	}
 
+	shift, err := store.GetShift(shiftID)
+	if err != nil {
+		util.HandleError(c, http.StatusNotFound, err)
+		return
+	}
+
 	userIDStr := c.Param("userID")
 	userID, err := strconv.ParseInt(userIDStr, 10, 64)
 	if err != nil {
 		util.HandleError(c, http.StatusBadRequest, err)
+		return
+	}
+
+	if !IsCurrentUser(c, userID) && !CanManageGroup(c, shift.GroupID) {
+		log.Printf("Cannot delete shift signup for different user.")
+		c.AbortWithStatus(http.StatusUnauthorized)
 		return
 	}
 
