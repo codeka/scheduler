@@ -10,3 +10,13 @@ img {
 div.details {
     align-self: flex-end;
 }
+
+@media (max-width: 1024px) {
+    mat-dialog-content {
+        flex-direction: column;
+    }
+    img {
+        margin-right: 0;
+        margin-bottom: 10pt;
+    }
+}

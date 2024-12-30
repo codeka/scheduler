@@ -71,3 +71,11 @@ p {
 .error mat-icon {
   margin-right: 4pt;
 }
+
+@media (max-width: 1024px) {
+  mat-dialog-actions {
+    flex-direction: column;
+    align-items: end !important;
+    row-gap: 4pt;
+  }
+}
