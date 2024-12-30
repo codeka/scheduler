@@ -1,6 +1,7 @@
 package api
 
 import (
+	"strings"
 	"time"
 
 	"com.codeka/scheduler/server/notify"
@@ -67,6 +68,15 @@ func UserToStore(user *User) *store.User {
 		Phone:       user.Phone,
 		PictureName: user.PictureName,
 	}
+}
+
+// byName is a helper type so we can sort a list of Users by the name.
+type byName []*User
+
+func (users byName) Len() int      { return len(users) }
+func (users byName) Swap(i, j int) { users[i], users[j] = users[j], users[i] }
+func (users byName) Less(i, j int) bool {
+	return strings.Compare(users[i].Name, users[j].Name) < 0
 }
 
 type Event struct {

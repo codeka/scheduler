@@ -3,6 +3,7 @@ package api
 import (
 	"log"
 	"net/http"
+	"sort"
 	"strconv"
 	"time"
 
@@ -214,6 +215,8 @@ func HandleShiftsEligibleUsersGet(c *gin.Context) {
 		user := MakeUser(u, []string{}, []int64{}) // Don't fill in roles or groups for these users.
 		resp.Users = append(resp.Users, user)
 	}
+
+	sort.Sort(byName(resp.Users))
 
 	c.JSON(http.StatusOK, resp)
 }

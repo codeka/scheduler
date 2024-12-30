@@ -2,6 +2,7 @@ package api
 
 import (
 	"net/http"
+	"sort"
 	"strconv"
 	"time"
 
@@ -46,6 +47,8 @@ func HandleAdminUsersGet(c *gin.Context) {
 		user := MakeUser(u, userRoles[u.ID], userGroups[u.ID])
 		resp.Users = append(resp.Users, user)
 	}
+
+	sort.Sort(byName(resp.Users))
 
 	c.JSON(http.StatusOK, resp)
 }
