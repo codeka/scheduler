@@ -2,6 +2,7 @@ package util
 
 import (
 	"fmt"
+	"log"
 	"runtime"
 
 	"github.com/gin-gonic/gin"
@@ -19,7 +20,9 @@ func ForwardError(msg string, args ...interface{}) error {
 
 func HandleError(c *gin.Context, statusCode int, err error) {
 	caller := PrintCaller(runtime.Caller(1))
-	c.AbortWithError(statusCode, fmt.Errorf("%s %s", caller, err))
+	fullmsg := fmt.Errorf("%s %s", caller, err)
+	log.Printf("%s [%d] %s", c.Request.URL.String(), statusCode, fullmsg)
+	c.AbortWithError(statusCode, fullmsg)
 }
 
 /*

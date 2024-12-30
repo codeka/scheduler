@@ -44,21 +44,17 @@ export class ShiftSignupDialogComponent implements OnInit {
     });
 
     if (auth.isInRole("SHIFT_MANAGER")) {
+      // Save the list of all eligible users first.
+      eventsService.getEligibleUserForShift(data.shift, "").then((users) => {
+        this.allEligibleUsers = users
+      })
+
       this.eligibleUsers = this.form.controls.userId.valueChanges
           .pipe(
             startWith(''),
             debounceTime(400),
             distinctUntilChanged(),
             switchMap(value => eventsService.getEligibleUserForShift(data.shift, value?.toString() ?? "")))
-      this.eligibleUsers
-          .pipe(
-              map((users) => {
-                // The first time we're called, it will include all eligible users, so save them for validation.
-                if (this.allEligibleUsers == null) {
-                  this.allEligibleUsers = users
-                }
-              })
-          ).subscribe()
     } else {
       this.eligibleUsers = EMPTY
     }
@@ -66,7 +62,7 @@ export class ShiftSignupDialogComponent implements OnInit {
 
   public ngOnInit(): void {
     this.form.patchValue({
-      userId: this.auth.isInRole("SHIFT_MANAGER") ? this.data.signup?.user.name : null,
+      userId: this.auth.isInRole("SHIFT_MANAGER") && this.data.signup?.user.name ? this.data.signup?.user.name : this.init.user()?.name,
       notes: this.data.signup?.notes || ""
     })
   }

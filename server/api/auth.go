@@ -104,7 +104,7 @@ func HandleVerifyConfirmation(c *gin.Context) {
 		Code: req.ConfirmationCode,
 	})
 	if err != nil {
-		util.HandleError(c, http.StatusBadRequest, fmt.Errorf("bad code"))
+		util.HandleError(c, http.StatusBadRequest, fmt.Errorf("verification failed: %v", err))
 		return
 	}
 

@@ -16,6 +16,7 @@
         <div *ngFor="let event of day.events">
           <span class="event-title">{{event.title}}</span>
           <span class="event-time">{{eventTimeStr(event)}}</span>
+          <span class="event-desc">{{event.description}}</span>
         </div>
       </div>
       <div class="shift-bucket" *ngFor="let bucket of day.shiftBuckets">
