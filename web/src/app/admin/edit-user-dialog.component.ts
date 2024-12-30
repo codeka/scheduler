@@ -100,6 +100,7 @@ export class EditUserDialogComponent implements OnInit {
       name: this.form.value.name ?? "",
       email: this.form.value.email ?? "",
       phone: this.form.value.phone ?? "",
+      shareContactInfo: true, // true by default for new users.
       pictureName: this.data.user?.pictureName ?? "",
       roles: roles,
       groups: groups,

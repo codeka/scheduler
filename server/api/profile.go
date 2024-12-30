@@ -33,6 +33,7 @@ func HandleProfilePost(c *gin.Context) {
 	user.Name = u.Name
 	user.Email = u.Email
 	user.Phone = u.Phone
+	user.ShareContactInfo = u.ShareContactInfo
 
 	if err := store.SaveUser(user); err != nil {
 		util.HandleError(c, http.StatusInternalServerError, err)

@@ -10,7 +10,7 @@ import (
 func makeUser(row *sql.Rows) (*User, error) {
 	user := &User{}
 	var pictureName sql.NullString
-	if err := row.Scan(&user.ID, &user.Name, &user.Email, &user.Phone, &pictureName); err != nil {
+	if err := row.Scan(&user.ID, &user.Name, &user.Email, &user.Phone, &user.ShareContactInfo, &pictureName); err != nil {
 		return nil, err
 	}
 
@@ -24,7 +24,7 @@ func makeUser(row *sql.Rows) (*User, error) {
 // GetUserByEmail returns the User with the given email address. If the user doesn't exit, returns a nil User and nil
 // error. Any other kind of error returns a non-nil error.
 func GetUserByEmail(email string) (*User, error) {
-	rows, err := db.Query("SELECT id, name, email, phone, picture_name FROM users WHERE email=?", email)
+	rows, err := db.Query("SELECT id, name, email, phone, share_contact_info, picture_name FROM users WHERE email=?", email)
 	if err != nil {
 		return nil, fmt.Errorf("error querying user by email: %v", err)
 	}
@@ -39,7 +39,7 @@ func GetUserByEmail(email string) (*User, error) {
 // GetUserByPhone returns the User with the given phone number. If the user doesn't exit, returns a nil User and nil
 // error. Any other kind of error returns a non-nil error.
 func GetUserByPhone(phone string) (*User, error) {
-	rows, err := db.Query("SELECT id, name, email, phone, picture_name FROM users WHERE phone=?", phone)
+	rows, err := db.Query("SELECT id, name, email, phone, share_contact_info, picture_name FROM users WHERE phone=?", phone)
 	if err != nil {
 		return nil, fmt.Errorf("error querying user by phone: %v", err)
 	}
@@ -54,9 +54,11 @@ func GetUserByPhone(phone string) (*User, error) {
 // GetUserByConfirmationCode returns the User that matches the given confirmation code.
 func GetUserByConfirmationCode(code string) (*User, error) {
 	rows, err := db.Query(`
-			SELECT id, name, email, phone, picture_name
-			FROM users INNER JOIN	user_logins
-		    ON users.id = user_id
+			SELECT id, name, email, phone, share_contact_info,
+			       picture_name
+			FROM users
+			INNER JOIN user_logins
+		       ON users.id = user_id
 			WHERE confirmation_code = ?
 			  AND users.deleted = 0`,
 		code)
@@ -74,9 +76,11 @@ func GetUserByConfirmationCode(code string) (*User, error) {
 // GetUserBySecret returns the User that matches the given secret key.
 func GetUserBySecret(secretKey string) (*User, error) {
 	rows, err := db.Query(`
-			SELECT id, name, email, phone, picture_name
-			FROM users INNER JOIN	user_logins
-		    ON users.id = user_id
+			SELECT id, name, email, phone, share_contact_info,
+			       picture_name
+			FROM users
+			INNER JOIN user_logins
+		       ON users.id = user_id
 			WHERE secret_key = ?
 			  AND users.deleted = 0`,
 		secretKey)
@@ -93,7 +97,8 @@ func GetUserBySecret(secretKey string) (*User, error) {
 
 func GetUsers() ([]*User, error) {
 	rows, err := db.Query(`
-			SELECT id, name, email, phone, picture_name
+			SELECT id, name, email, phone, share_contact_info,
+			       picture_name
 			FROM users
 			WHERE deleted = 0`)
 	if err != nil {
@@ -131,11 +136,14 @@ func GetUsersMap() (map[int64]*User, error) {
 // users by the given query: an empty string returns all, but a non-empty string will filter the users by their name.
 func GetEligibleUsers(shift *Shift, query string) ([]*User, error) {
 	rows, err := db.Query(`
-			SELECT id, name, email, phone, picture_name
-			FROM users INNER JOIN user_groups ON users.id = user_groups.user_id
+			SELECT id, name, email, phone, share_contact_info,
+			       picture_name
+			FROM users
+			INNER JOIN user_groups
+			   ON users.id = user_groups.user_id
 			WHERE user_groups.group_id = ?
 			  AND name LIKE ?
-				AND deleted = 0
+			  AND deleted = 0
 	  `, shift.GroupID, query+"%")
 	if err != nil {
 		return []*User{}, err
@@ -155,9 +163,10 @@ func GetEligibleUsers(shift *Shift, query string) ([]*User, error) {
 
 func GetUser(id int64) (*User, error) {
 	rows, err := db.Query(`
-	    SELECT id, name, email, phone, picture_name
-			FROM users
-			WHERE id = ?`, id)
+	    SELECT id, name, email, phone, share_contact_info,
+		       picture_name
+		FROM users
+		WHERE id = ?`, id)
 	if err != nil {
 		return nil, err
 	}
@@ -266,10 +275,10 @@ func SaveUser(user *User) error {
 	if user.ID == 0 {
 		res, err := db.Exec(`
 			INSERT INTO users
-			  (name, email, phone, picture_name, deleted)
+			  (name, email, phone, share_contact_info, picture_name, deleted)
 			VALUES
-			  (?, ?, ?, ?, 0)`,
-			user.Name, user.Email, user.Phone, user.PictureName)
+			  (?, ?, ?, ?, ?, 0)`,
+			user.Name, user.Email, user.Phone, user.ShareContactInfo, user.PictureName)
 		if err != nil {
 			return util.ForwardError("insert into users: %v", err)
 		}
@@ -284,8 +293,10 @@ func SaveUser(user *User) error {
 			  name = ?,
 				email = ?,
 				phone = ?,
+				share_contact_info = ?,
 				picture_name = ?
-			WHERE id = ?`, user.Name, user.Email, user.Phone, user.PictureName, user.ID)
+			WHERE id = ?`,
+			user.Name, user.Email, user.Phone, user.ShareContactInfo, user.PictureName, user.ID)
 		if err != nil {
 			return util.ForwardError("update users: %v", err)
 		}
@@ -313,6 +324,7 @@ func DeleteUser(userID int64) error {
 			name = 'Deleted user',
 			email = '',
 			phone = '',
+			share_contact_info = 0,
 			picture_name = '',
 			deleted = 1
 		WHERE id = ?`, userID)

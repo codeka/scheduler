@@ -1,6 +1,7 @@
 package api
 
 import (
+	"log"
 	"strings"
 	"time"
 
@@ -34,13 +35,14 @@ func VenueToStore(venue *Venue) *store.Venue {
 }
 
 type User struct {
-	ID          int64    `json:"id"`
-	Name        string   `json:"name"`
-	Email       string   `json:"email"`
-	Phone       string   `json:"phone"`
-	PictureName string   `json:"pictureName"`
-	Roles       []string `json:"roles"`
-	Groups      []int64  `json:"groups"`
+	ID               int64    `json:"id"`
+	Name             string   `json:"name"`
+	Email            string   `json:"email"`
+	Phone            string   `json:"phone"`
+	ShareContactInfo bool     `json:"shareContactInfo"`
+	PictureName      string   `json:"pictureName"`
+	Roles            []string `json:"roles"`
+	Groups           []int64  `json:"groups"`
 }
 
 // MakeUser converts the given store.User to our User type.
@@ -50,24 +52,36 @@ func MakeUser(user *store.User, roles []string, groups []int64) *User {
 	}
 
 	return &User{
-		ID:          user.ID,
-		Name:        user.Name,
-		Email:       user.Email,
-		Phone:       user.Phone,
-		PictureName: user.PictureName,
-		Roles:       roles,
-		Groups:      groups,
+		ID:               user.ID,
+		Name:             user.Name,
+		Email:            user.Email,
+		Phone:            user.Phone,
+		ShareContactInfo: user.ShareContactInfo,
+		PictureName:      user.PictureName,
+		Roles:            roles,
+		Groups:           groups,
 	}
 }
 
 func UserToStore(user *User) *store.User {
 	return &store.User{
-		ID:          user.ID,
-		Name:        user.Name,
-		Email:       user.Email,
-		Phone:       user.Phone,
-		PictureName: user.PictureName,
+		ID:               user.ID,
+		Name:             user.Name,
+		Email:            user.Email,
+		Phone:            user.Phone,
+		ShareContactInfo: user.ShareContactInfo,
+		PictureName:      user.PictureName,
 	}
+}
+
+func SanitizeUser(user *User) {
+	if user.ShareContactInfo {
+		log.Printf("user %s wants to share contact info", user.Email)
+		return
+	}
+
+	user.Email = ""
+	user.Phone = ""
 }
 
 // byName is a helper type so we can sort a list of Users by the name.
@@ -174,12 +188,12 @@ type ShiftSignup struct {
 }
 
 type Shift struct {
-	ID        int64         `json:"id"`
-	GroupID   int64         `json:"groupId"`
-	Date      string        `json:"date"`
-	StartTime string        `json:"startTime"`
-	EndTime   string        `json:"endTime"`
-	Signups   []ShiftSignup `json:"signups"`
+	ID        int64          `json:"id"`
+	GroupID   int64          `json:"groupId"`
+	Date      string         `json:"date"`
+	StartTime string         `json:"startTime"`
+	EndTime   string         `json:"endTime"`
+	Signups   []*ShiftSignup `json:"signups"`
 }
 
 func ShiftToStore(shift *Shift) (*store.Shift, error) {
@@ -210,12 +224,12 @@ func MakeShift(shift *store.Shift, signups []*store.ShiftSignup, users map[int64
 		return nil
 	}
 
-	var su []ShiftSignup
+	var su []*ShiftSignup
 	for _, s := range signups {
 		if s == nil {
 			continue
 		}
-		su = append(su, ShiftSignup{
+		su = append(su, &ShiftSignup{
 			User:  MakeUser(users[s.UserID], []string{}, []int64{}),
 			Notes: s.Notes,
 		})

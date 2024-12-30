@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
-import { AsYouType, parsePhoneNumberWithError } from "libphonenumber-js";
+import parsePhoneNumberFromString, { AsYouType, parsePhoneNumberWithError } from "libphonenumber-js";
 
 import { InitService } from "../services/init.service";
 import { ImageService } from "../services/image.service";
@@ -25,6 +25,7 @@ export class ProfileComponent {
     name: FormControl<string|null>,
     email: FormControl<string|null>,
     phoneNumber: FormControl<string|null>,
+    shareContactInfo: FormControl<boolean|null>
   }>
 
   notificationsForm: FormGroup<{
@@ -48,11 +49,12 @@ export class ProfileComponent {
 
     this.user = init.user()!!
 
-    const phoneNumber = parsePhoneNumberWithError(this.user.phone, 'US')
+    const phoneNumber = parsePhoneNumberFromString(this.user.phone, 'US')
     this.profileForm = this.formBuilder.group({
       name: [this.user.name, Validators.required],
       email: [this.user.email, Validators.required],
-      phoneNumber: [phoneNumber.formatNational()],
+      phoneNumber: [phoneNumber?.formatNational() ?? ""],
+      shareContactInfo: [this.user.shareContactInfo],
     });
     this.notificationsForm = this.formBuilder.group({
       notifications: this.formBuilder.array<NotificationSettingFormGroup>([])
@@ -83,7 +85,8 @@ export class ProfileComponent {
   onSaveProfile() {
     this.user.name = this.profileForm.value.name ?? this.user.name
     this.user.email = this.profileForm.value.email ?? this.user.email
-    this.user.phone = parsePhoneNumberWithError(this.profileForm.value.phoneNumber ?? this.user.phone, 'US').number
+    this.user.phone = parsePhoneNumberFromString(this.profileForm.value.phoneNumber ?? this.user.phone, 'US')?.number ?? ""
+    this.user.shareContactInfo = this.profileForm.value.shareContactInfo ?? false
 
     this.profileService.saveProfile(this.user)
       .then(() => {

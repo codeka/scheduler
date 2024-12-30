@@ -14,6 +14,7 @@ export interface User {
   name: string
   email: string
   phone: string
+  shareContactInfo: boolean
   pictureName: string
   roles: string[]
   groups: number[]

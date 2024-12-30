@@ -38,6 +38,8 @@ type ShiftSignupRequest struct {
 func HandleEventsGet(c *gin.Context) {
 	resp := EventsResponse{}
 
+	authUser := GetUser(c)
+
 	if c.Query("startDate") != "" && c.Query("endDate") != "" {
 		startDate, err := time.Parse(time.DateOnly, c.Query("startDate"))
 		if err != nil {
@@ -92,6 +94,16 @@ func HandleEventsGet(c *gin.Context) {
 			}
 
 			resp.Shifts = append(resp.Shifts, MakeShift(s, signups, allUsers))
+		}
+	}
+
+	for _, shift := range resp.Shifts {
+		for _, signup := range shift.Signups {
+			if authUser.ID != signup.User.ID {
+				log.Printf("sanitizing user %s", signup.User.Email)
+				SanitizeUser(signup.User)
+				log.Printf("done sanitizing user %s", signup.User.Email)
+			}
 		}
 	}
 
