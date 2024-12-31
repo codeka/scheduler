@@ -6,14 +6,17 @@ import (
 
 func makeVenue(rows *sql.Rows) (*Venue, error) {
 	venue := Venue{}
-	if err := rows.Scan(&venue.Name, &venue.ShortName, &venue.Address, &venue.PictureName); err != nil {
+	if err := rows.Scan(&venue.Name, &venue.ShortName, &venue.Address, &venue.PictureName, &venue.ShiftsWebAddress, &venue.WebAddress, &venue.VerificationEmailTemplateID); err != nil {
 		return nil, err
 	}
 	return &venue, nil
 }
 
 func GetVenue() (*Venue, error) {
-	rows, err := db.Query("SELECT name, short_name, address, picture_name FROM venue")
+	rows, err := db.Query(`
+		SELECT name, short_name, address, picture_name,
+			   shifts_web_address, web_address, verification_email_template_id
+		FROM venue`)
 	if err != nil {
 		return nil, err
 	}
@@ -31,7 +34,11 @@ func SaveVenue(venue *Venue) error {
 			  name = ?,
 				short_name = ?,
 				address = ?,
-				picture_name = ?`,
-		venue.Name, venue.ShortName, venue.Address, venue.PictureName)
+				picture_name = ?,
+				shifts_web_address = ?,
+				web_address = ?,
+				verification_email_template_id = ?`,
+		venue.Name, venue.ShortName, venue.Address, venue.PictureName,
+		venue.ShiftsWebAddress, venue.WebAddress, venue.VerificationEmailTemplateID)
 	return err
 }

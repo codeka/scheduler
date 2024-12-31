@@ -4,6 +4,9 @@ export interface Venue {
   shortName: string
   address: string
   pictureName: string
+  shiftsWebAddress: string
+  webAddress: string
+  verificationEmailTemplateId: string
 
   // This is only used when saving the venue, contains an optional new picture to use.
   picture?: File

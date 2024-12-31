@@ -37,7 +37,15 @@ export class InitService {
   }
 
   venue(): Venue {
-    return this.initResponse?.venue || { name: "", shortName: "", address: "", pictureName: ""}
+    return this.initResponse?.venue || {
+      name: "",
+      shortName: "",
+      address: "",
+      pictureName: "", 
+      shiftsWebAddress: "",
+      webAddress: "",
+      verificationEmailTemplateId: "",
+    }
   }
 
   groups(): Group[] {

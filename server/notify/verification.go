@@ -2,7 +2,9 @@ package notify
 
 import (
 	"fmt"
+	"strings"
 
+	"com.codeka/scheduler/server/store"
 	"com.codeka/scheduler/server/util"
 	verify "github.com/twilio/twilio-go/rest/verify/v2"
 )
@@ -25,15 +27,23 @@ type ConfirmationRequest struct {
 // SendVerificationRequest sends a verification request to the user and returns the SID of the request, or nil and an
 // error if there was some kind of error.
 func SendVerificationRequest(request VerificationRequest) (string, error) {
+	venue, err := store.GetVenue()
+	if err != nil {
+		return "", err
+	}
+
 	params := &verify.CreateVerificationParams{}
 	if util.IsEmailAddress(request.Dest) {
 		params.SetChannel("email")
 
 		params.SetChannelConfiguration(map[string]interface{}{
-			"from":      "svbc@codeka.com",
-			"from_name": "SVBC Scheduler",
+			"template_id": venue.VerificationEmailTemplateID,
+			"from":        strings.ToLower(venue.ShortName) + "@codeka.com",
+			"from_name":   "Shifts @ " + venue.ShortName,
 			"substitutions": map[string]interface{}{
-				"dest": request.Dest,
+				"dest":        request.Dest,
+				"venue_name":  venue.ShortName,
+				"web_address": venue.ShiftsWebAddress,
 			},
 		})
 	} else if util.IsPhoneNumber(request.Dest) {

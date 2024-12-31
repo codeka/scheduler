@@ -10,27 +10,36 @@ import (
 )
 
 type Venue struct {
-	Name        string `json:"name"`
-	ShortName   string `json:"shortName"`
-	Address     string `json:"address"`
-	PictureName string `json:"pictureName"`
+	Name                        string `json:"name"`
+	ShortName                   string `json:"shortName"`
+	Address                     string `json:"address"`
+	PictureName                 string `json:"pictureName"`
+	ShiftsWebAddress            string `json:"shiftsWebAddress"`
+	WebAddress                  string `json:"webAddress"`
+	VerificationEmailTemplateID string `json:"verificationEmailTemplateId"`
 }
 
 func MakeVenue(venue *store.Venue) *Venue {
 	return &Venue{
-		Name:        venue.Name,
-		ShortName:   venue.ShortName,
-		Address:     venue.Address,
-		PictureName: venue.PictureName,
+		Name:                        venue.Name,
+		ShortName:                   venue.ShortName,
+		Address:                     venue.Address,
+		PictureName:                 venue.PictureName,
+		ShiftsWebAddress:            venue.ShiftsWebAddress,
+		WebAddress:                  venue.WebAddress,
+		VerificationEmailTemplateID: venue.VerificationEmailTemplateID,
 	}
 }
 
 func VenueToStore(venue *Venue) *store.Venue {
 	return &store.Venue{
-		Name:        venue.Name,
-		ShortName:   venue.ShortName,
-		Address:     venue.Address,
-		PictureName: venue.PictureName,
+		Name:                        venue.Name,
+		ShortName:                   venue.ShortName,
+		Address:                     venue.Address,
+		PictureName:                 venue.PictureName,
+		ShiftsWebAddress:            venue.ShiftsWebAddress,
+		WebAddress:                  venue.WebAddress,
+		VerificationEmailTemplateID: venue.VerificationEmailTemplateID,
 	}
 }
 

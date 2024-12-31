@@ -17,6 +17,9 @@ export class EditVenueComponent {
     name: FormControl<string|null>,
     shortName: FormControl<string|null>,
     address: FormControl<string|null>,
+    shiftsWebAddress: FormControl<string|null>,
+    webAddress: FormControl<string|null>,
+    verificationEmailTemplateId: FormControl<string|null>,
   }>
 
   fileInfo: FileInfo|null = null
@@ -28,6 +31,9 @@ export class EditVenueComponent {
       name: [init.venue().name, Validators.required],
       shortName: [init.venue().shortName, Validators.required],
       address: [init.venue().address],
+      shiftsWebAddress: [init.venue().shiftsWebAddress],
+      webAddress: [init.venue().webAddress],
+      verificationEmailTemplateId: [init.venue().verificationEmailTemplateId],
     });
   }
 
@@ -37,6 +43,9 @@ export class EditVenueComponent {
       shortName: this.form.value.shortName ?? "",
       address: this.form.value.address ?? "",
       pictureName: this.init.venue().pictureName,
+      shiftsWebAddress: this.form.value.shiftsWebAddress ?? "",
+      webAddress: this.form.value.webAddress ?? "",
+      verificationEmailTemplateId: this.form.value.verificationEmailTemplateId ?? "",
       picture: this.fileInfo?.file ?? undefined
     }
 
