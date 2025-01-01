@@ -27,12 +27,14 @@ import { NotificationsComponent } from "./notifications.component";
 import { UserListComponent } from "./user-list.component";
 import { EditCronJobDialogComponent } from "./edit-cron-job-dialog.component";
 import { EditNotificationTypeDialogComponent } from "./edit-notification-type-dialog.component";
+import { FeatureFlagsComponent } from "./feature-flags.component";
+import { EditFeatureFlagDialogComponent } from "./edit-feature-flag-dialog.component";
 
 @NgModule({
   declarations: [
-    AdminComponent, CronComponent, EditCronJobDialogComponent, EditGroupDialogComponent,
-    EditNotificationTypeDialogComponent, EditUserDialogComponent, EditVenueComponent, GroupsComponent,
-    NotificationsComponent, UserListComponent],
+    AdminComponent, CronComponent, EditCronJobDialogComponent, EditFeatureFlagDialogComponent, EditGroupDialogComponent,
+    EditNotificationTypeDialogComponent, EditUserDialogComponent, EditVenueComponent, FeatureFlagsComponent,
+    GroupsComponent, NotificationsComponent, UserListComponent],
   imports: [
     AppRoutingModule, BrowserModule, FormsModule, MatButtonModule, MatCardModule, MatCheckboxModule, MatDialogModule,
     MatFormFieldModule, MatIconModule, MatInputModule, MatListModule, MatSlideToggleModule, MatToolbarModule,

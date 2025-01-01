@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"com.codeka/scheduler/server/cron"
+	"com.codeka/scheduler/server/flags"
 	"com.codeka/scheduler/server/notify"
 	"com.codeka/scheduler/server/store"
 	"com.codeka/scheduler/server/util"
@@ -423,6 +424,25 @@ func HandleAdminNotificationTypesPost(c *gin.Context) {
 	c.AbortWithStatus(http.StatusOK)
 }
 
+func HandleAdminFeatureFlagsPost(c *gin.Context) {
+	if !IsInRole(c, "ADMIN") {
+		c.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
+
+	var flag FeatureFlag
+	if err := c.BindJSON(&flag); err != nil {
+		util.HandleError(c, http.StatusBadRequest, err)
+		return
+	}
+	err := flags.UpdateFlag(flag.FlagName, flag.Enabled, flag.Settings)
+	if err != nil {
+		util.HandleError(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	c.AbortWithStatus(http.StatusOK)
+}
 func setupAdmin(g *gin.Engine) error {
 	g.GET("_/admin/users", HandleAdminUsersGet)
 	g.GET("_/admin/users/:id", HandleAdminUserGet)
@@ -438,6 +458,7 @@ func setupAdmin(g *gin.Engine) error {
 	g.POST("_/admin/cron-jobs/:id/run", HandleAdminCronJobRunPost)
 	g.GET("_/admin/notifications/types", HandleAdminNotificationTypesGet)
 	g.POST("_/admin/notifications/types", HandleAdminNotificationTypesPost)
+	g.POST("_/admin/feature-flags", HandleAdminFeatureFlagsPost)
 
 	return nil
 }

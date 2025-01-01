@@ -1,0 +1,31 @@
+<mat-toolbar class="header">
+    <h1>
+      Feature Flags
+    </h1>
+    <div class="spacer"></div>
+    <!--button class="admin-button" mat-raised-button [routerLink]="'/edit-group'"><mat-icon>person_add</mat-icon>Add Group</button-->
+  </mat-toolbar>
+  <table mat-table [dataSource]="featureFlags" class="mat-elevation-z8">
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>Flag</th>
+      <td mat-cell *matCellDef="let flag">{{flag.flagName}}</td>
+    </ng-container>
+    <ng-container matColumnDef="enabled">
+      <th mat-header-cell *matHeaderCellDef>Enabled</th>
+      <td mat-cell *matCellDef="let flag"><mat-icon *ngIf="flag.enabled">check</mat-icon><mat-icon *ngIf="!flag.enabled">close</mat-icon></td>
+    </ng-container>
+    <ng-container matColumnDef="settings">
+      <th mat-header-cell *matHeaderCellDef>Settings</th>
+      <td mat-cell *matCellDef="let flag">{{settingsString(flag)}}</td>
+    </ng-container>
+    <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>&nbsp;</th>
+        <td mat-cell *matCellDef="let flag" class="actions-column">
+          <button mat-icon-button (click)="editFlag(flag)"><mat-icon>edit</mat-icon></button>
+        </td>
+      </ng-container>
+    
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+  

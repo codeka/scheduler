@@ -5,6 +5,7 @@ import (
 	"strings"
 	"time"
 
+	"com.codeka/scheduler/server/flags"
 	"com.codeka/scheduler/server/notify"
 	"com.codeka/scheduler/server/store"
 )
@@ -342,5 +343,19 @@ func MakeCronJob(cronJob store.CronJob) CronJob {
 		Schedule: cronJob.Schedule,
 		Enabled:  cronJob.Enabled,
 		NextRun:  cronJob.NextRun,
+	}
+}
+
+type FeatureFlag struct {
+	FlagName string                 `json:"flagName"`
+	Enabled  bool                   `json:"enabled"`
+	Settings map[string]interface{} `json:"settings"`
+}
+
+func MakeFeatureFlag(name string, flag *flags.FeatureFlag) *FeatureFlag {
+	return &FeatureFlag{
+		FlagName: name,
+		Enabled:  flag.Enabled,
+		Settings: flag.Settings,
 	}
 }

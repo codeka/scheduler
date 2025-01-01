@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { CronJob, Group, NotificationType, User, Venue } from "./model";
+import { CronJob, FeatureFlag, Group, NotificationType, User, Venue } from "./model";
 import { firstValueFrom, map } from "rxjs";
 import { ENV } from "../env/environment";
 
@@ -133,6 +133,13 @@ export class AdminService {
   saveNotificationType(notificationType: NotificationType): Promise<boolean> {
     return firstValueFrom(
       this.http.post<any>(ENV.backend + "/_/admin/notifications/types", notificationType)
+          .pipe(map(() => true))
+    )
+  }
+
+  saveFeatureFlag(flag: FeatureFlag): Promise<boolean> {
+    return firstValueFrom(
+      this.http.post<any>(ENV.backend + "/_/admin/feature-flags", flag)
           .pipe(map(() => true))
     )
   }

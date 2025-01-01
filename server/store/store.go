@@ -13,13 +13,13 @@ var (
 	datadir string
 )
 
-func Init(datdir string) error {
+func Init(datdir string) (*sql.DB, error) {
 	datadir = datdir
 	dbfile := path.Join(datadir, "store.db")
 	dsn := "file:///" + dbfile + "?_pragma=foreign_keys(1)&_time_format=sqlite"
 	log.Printf("dsn=%s", dsn)
 	if newdb, err := sql.Open("sqlite", dsn); err != nil {
-		return err
+		return nil, err
 	} else {
 		db = newdb
 	}
@@ -28,8 +28,8 @@ func Init(datdir string) error {
 	version := GetCurrentSchemaVersion()
 	log.Printf("Got schema version %d", version)
 	if err := UpgradeSchema(version); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return db, nil
 }

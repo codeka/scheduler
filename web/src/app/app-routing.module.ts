@@ -18,6 +18,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { ScheduleDesktopComponent } from './sched/schedule-desktop.component';
 import { ScheduleMobileComponent } from './sched/schedule-mobile.component';
 import { NotificationsComponent } from './admin/notifications.component';
+import { FeatureFlagsComponent } from './admin/feature-flags.component';
 
 const loggedIn: CanMatchFn = () => {
   return inject(AuthService).isLoggedIn();
@@ -58,6 +59,7 @@ const routes: Routes = [
       { path: 'users', title: 'Admin - Users', component: UserListComponent },
       { path: 'cron', title: 'Admin - Cron', component: CronComponent },
       { path: 'notifications', title: 'Notifications', component: NotificationsComponent },
+      { path: 'flags', title: 'Flags', component: FeatureFlagsComponent },
     ]
   },
 

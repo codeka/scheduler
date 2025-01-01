@@ -4,12 +4,13 @@ import { firstValueFrom, tap } from "rxjs";
 
 import { ENV } from '../env/environment';
 
-import { Group, User, Venue } from "./model";
+import { FeatureFlag, Group, User, Venue } from "./model";
 
 interface InitResponse {
   user: User
   venue: Venue
   groups: Group[]
+  featureFlags: FeatureFlag[]
 }
 
 // InitService runs when the app starts up. You can use this to get access to the data we get from the init request.
@@ -50,5 +51,25 @@ export class InitService {
 
   groups(): Group[] {
     return this.initResponse?.groups || [];
+  }
+
+  allFeatureFlags(): FeatureFlag[] {
+    return this.initResponse?.featureFlags || []
+  }
+
+  flag(name: string): FeatureFlag {
+    const emptyFlag = {flagName: name, enabled: false, settings: null};
+    const allFlags = this.initResponse?.featureFlags
+    if (!allFlags) {
+      return emptyFlag;
+    }
+
+    for (const flag of allFlags) {
+      if (flag.flagName == name) {
+        return flag
+      }
+    }
+
+    return emptyFlag
   }
 }

@@ -7,6 +7,7 @@ import (
 
 	"com.codeka/scheduler/server/api"
 	"com.codeka/scheduler/server/cron"
+	"com.codeka/scheduler/server/flags"
 	"com.codeka/scheduler/server/notify"
 	"com.codeka/scheduler/server/store"
 	"github.com/gin-contrib/cors"
@@ -31,7 +32,11 @@ func main() {
 	}
 
 	datadir := os.Getenv("DATA_DIR")
-	if err := store.Init(datadir); err != nil {
+	db, err := store.Init(datadir)
+	if err != nil {
+		panic(err)
+	}
+	if err := flags.Setup(db); err != nil {
 		panic(err)
 	}
 	if err := api.Setup(router); err != nil {

@@ -84,3 +84,9 @@ export interface NotificationType {
   defaultEmailEnable: boolean
   defaultSmsEnable: boolean
 }
+
+export interface FeatureFlag {
+  flagName: string
+  enabled: boolean
+  settings: any
+}

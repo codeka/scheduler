@@ -3,15 +3,17 @@ package api
 import (
 	"net/http"
 
+	"com.codeka/scheduler/server/flags"
 	"com.codeka/scheduler/server/store"
 	"com.codeka/scheduler/server/util"
 	"github.com/gin-gonic/gin"
 )
 
 type InitResponse struct {
-	User   *User    `json:"user"`
-	Venue  *Venue   `json:"venue"`
-	Groups []*Group `json:"groups"`
+	User         *User          `json:"user"`
+	Venue        *Venue         `json:"venue"`
+	Groups       []*Group       `json:"groups"`
+	FeatureFlags []*FeatureFlag `json:"featureFlags"`
 }
 
 // HandleInit handles requests for /_/init which is the first request any client must call. We'll check that they have
@@ -52,6 +54,9 @@ func HandleInit(c *gin.Context) {
 	}
 	for _, g := range gs {
 		resp.Groups = append(resp.Groups, MakeGroup(g))
+	}
+	for name, flag := range flags.AllFlags {
+		resp.FeatureFlags = append(resp.FeatureFlags, MakeFeatureFlag(name, flag))
 	}
 
 	c.JSON(http.StatusOK, resp)
