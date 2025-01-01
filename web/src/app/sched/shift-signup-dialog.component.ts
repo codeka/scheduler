@@ -26,6 +26,7 @@ export class ShiftSignupDialogComponent implements OnInit {
   form: FormGroup<{
     userId: FormControl<string|null>,
     notes: FormControl<string|null>,
+    sendCalendarEvent: FormControl<boolean|null>,
   }>
   eligibleUsers: Observable<User[]>
   allEligibleUsers: User[]|null = null
@@ -34,13 +35,14 @@ export class ShiftSignupDialogComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<ShiftSignupDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private dialog: MatDialog, private formBuilder: FormBuilder, private eventsService: EventsService,
-    private init: InitService, public auth: AuthService
+    public init: InitService, public auth: AuthService
   ) {
     this.form = this.formBuilder.group({
       userId: [
         {value: this.init.user()?.name || "", disabled: !!data.signup},
         Validators.required, this.isUserEligibleValidator()],
       notes: [""],
+      sendCalendarEvent: [true],
     });
 
     if (auth.isInRole("SHIFT_MANAGER")) {
@@ -63,14 +65,14 @@ export class ShiftSignupDialogComponent implements OnInit {
   public ngOnInit(): void {
     this.form.patchValue({
       userId: this.auth.isInRole("SHIFT_MANAGER") && this.data.signup?.user.name ? this.data.signup?.user.name : this.init.user()?.name,
-      notes: this.data.signup?.notes || ""
+      notes: this.data.signup?.notes || "",
+      sendCalendarEvent: true,
     })
   }
 
   selectUser(): void {
     console.log("hello");
     this.userIdElementRef.nativeElement.select();
-//    (<any>this.form.controls.userId).nativeElement.select()
   }
 
   shiftTimeStr(shift: Shift): string {
@@ -86,7 +88,6 @@ export class ShiftSignupDialogComponent implements OnInit {
 
   onSave(): void {
     var user: User|undefined = this.init.user()
-
     if (this.auth.isInRole("SHIFT_MANAGER")) {
       this.allEligibleUsers?.forEach(value => {
         if (value.name == this.form.value.userId) {
@@ -95,7 +96,7 @@ export class ShiftSignupDialogComponent implements OnInit {
       })
     }
 
-    this.eventsService.shiftSignup(this.data.shift, user, this.form.value.notes ?? "")
+    this.eventsService.shiftSignup(this.data.shift, this.form.value.sendCalendarEvent ?? true, user, this.form.value.notes ?? "")
 
     this.dialogRef.close(user)
   }

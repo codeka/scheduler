@@ -22,6 +22,9 @@
         <mat-label>Notes</mat-label>
         <input matInput formControlName="notes">
       </mat-form-field>
+      <mat-checkbox
+        *ngIf="init.flag('SendCalendarEvents').enabled && auth.isInRole('SHIFT_MANAGER')"
+        formControlName="sendCalendarEvent">Send calendar invite</mat-checkbox>
     </div>
   </mat-dialog-content>
   <mat-dialog-actions>

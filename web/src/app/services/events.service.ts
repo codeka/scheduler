@@ -24,6 +24,7 @@ interface SaveEventRequest {
 interface ShiftSignupRequest {
   userId?: number
   notes: string
+  sendCalendarEvent: boolean
 }
 
 // EventsService is responsible for fetching, filtering, updating events.
@@ -105,11 +106,11 @@ export class EventsService {
   }
 
   /** Sign up the given user for the given shift. If user is not specified, sign up the current user. */
-  shiftSignup(shift: Shift, user?: User, notes?: string): Promise<boolean> {
+  shiftSignup(shift: Shift, sendCalendarEvent: boolean, user?: User, notes?: string): Promise<boolean> {
     return firstValueFrom(
       this.http.post(
           ENV.backend + "/_/shifts/" + shift.id + "/signups",
-          { userId: user?.id, notes: notes ?? "" } as ShiftSignupRequest)
+          { userId: user?.id, notes: notes ?? "", sendCalendarEvent } as ShiftSignupRequest)
         .pipe(map(() => {
           return true
         }))

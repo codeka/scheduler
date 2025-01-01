@@ -1,11 +1,15 @@
 package notify
 
 import (
+	"log"
+
 	"com.codeka/scheduler/server/store"
 )
 
 // SendShiftSignupNotification sends a notification to the person who just signed up for the given shift.
 func SendShiftSignupNotification(shift *store.Shift, user *store.User) error {
+	log.Printf("Sending calendar invite for shift %d to %s %s", shift.ID, user.Name, user.Email)
+
 	//venue, err := store.GetVenue()
 	//if err != nil {
 	//	return err

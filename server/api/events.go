@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"time"
 
+	"com.codeka/scheduler/server/flags"
 	"com.codeka/scheduler/server/notify"
 	"com.codeka/scheduler/server/store"
 	"com.codeka/scheduler/server/util"
@@ -28,8 +29,9 @@ type SaveShiftRequest struct {
 }
 
 type ShiftSignupRequest struct {
-	UserID *int64 `json:"userId"`
-	Notes  *string
+	UserID            *int64 `json:"userId"`
+	Notes             *string
+	SendCalendarEvent bool `json:"sendCalendarEvent"`
 }
 
 // HandleEventsGet handles requests to /_/events. It returns the events in the data store, filtered by various query
@@ -319,11 +321,15 @@ func HandleShiftsSignupPost(c *gin.Context) {
 	}
 	store.SaveShiftUser(shift.ID, user.ID, notes)
 
-	// And send them a notification that they've been signed up.
-	err = notify.SendShiftSignupNotification(shift, user)
-	if err != nil {
-		// Just log, but we're essentially done anyway so don't cancel at this point
-		log.Printf("error sending notification: %v", err)
+	// And send them a notification that they've been signed up. But only if the flag is enabled,
+	// and (for shift managers, the optional checkbox is checked -- shift manager can choose not to
+	// send a calendar invite, but for normal signups you cannot choose.)
+	if flags.SendCalendarEvents.Enabled && (req.SendCalendarEvent || !IsInRole(c, "SHIFT_MANAGER")) {
+		err = notify.SendShiftSignupNotification(shift, user)
+		if err != nil {
+			// Just log, but we're essentially done anyway so don't cancel at this point
+			log.Printf("error sending notification: %v", err)
+		}
 	}
 
 	c.AbortWithStatus(http.StatusOK)
