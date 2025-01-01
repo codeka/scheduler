@@ -2,7 +2,9 @@ package api
 
 import (
 	"fmt"
+	"log"
 	"net/http"
+	"strings"
 
 	"com.codeka/scheduler/server/notify"
 	"com.codeka/scheduler/server/store"
@@ -50,12 +52,15 @@ func HandleSendConfirmation(c *gin.Context) {
 	var user *store.User
 	var err error
 
-	if util.IsEmailAddress(req.EmailOrPhone) {
+	emailOrPhone := strings.ToLower(strings.TrimSpace(req.EmailOrPhone))
+	if util.IsEmailAddress(emailOrPhone) {
+		log.Printf(" - logging in with email [%s]", emailOrPhone)
 		resp.destination = "EMAIL"
-		user, err = store.GetUserByEmail(req.EmailOrPhone)
-	} else if util.IsPhoneNumber(req.EmailOrPhone) {
+		user, err = store.GetUserByEmail(emailOrPhone)
+	} else if util.IsPhoneNumber(emailOrPhone) {
+		log.Printf(" - logging in with phone [%s]", emailOrPhone)
 		resp.destination = "PHONE"
-		user, err = store.GetUserByPhone(req.EmailOrPhone)
+		user, err = store.GetUserByPhone(emailOrPhone)
 	} else {
 		util.HandleError(c, http.StatusBadRequest, fmt.Errorf("invalid email or phone number"))
 		return
@@ -68,11 +73,12 @@ func HandleSendConfirmation(c *gin.Context) {
 	if user == nil {
 		// Let the caller know the email/phone doesn't exist. It leaks info about which email/phones we have/don't have,
 		// but the usability of knowing your email isn't registered is worth it for us.
+		log.Printf("Couldn't find user for email/phone: [%s]", emailOrPhone)
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
 
-	sid, err := notify.SendVerificationRequest(notify.VerificationRequest{Dest: req.EmailOrPhone})
+	sid, err := notify.SendVerificationRequest(notify.VerificationRequest{Dest: emailOrPhone})
 	if err != nil {
 		util.HandleError(c, http.StatusInternalServerError, err)
 		return
