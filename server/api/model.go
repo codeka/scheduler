@@ -1,7 +1,6 @@
 package api
 
 import (
-	"log"
 	"strings"
 	"time"
 
@@ -86,7 +85,6 @@ func UserToStore(user *User) *store.User {
 
 func SanitizeUser(user *User) {
 	if user.ShareContactInfo {
-		log.Printf("user %s wants to share contact info", user.Email)
 		return
 	}
 

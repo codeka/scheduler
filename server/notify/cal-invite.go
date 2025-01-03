@@ -2,6 +2,7 @@ package notify
 
 import (
 	"fmt"
+	"log"
 
 	"com.codeka/scheduler/server/store"
 )
@@ -13,7 +14,8 @@ import (
 func GenerateCalendarInvite(shift store.Shift, subject, description, recipient string) (string, error) {
 	uuid := fmt.Sprintf("com.codeka-shift-%d", shift.ID)
 
-	timeZone := "US/Pacific"
+	// TODO: support more timezones than just US/Pacific?
+	timeZone := "America/Los_Angeles"
 	dateFormat := "20060102T150405"
 
 	venue, err := store.GetVenue()
@@ -21,8 +23,10 @@ func GenerateCalendarInvite(shift store.Shift, subject, description, recipient s
 		return "", err
 	}
 
-	// TODO: support more timezones than just US/Pacific?
-	return fmt.Sprintf(`BEGIN:VCALENDAR
+	startDateTime := shift.StartTime.AddDate(shift.Date.Year(), int(shift.Date.Month())-1, shift.Date.Day()-1)
+	endDateTime := shift.EndTime.AddDate(shift.Date.Year(), int(shift.Date.Month())-1, shift.Date.Day()-1)
+
+	ical := fmt.Sprintf(`BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//codeka.com//shift-manager//EN
 METHOD:REQUEST
@@ -38,16 +42,21 @@ SUMMARY:%[5]s
 DESCRIPTION:%[6]s
 ATTENDEE;CUTYPE=INDIVIDUAL;EMAIL=%[7]s:mailto:%[7]s
 ORGANIZER;CN="%[8]s":mailto:dean@codeka.com
-URL;VALUE=URI:http://localhost:3000
+URL;VALUE=URI:%[9]s
 STATUS:CONFIRMED
 END:VEVENT
 END:VCALENDAR`,
 		uuid,
-		shift.StartTime.Format(dateFormat),
-		shift.EndTime.Format(dateFormat),
+		startDateTime.Format(dateFormat),
+		endDateTime.Format(dateFormat),
 		timeZone,
 		subject,
 		description,
 		recipient,
-		venue.Name), nil
+		venue.Name,
+		venue.ShiftsWebAddress)
+
+	log.Printf("shift: %s", startDateTime)
+	log.Printf("iCal: %s", ical)
+	return ical, nil
 }
