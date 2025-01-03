@@ -362,6 +362,20 @@ func HandleShiftsSignupDelete(c *gin.Context) {
 		return
 	}
 
+	user, err := store.GetUser(userID)
+	if err != nil {
+		util.HandleError(c, http.StatusNotFound, err)
+		return
+	}
+
+	if flags.SendCalendarEvents.Enabled {
+		err = notify.SendShiftCancellationNotification(shift, user)
+		if err != nil {
+			// Just log, but we're essentially done anyway so keep going.
+			log.Printf("error sending notification: %v", err)
+		}
+	}
+
 	store.DeleteShiftUser(shiftID, userID)
 	c.AbortWithStatus(http.StatusOK)
 }

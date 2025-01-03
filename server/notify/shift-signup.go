@@ -66,3 +66,54 @@ func SendShiftSignupNotification(shift *store.Shift, user *store.User) error {
 
 	return nil
 }
+
+// SendShiftCancellationNotification sends a notification to the person that a shift has been cancelled.
+func SendShiftCancellationNotification(shift *store.Shift, user *store.User) error {
+	log.Printf("Sending calendar cancellation for shift %d to %s %s", shift.ID, user.Name, user.Email)
+
+	venue, err := store.GetVenue()
+	if err != nil {
+		return err
+	}
+	group, err := store.GetGroup(shift.GroupID)
+	if err != nil {
+		return err
+	}
+
+	from := mail.NewEmail(
+		"Shifts @ "+venue.ShortName,
+		strings.ToLower(venue.ShortName)+"@codeka.com")
+	subject := fmt.Sprintf(
+		"%s %s shift cancelled on %s @ %s",
+		venue.ShortName,
+		group.Name,
+		shift.Date.Format("Mon 1/02"),
+		shift.StartTime.Format("03:04 PM"))
+	to := mail.NewEmail(user.Name, user.Email)
+
+	invite := mail.NewAttachment()
+	ics, err := GenerateCalendarCancel(*shift, user.Email)
+	if err != nil {
+		return err
+	}
+	invite.Content = base64.StdEncoding.EncodeToString([]byte(ics))
+	invite.Filename = "invite.ics"
+	invite.Type = "text/calendar"
+	invite.Disposition = "attachment"
+
+	plainTextContent := "This shift has been cancelled."
+	htmlContent := "<strong>This shift has been cancelled.</strong>"
+	message := mail.NewSingleEmail(from, subject, to, plainTextContent, htmlContent)
+	message.Attachments = append(message.Attachments, invite)
+	client := sendgrid.NewSendClient(os.Getenv("SENDGRID_API_KEY"))
+	response, err := client.Send(message)
+	if err != nil {
+		log.Println(err)
+	} else {
+		log.Println(response.StatusCode)
+		log.Println(response.Body)
+		log.Println(response.Headers)
+	}
+
+	return nil
+}
