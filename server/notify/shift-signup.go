@@ -4,11 +4,9 @@ import (
 	"encoding/base64"
 	"fmt"
 	"log"
-	"os"
 	"strings"
 
 	"com.codeka/scheduler/server/store"
-	"github.com/sendgrid/sendgrid-go"
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
 )
 
@@ -54,8 +52,7 @@ func SendShiftSignupNotification(shift *store.Shift, user *store.User) error {
 	htmlContent := "<strong>Please see attached for your shift invite</strong>"
 	message := mail.NewSingleEmail(from, subject, to, plainTextContent, htmlContent)
 	message.Attachments = append(message.Attachments, invite)
-	client := sendgrid.NewSendClient(os.Getenv("SENDGRID_API_KEY"))
-	response, err := client.Send(message)
+	response, err := sendgridClient.Send(message)
 	if err != nil {
 		log.Println(err)
 	} else {
@@ -105,8 +102,7 @@ func SendShiftCancellationNotification(shift *store.Shift, user *store.User) err
 	htmlContent := "<strong>This shift has been cancelled.</strong>"
 	message := mail.NewSingleEmail(from, subject, to, plainTextContent, htmlContent)
 	message.Attachments = append(message.Attachments, invite)
-	client := sendgrid.NewSendClient(os.Getenv("SENDGRID_API_KEY"))
-	response, err := client.Send(message)
+	response, err := sendgridClient.Send(message)
 	if err != nil {
 		log.Println(err)
 	} else {

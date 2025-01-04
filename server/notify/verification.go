@@ -53,7 +53,7 @@ func SendVerificationRequest(request VerificationRequest) (string, error) {
 	}
 	params.SetTo(request.Dest)
 
-	resp, err := client.VerifyV2.CreateVerification(VerificationServiceSID, params)
+	resp, err := twilioClient.VerifyV2.CreateVerification(VerificationServiceSID, params)
 	if err != nil {
 		return "", err
 	}
@@ -67,7 +67,7 @@ func ConfirmVerification(request ConfirmationRequest) (string, error) {
 	params.SetTo(request.Dest)
 	params.SetCode(request.Code)
 
-	resp, err := client.VerifyV2.CreateVerificationCheck(VerificationServiceSID, params)
+	resp, err := twilioClient.VerifyV2.CreateVerificationCheck(VerificationServiceSID, params)
 	if err != nil {
 		return "", fmt.Errorf("error creating checkL %v", err)
 	}
