@@ -93,7 +93,8 @@ export class ProfileComponent {
         if (this.fileInfo != null) {
           this.profileService.saveProfilePicture(this.fileInfo.file)
             .then(() => {
-              //??
+              // Instead of navigating, we want to actually reload the page so that the init call happens again.
+              window.location.reload();
             })
         } else {
           //??
