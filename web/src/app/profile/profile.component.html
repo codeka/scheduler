@@ -30,7 +30,7 @@
   </form>
 </mat-card>
 
-<mat-card class="profile-card">
+<mat-card class="profile-card" *ngIf="init.flag('EnableNotifications').enabled">
   <mat-card-header>
     <mat-card-title>Notification Settings</mat-card-title>
   </mat-card-header>
