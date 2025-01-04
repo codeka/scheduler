@@ -4,18 +4,18 @@
   max-width: 800pt;
 }
 
-div.fields {
+mat-dialog-content.fields {
   margin: 0pt 20pt 20pt 20pt;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
 }
 
-div.fields mat-form-field.full-width {
+mat-dialog-content.fields mat-form-field.full-width {
   align-self: stretch;
 }
 
-div.fields div.horz {
+mat-dialog-content.fields div.horz {
   display: flex;
   flex-direction: row;
 }

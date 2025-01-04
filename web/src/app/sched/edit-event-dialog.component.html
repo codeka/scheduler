@@ -2,7 +2,7 @@
 <h2 mat-dialog-title *ngIf="!data.event">New event</h2>
 
 <form [formGroup]="form" (ngSubmit)="onSaveAndClose()" novalidate>
-  <div class="fields">
+  <mat-dialog-content class="fields">
     <mat-form-field class="full-width">
       <mat-label>Event name</mat-label>
       <input matInput formControlName="title" />
@@ -64,7 +64,7 @@
         }
       </ng-container>
     </div>
-  </div>
+  </mat-dialog-content>
 
   <mat-dialog-actions>
     <button mat-button
