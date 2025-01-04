@@ -38,7 +38,8 @@ func SendShiftSignupNotification(shift *store.Shift, user *store.User) error {
 	ics, err := GenerateCalendarInvite(
 		*shift,
 		fmt.Sprintf("%s %s shift", venue.ShortName, group.Name),
-		"description of the event",
+		fmt.Sprintf("Do not delete this event. If you cannot make it to this shift, please cancel at the shifts website: %s", venue.ShiftsWebAddress),
+		fmt.Sprintf("<strong>Do not delete this event</strong><br/>If you cannot make it to this shift, please cancel your shift at <a href='%s'>the shifts website</a>", venue.ShiftsWebAddress),
 		user.Email)
 	if err != nil {
 		return err
@@ -48,8 +49,13 @@ func SendShiftSignupNotification(shift *store.Shift, user *store.User) error {
 	invite.Type = "text/calendar"
 	invite.Disposition = "attachment"
 
-	plainTextContent := "Please see attached for your shift invite."
-	htmlContent := "<strong>Please see attached for your shift invite</strong>"
+	plainTextContent := fmt.Sprintf(
+		"You have an upcoming %s %s shift on %s @ %s",
+		venue.ShortName,
+		group.Name,
+		shift.Date.Format("Mon 1/02"),
+		shift.StartTime.Format("03:04 PM"))
+	htmlContent := plainTextContent
 	message := mail.NewSingleEmail(from, subject, to, plainTextContent, htmlContent)
 	message.Attachments = append(message.Attachments, invite)
 	response, err := sendgridClient.Send(message)
@@ -98,8 +104,13 @@ func SendShiftCancellationNotification(shift *store.Shift, user *store.User) err
 	invite.Type = "text/calendar"
 	invite.Disposition = "attachment"
 
-	plainTextContent := "This shift has been cancelled."
-	htmlContent := "<strong>This shift has been cancelled.</strong>"
+	plainTextContent := fmt.Sprintf(
+		"Your upcoming %s %s shift on %s @ %s has been cancelled.",
+		venue.ShortName,
+		group.Name,
+		shift.Date.Format("Mon 1/02"),
+		shift.StartTime.Format("03:04 PM"))
+	htmlContent := plainTextContent
 	message := mail.NewSingleEmail(from, subject, to, plainTextContent, htmlContent)
 	message.Attachments = append(message.Attachments, invite)
 	response, err := sendgridClient.Send(message)

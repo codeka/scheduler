@@ -16,7 +16,7 @@ func generateUuid(shift store.Shift, recipient string) string {
 // interpret correctly and allow the user to add the event to their calendar.
 // There are a bunch of Go libraries that do this in a generic way, but for now I'm just going
 // to be lazy and do it kinda hardcoded like this.
-func GenerateCalendarInvite(shift store.Shift, subject, description, recipient string) (string, error) {
+func GenerateCalendarInvite(shift store.Shift, subject, description, htmlDescription, recipient string) (string, error) {
 	uuid := generateUuid(shift, recipient)
 
 	// TODO: support more timezones than just US/Pacific?
@@ -40,15 +40,16 @@ TIMEZONE-ID:%[5]s
 X-WR-TIMEZONE:%[5]s
 BEGIN:VEVENT
 UID:%[1]s
-SEQUENCE:%[12]d
+SEQUENCE:%[13]d
 DTSTAMP:%[2]s
 DTSTART;TZID=%[5]s:%[3]s
 DTEND;TZID=%[5]s:%[4]s
 SUMMARY:%[6]s
 DESCRIPTION:%[7]s
-ATTENDEE;CUTYPE=INDIVIDUAL;EMAIL=%[8]s:mailto:%[8]s
-ORGANIZER;CN="%[9]s":mailto:%[10]s@codeka.com
-URL;VALUE=URI:%[11]s
+X-ALT-DESC;FMTTYPE=text/html:%[8]s
+ATTENDEE;CUTYPE=INDIVIDUAL;EMAIL=%[9]s:mailto:%[9]s
+ORGANIZER;CN="%[10]s":mailto:%[11]s@codeka.com
+URL;VALUE=URI:%[12]s
 STATUS:CONFIRMED
 END:VEVENT
 END:VCALENDAR`,
@@ -59,6 +60,7 @@ END:VCALENDAR`,
 		timeZone,
 		subject,
 		description,
+		htmlDescription,
 		recipient,
 		venue.Name,
 		strings.ToLower(venue.ShortName),
