@@ -176,7 +176,7 @@ func HandleAdminUserPicturePost(c *gin.Context) {
 		return
 	}
 
-	name, path, err := store.MakeImageFileName()
+	name, path, err := store.MakeImageFileName("png")
 	if err != nil {
 		util.HandleError(c, http.StatusInternalServerError, err)
 		return
@@ -231,7 +231,7 @@ func HandleAdminVenuePicturePost(c *gin.Context) {
 		return
 	}
 
-	name, path, err := store.MakeImageFileName()
+	name, path, err := store.MakeImageFileName("png")
 	if err != nil {
 		util.HandleError(c, http.StatusInternalServerError, err)
 		return
@@ -249,6 +249,84 @@ func HandleAdminVenuePicturePost(c *gin.Context) {
 		return
 	}
 	venue.PictureName = name
+	err = store.SaveVenue(venue)
+	if err != nil {
+		util.HandleError(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	c.AbortWithStatus(http.StatusOK)
+}
+
+func HandleAdminVenueIcoPicturePost(c *gin.Context) {
+	if !IsInRole(c, "ADMIN") {
+		c.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
+
+	file, err := c.FormFile("picture")
+	if err != nil {
+		util.HandleError(c, http.StatusBadRequest, err)
+		return
+	}
+
+	name, path, err := store.MakeImageFileName("ico")
+	if err != nil {
+		util.HandleError(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	err = c.SaveUploadedFile(file, path)
+	if err != nil {
+		util.HandleError(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	venue, err := store.GetVenue()
+	if err != nil {
+		util.HandleError(c, http.StatusInternalServerError, err)
+		return
+	}
+	venue.IcoPictureName = name
+	err = store.SaveVenue(venue)
+	if err != nil {
+		util.HandleError(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	c.AbortWithStatus(http.StatusOK)
+}
+
+func HandleAdminVenueSvgPicturePost(c *gin.Context) {
+	if !IsInRole(c, "ADMIN") {
+		c.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
+
+	file, err := c.FormFile("picture")
+	if err != nil {
+		util.HandleError(c, http.StatusBadRequest, err)
+		return
+	}
+
+	name, path, err := store.MakeImageFileName("svg")
+	if err != nil {
+		util.HandleError(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	err = c.SaveUploadedFile(file, path)
+	if err != nil {
+		util.HandleError(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	venue, err := store.GetVenue()
+	if err != nil {
+		util.HandleError(c, http.StatusInternalServerError, err)
+		return
+	}
+	venue.SvgPictureName = name
 	err = store.SaveVenue(venue)
 	if err != nil {
 		util.HandleError(c, http.StatusInternalServerError, err)
@@ -451,6 +529,8 @@ func setupAdmin(g *gin.Engine) error {
 	g.POST("_/admin/users", HandleAdminUsersPost)
 	g.POST("_/admin/venue", HandleAdminVenuePost)
 	g.POST("_/admin/venue/picture", HandleAdminVenuePicturePost)
+	g.POST("_/admin/venue/ico-picture", HandleAdminVenueIcoPicturePost)
+	g.POST("_/admin/venue/svg-picture", HandleAdminVenueSvgPicturePost)
 	g.POST("_/admin/groups", HandleAdminGroupsPost)
 	g.GET("_/admin/cron-jobs", HandleAdminCronJobGet)
 	g.POST("_/admin/cron-jobs", HandleAdminCronJobPost)

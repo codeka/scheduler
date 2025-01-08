@@ -43,6 +43,8 @@ export class InitService {
       shortName: "",
       address: "",
       pictureName: "", 
+      icoPictureName: "",
+      svgPictureName: "",
       shiftsWebAddress: "",
       webAddress: "",
       verificationEmailTemplateId: "",

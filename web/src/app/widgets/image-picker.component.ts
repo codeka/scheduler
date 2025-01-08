@@ -22,6 +22,9 @@ export class ImagePickerComponent {
   @ViewChild('img') img!: ElementRef
   @ViewChild('preview') preview!: ElementRef
 
+  @Input()
+  label: string = ""
+
   // If set, this will be the initial image we'll load up.
   @Input()
   set initialImg(value: string) {

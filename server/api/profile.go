@@ -56,7 +56,7 @@ func HandleProfilePicturePost(c *gin.Context) {
 		return
 	}
 
-	name, path, err := store.MakeImageFileName()
+	name, path, err := store.MakeImageFileName("png")
 	if err != nil {
 		util.HandleError(c, http.StatusInternalServerError, err)
 		return

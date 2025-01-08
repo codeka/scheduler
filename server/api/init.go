@@ -61,3 +61,19 @@ func HandleInit(c *gin.Context) {
 
 	c.JSON(http.StatusOK, resp)
 }
+
+func HandleFavicon(c *gin.Context) {
+	venue, err := store.GetVenue()
+	if err != nil {
+		util.HandleError(c, http.StatusNotFound, err)
+		return
+	}
+
+	if venue.IcoPictureName != "" {
+		c.File(store.ImageFileName(venue.IcoPictureName, "ico"))
+	} else if venue.SvgPictureName != "" {
+		c.File(store.ImageFileName(venue.SvgPictureName, "svg"))
+	}
+
+	c.AbortWithStatus(http.StatusNotFound)
+}

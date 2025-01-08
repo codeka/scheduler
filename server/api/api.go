@@ -10,6 +10,7 @@ func Setup(g *gin.Engine) error {
 		return err
 	}
 
+	g.GET("_/favicon.ico", HandleFavicon)
 	g.GET("_/init", HandleInit)
 	if err := setupAuth(g); err != nil {
 		return err

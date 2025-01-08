@@ -25,6 +25,22 @@ div.fields mat-form-field {
   align-self: stretch;
 }
 
+div.images {
+  display: flex;
+  flex-direction: column;
+}
+
+div.images image-picker.big-picture {
+  width: 400pt;
+  flex: 300pt;
+  margin-bottom: 10pt;
+}
+
+div.images image-picker.small-picture  {
+  width: 180pt;
+  height: 200pt
+}
+
 button {
   margin-left: 8pt;
 }

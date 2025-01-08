@@ -4,11 +4,11 @@ import { ENV } from "../env/environment";
 // ImageService lets us show images from the backend. Mostly.
 @Injectable()
 export class ImageService {
-  imageUrl(name?: string): string {
+  imageUrl(name?: string, ext: string = ".png"): string {
     if (!name) {
       return ""
     }
 
-    return ENV.backend + "/_/img/" + name + ".png"
+    return ENV.backend + "/_/img/" + name + ext
   }
 }

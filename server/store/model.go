@@ -10,6 +10,8 @@ type Venue struct {
 	ShiftsWebAddress            string
 	WebAddress                  string
 	VerificationEmailTemplateID string
+	IcoPictureName              string
+	SvgPictureName              string
 }
 
 type User struct {

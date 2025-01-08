@@ -17,6 +17,8 @@ type Venue struct {
 	ShiftsWebAddress            string `json:"shiftsWebAddress"`
 	WebAddress                  string `json:"webAddress"`
 	VerificationEmailTemplateID string `json:"verificationEmailTemplateId"`
+	IcoPictureName              string `json:"icoPictureName"`
+	SvgPictureName              string `json:"svgPictureName"`
 }
 
 func MakeVenue(venue *store.Venue) *Venue {
@@ -28,6 +30,8 @@ func MakeVenue(venue *store.Venue) *Venue {
 		ShiftsWebAddress:            venue.ShiftsWebAddress,
 		WebAddress:                  venue.WebAddress,
 		VerificationEmailTemplateID: venue.VerificationEmailTemplateID,
+		IcoPictureName:              venue.IcoPictureName,
+		SvgPictureName:              venue.SvgPictureName,
 	}
 }
 
@@ -40,6 +44,8 @@ func VenueToStore(venue *Venue) *store.Venue {
 		ShiftsWebAddress:            venue.ShiftsWebAddress,
 		WebAddress:                  venue.WebAddress,
 		VerificationEmailTemplateID: venue.VerificationEmailTemplateID,
+		IcoPictureName:              venue.IcoPictureName,
+		SvgPictureName:              venue.SvgPictureName,
 	}
 }
 

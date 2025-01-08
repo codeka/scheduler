@@ -1,4 +1,5 @@
 <div role="group" class="image-picker" #preview>
+  <span>{{label}}</span>
   <img src="{{previewUrl}}" (load)="imageLoaded()" #img />
   <button mat-flat-button color="primary" (click)="selectFile($event)">Change</button>
   <input type="file" accept="image/*" (change)="fileSelected($event)" style="display: none;" #file>

@@ -23,6 +23,8 @@ export class EditVenueComponent {
   }>
 
   fileInfo: FileInfo|null = null
+  icoFileInfo: FileInfo|null = null
+  svgFileInfo: FileInfo|null = null
 
   constructor(
       private admin: AdminService, private formBuilder: FormBuilder, public init: InitService,
@@ -43,33 +45,59 @@ export class EditVenueComponent {
       shortName: this.form.value.shortName ?? "",
       address: this.form.value.address ?? "",
       pictureName: this.init.venue().pictureName,
+      icoPictureName: this.init.venue().icoPictureName,
+      svgPictureName: this.init.venue().svgPictureName,
       shiftsWebAddress: this.form.value.shiftsWebAddress ?? "",
       webAddress: this.form.value.webAddress ?? "",
       verificationEmailTemplateId: this.form.value.verificationEmailTemplateId ?? "",
-      picture: this.fileInfo?.file ?? undefined
     }
 
     this.admin.saveVenue(venue)
       .then(() => {
-
-        if (this.fileInfo != null) {
-          // We have to upload the image first.
-          this.admin.saveVenuePicture(this.fileInfo.filename, this.fileInfo.file)
-            .then(() => {
-              this.saveComplete();
-            });
-        } else {
-          this.saveComplete();
-        }
+        this.saveComplete();
       })
   }
 
   saveComplete() {
+    if (this.fileInfo != null) {
+      // We have to upload the image first.
+      this.admin.saveVenuePicture(this.fileInfo.filename, this.fileInfo.file)
+        .then(() => {
+          this.fileInfo = null
+          this.saveComplete()
+        });
+      return
+    }
+
+    if (this.icoFileInfo != null) {
+      this.admin.saveVenueIcoPicture(this.icoFileInfo.filename, this.icoFileInfo.file)
+        .then(() => {
+          this.icoFileInfo = null
+          this.saveComplete();
+        })
+      return
+    }
+
+    if (this.svgFileInfo != null) {
+      this.admin.saveVenueSvgPicture(this.svgFileInfo.filename, this.svgFileInfo.file)
+        .then(() => {
+          this.svgFileInfo = null
+          this.saveComplete();
+        })
+      return
+    }
+
     // Instead of navigating, we want to actually reload the page so that the init call happens again.
     window.location.reload();
   }
 
   imageUpdated(file: FileInfo) {
     this.fileInfo = file
+  }
+  icoImageUpdated(file: FileInfo) {
+    this.icoFileInfo = file
+  }
+  svgImageUpdated(file: FileInfo) {
+    this.svgFileInfo = file
   }
 }

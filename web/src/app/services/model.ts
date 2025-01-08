@@ -7,9 +7,8 @@ export interface Venue {
   shiftsWebAddress: string
   webAddress: string
   verificationEmailTemplateId: string
-
-  // This is only used when saving the venue, contains an optional new picture to use.
-  picture?: File
+  icoPictureName: string
+  svgPictureName: string
 }
 
 export interface User {

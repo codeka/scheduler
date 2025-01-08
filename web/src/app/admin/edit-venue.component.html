@@ -6,7 +6,13 @@
 
   <form [formGroup]="form" (ngSubmit)="onSave()" novalidate>
     <div class="row">
-      <image-picker [initialImg]="img.imageUrl(init.venue().pictureName)" (picked)="imageUpdated($event)" />
+      <div class="images">
+        <image-picker class="big-picture" label="Main Picture" [initialImg]="img.imageUrl(init.venue().pictureName)" (picked)="imageUpdated($event)" />
+        <div class="row">
+          <image-picker class="small-picture" label="ICO" [initialImg]="img.imageUrl(init.venue().icoPictureName, '.ico')" (picked)="icoImageUpdated($event)" />
+          <image-picker class="small-picture" label="SVG" [initialImg]="img.imageUrl(init.venue().svgPictureName, '.svg')" (picked)="svgImageUpdated($event)" />
+        </div>
+      </div>
 
       <div class="fields">
         <mat-form-field>
