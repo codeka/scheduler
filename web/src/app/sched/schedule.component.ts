@@ -225,9 +225,16 @@ export class ScheduleComponent implements OnInit {
     }
   }
 
-
   isInGroup(group: Group) {
     return this.init.user()?.groups.includes(group.id) || false
+  }
+
+  onShowOlder() {
+    this.scheduleStartDate = new Date(
+        this.scheduleStartDate.getFullYear(),
+        this.scheduleStartDate.getMonth() - 1,
+        this.scheduleStartDate.getDate())
+    this.ngOnInit()
   }
 
   onShowAllChanged(event: MatCheckboxChange) {

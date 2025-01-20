@@ -1,6 +1,7 @@
 <mat-toolbar class="header">
   <h1>Schedule</h1>
   <div class="spacer"></div>
+  <button class="button" mat-stroked-button (click)="onShowOlder()"><mat-icon>arrow_upward</mat-icon>Older</button>
   <mat-checkbox class="show-all" (change)="onShowAllChanged($event)">Show all groups</mat-checkbox>
   <view-switcher></view-switcher>
   <button class="admin-button" mat-raised-button *ngIf="auth.isInRole('EVENT_MANAGER')" (click)="onCreateEvent()"><mat-icon>event</mat-icon>Create Event</button>
