@@ -15,6 +15,7 @@ import { throttleTime } from 'rxjs/internal/operators/throttleTime';
 import { map } from 'rxjs/internal/operators/map';
 import { Observable, startWith } from 'rxjs';
 import { ViewProfileDialogComponent } from '../profile/view-profile-dialog.component';
+import { MailingListDialogComponent } from './mailing-list-dialog.component';
 
 // A shift "bucket" is a collection of shifts that overlap and consitite one set of people. For example, it's common
 // to have a bunch of shifts in the morning, then a bunch more in the afternoon. Because shifts are not really
@@ -227,6 +228,12 @@ export class ScheduleComponent implements OnInit {
 
   isInGroup(group: Group) {
     return this.init.user()?.groups.includes(group.id) || false
+  }
+
+  onShowMailingList(group: Group) {
+    this.dialog.open(MailingListDialogComponent, {
+      data: { group: group },
+    })
   }
 
   onShowOlder() {

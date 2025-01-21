@@ -161,6 +161,33 @@ func GetEligibleUsers(shift *Shift, query string) ([]*User, error) {
 	return users, nil
 }
 
+// GetGroupUsers returns all users in the database are members of the given group.
+func GetGroupUsers(group *Group) ([]*User, error) {
+	rows, err := db.Query(`
+			SELECT id, name, email, phone, share_contact_info,
+			       picture_name
+			FROM users
+			INNER JOIN user_groups
+			   ON users.id = user_groups.user_id
+			WHERE user_groups.group_id = ?
+			  AND deleted = 0
+	  `, group.ID)
+	if err != nil {
+		return []*User{}, err
+	}
+	defer rows.Close()
+
+	var users []*User
+	for rows.Next() {
+		user, err := makeUser(rows)
+		if err != nil {
+			continue
+		}
+		users = append(users, user)
+	}
+	return users, nil
+}
+
 func GetUser(id int64) (*User, error) {
 	rows, err := db.Query(`
 	    SELECT id, name, email, phone, share_contact_info,

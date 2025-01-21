@@ -16,6 +16,10 @@ interface GetEligibleUserForShiftResponse {
   users: User[]
 }
 
+interface GetGroupUsersResponse {
+  users: User[]
+}
+
 interface SaveEventRequest {
   event: Event,
   initialShifts: Shift[]
@@ -121,5 +125,14 @@ export class EventsService {
     return firstValueFrom(
       this.http.delete(ENV.backend + "/_/shifts/" + shiftId + "/signups/" + userId)
           .pipe(map(() => { return true; })))
+  }
+
+  getGroupUsers(groupId: number): Promise<User[]> {
+    return firstValueFrom(
+      this.http.get<GetGroupUsersResponse>(ENV.backend + "/_/groups/" + groupId + "/users")
+      .pipe(map((resp: GetGroupUsersResponse) => {
+        return resp.users
+      }))
+    )
   }
 }

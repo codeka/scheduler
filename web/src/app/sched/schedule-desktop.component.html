@@ -15,6 +15,16 @@
       <div class="group"
           *ngFor="let group of groups">
         {{group.name}}
+        <button mat-icon-button class="icon-small" [matMenuTriggerFor]="groupMenu" matTooltip="More"
+                    *ngIf="auth.isInRole('ADMIN')">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #groupMenu="matMenu">
+          <button mat-menu-item (click)="onShowMailingList(group)">
+            <mat-icon>group</mat-icon>
+            <span>Mailing list</span>
+          </button>
+        </mat-menu>
       </div>
     </div>
     <div class="schedule-day"

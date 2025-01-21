@@ -23,6 +23,10 @@ type EligibleUsersResponse struct {
 	Users []*User `json:"users"`
 }
 
+type GroupUsersResponse struct {
+	Users []*User `json:"users"`
+}
+
 type SaveShiftRequest struct {
 	Event         *Event   `json:"event"`
 	InitialShifts []*Shift `json:"initialShifts"`
@@ -251,6 +255,54 @@ func HandleShiftsEligibleUsersGet(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
+// HandleGroupUsersGet returns all the users that in a given group. Only allowed for SHIFT_MANAGERs.
+func HandleGroupUsersGet(c *gin.Context) {
+	groupIdStr := c.Param("id")
+	groupId, err := strconv.ParseInt(groupIdStr, 10, 64)
+	if err != nil {
+		util.HandleError(c, http.StatusBadRequest, err)
+		return
+	}
+
+	group, err := store.GetGroup(groupId)
+	if err != nil {
+		util.HandleError(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	users, err := store.GetGroupUsers(group)
+	if err != nil {
+		util.HandleError(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	userRoles, err := store.GetAllUserRoles()
+	if err != nil {
+		util.HandleError(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	resp := GroupUsersResponse{}
+	for _, u := range users {
+		// We only want them to know about SHIFT_MANAGER, not any other roles, so just make a
+		// list of SHIFT_MANAGER if they're in that role.
+		shiftManagerRole := []string{}
+		for _, r := range userRoles[u.ID] {
+			if r == "SHIFT_MANAGER" {
+				shiftManagerRole = []string{"SHIFT_MANAGER"}
+				break
+			}
+		}
+
+		user := MakeUser(u, shiftManagerRole, []int64{}) // Don't fill in groups for these users.
+		resp.Users = append(resp.Users, user)
+	}
+
+	sort.Sort(byName(resp.Users))
+
+	c.JSON(http.StatusOK, resp)
+}
+
 func HandleShiftsSignupPost(c *gin.Context) {
 	shiftIdStr := c.Param("id")
 	shiftId, err := strconv.ParseInt(shiftIdStr, 10, 64)
@@ -390,6 +442,8 @@ func setupEvents(g *gin.Engine) error {
 	g.GET("_/shifts/:id/eligible-users", HandleShiftsEligibleUsersGet)
 	g.POST("_/shifts/:id/signups", HandleShiftsSignupPost)
 	g.DELETE("_/shifts/:shiftID/signups/:userID", HandleShiftsSignupDelete)
+
+	g.GET("_/groups/:id/users", HandleGroupUsersGet)
 
 	return nil
 }
