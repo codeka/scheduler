@@ -1,11 +1,8 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Group, Shift } from '../services/model';
+import { Group } from '../services/model';
 import { EventsService } from '../services/events.service';
-import { dateToString, stringToDate, stringToTime, timeToString } from '../util/date.util';
 import { InitService } from '../services/init.service';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { confirmAction } from '../widgets/confirm-dialog';
 
 export interface DialogData {
   group: Group

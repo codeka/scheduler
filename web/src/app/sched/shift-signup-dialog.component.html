@@ -18,6 +18,7 @@
         </mat-autocomplete>
         <mat-error *ngIf="form.controls.userId.invalid">User is not eligible</mat-error>
       </mat-form-field>
+      <p>Enter any notes here that might be useful.<br/>E.g. "Need to leave 30 minutes early" or "Will be<br/>bringing a guest!"</p>
       <mat-form-field>
         <mat-label>Notes</mat-label>
         <input matInput formControlName="notes">
