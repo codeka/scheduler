@@ -1,28 +1,28 @@
 package notify
 
 import (
+	"context"
 	"fmt"
 	"os"
 
-	"github.com/sendgrid/sendgrid-go"
-	twilio "github.com/twilio/twilio-go"
+	brevo "github.com/getbrevo/brevo-go/lib"
 )
 
-var twilioClient *twilio.RestClient
-var sendgridClient *sendgrid.Client
+var brevoClient *brevo.APIClient
 
 func Setup() error {
-	twilioClient = twilio.NewRestClient()
-	if twilioClient == nil {
-		return fmt.Errorf("could not create twilio client")
-	}
+	cfg := brevo.NewConfiguration()
+	cfg.AddDefaultHeader("api-key", os.Getenv("BREVO_API_KEY"))
+	// TODO: cfg.AddDefaultHeader("partner-key","YOUR_API_KEY")
 
-	sendgridClient = sendgrid.NewSendClient(os.Getenv("SENDGRID_API_KEY"))
-	if sendgridClient == nil {
-		return fmt.Errorf("could not create sendgrid client")
+	brevoClient = brevo.NewAPIClient(cfg)
+	account, _, err := brevoClient.AccountApi.GetAccount(context.Background())
+	if err != nil {
+		return fmt.Errorf("error getting Brevo account: %v", err)
 	}
+	fmt.Println("Brevo:", account.CompanyName, "Plan:", account.Plan)
 
-	err := EnsureNotificationTypes()
+	err = EnsureNotificationTypes()
 	if err != nil {
 		return err
 	}

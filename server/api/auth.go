@@ -78,13 +78,13 @@ func HandleSendConfirmation(c *gin.Context) {
 		return
 	}
 
-	sid, err := notify.SendVerificationRequest(notify.VerificationRequest{Dest: emailOrPhone})
+	code, err := notify.SendVerificationRequest(notify.VerificationRequest{Dest: emailOrPhone})
 	if err != nil {
 		util.HandleError(c, http.StatusInternalServerError, err)
 		return
 	}
 
-	err = store.CreateUserLogin(user, sid)
+	err = store.CreateUserLogin(user, code)
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 		return
@@ -105,18 +105,14 @@ func HandleVerifyConfirmation(c *gin.Context) {
 
 	resp := VerifyConfirmationResponse{}
 
-	sid, err := notify.ConfirmVerification(notify.ConfirmationRequest{
-		Dest: req.EmailOrPhone,
-		Code: req.ConfirmationCode,
-	})
-	if err != nil {
-		util.HandleError(c, http.StatusBadRequest, fmt.Errorf("verification failed: %v", err))
-		return
-	}
-
-	user, err := store.GetUserByConfirmationCode(sid)
+	user, err := store.GetUserByConfirmationCode(req.ConfirmationCode)
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+	if user == nil {
+		log.Printf("No user found with confirmation code: %s", req.ConfirmationCode)
+		c.AbortWithError(http.StatusForbidden, err)
 		return
 	}
 
@@ -146,7 +142,7 @@ func HandleVerifyConfirmation(c *gin.Context) {
 		return
 	}
 
-	err = store.SaveSecret(resp.User.ID, sid, resp.SecretKey)
+	err = store.SaveSecret(resp.User.ID, req.ConfirmationCode, resp.SecretKey)
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 		return

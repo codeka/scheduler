@@ -1,17 +1,20 @@
 package notify
 
 import (
+	"context"
 	"fmt"
+	"log"
 	"strings"
 
 	"com.codeka/scheduler/server/store"
 	"com.codeka/scheduler/server/util"
-	verify "github.com/twilio/twilio-go/rest/verify/v2"
+
+	brevo "github.com/getbrevo/brevo-go/lib"
 )
 
-const (
-	// TODO: should this be passed in?
-	VerificationServiceSID = "VAb4bae137798d2473675cc548e6bd9b76"
+var (
+	ConfirmationCodeLetters = []rune("0123456789")
+	ConfirmationCodeSize    = 6
 )
 
 type VerificationRequest struct {
@@ -24,7 +27,29 @@ type ConfirmationRequest struct {
 	Code string
 }
 
-// SendVerificationRequest sends a verification request to the user and returns the SID of the request, or nil and an
+func generateConfirmationCode(user *store.User) (string, error) {
+	if user.ConfirmationCode != "" {
+		// If they already have a confirmation code, use the same one. This is easier if people
+		// repeatedly request a code, we'll give them the same one.
+		return user.ConfirmationCode, nil
+	}
+
+	code, err := util.RandomSequence(ConfirmationCodeSize, ConfirmationCodeLetters)
+	if err != nil {
+		return "", err
+	}
+
+	// Save the user with the new code.
+	user.ConfirmationCode = code
+	err = store.SaveUser(user)
+	if err != nil {
+		return "", err
+	}
+
+	return code, nil
+}
+
+// SendVerificationRequest sends a verification request to the user and returns the verification code, or nil and an
 // error if there was some kind of error.
 func SendVerificationRequest(request VerificationRequest) (string, error) {
 	venue, err := store.GetVenue()
@@ -32,49 +57,72 @@ func SendVerificationRequest(request VerificationRequest) (string, error) {
 		return "", err
 	}
 
-	params := &verify.CreateVerificationParams{}
 	if util.IsEmailAddress(request.Dest) {
-		params.SetChannel("email")
+		user, err := store.GetUserByEmail(request.Dest)
+		if err != nil {
+			return "", err
+		}
+		if user == nil {
+			return "", fmt.Errorf("No user with given email")
+		}
+		code, err := generateConfirmationCode(user)
 
-		params.SetChannelConfiguration(map[string]interface{}{
-			"template_id": venue.VerificationEmailTemplateID,
-			"from":        strings.ToLower(venue.ShortName) + "@codeka.com",
-			"from_name":   "Shifts @ " + venue.ShortName,
-			"substitutions": map[string]interface{}{
-				"dest":        request.Dest,
-				"venue_name":  venue.ShortName,
-				"web_address": venue.ShiftsWebAddress,
+		// TODO: do a better job of formatting the HTML here
+		buttonStyle := "background-color: #333333; border: 1px solid #333333; border-radius: 6px; border-width: 1px; color:#ffffff; display: inline-block; font-size: 14px; padding: 12px 18px; text-decoration: none;"
+		html := fmt.Sprintf(
+			"<p><a style=\"%s\" href=\"%slogin/confirm?emailOrPhone=%s&code=%s&action=submit\">Click here to verify your email address</a></p>",
+			buttonStyle, venue.ShiftsWebAddress, request.Dest, code)
+		html += fmt.Sprintf("<p>Or, enter code <strong>%s</strong> where prompted</p>", code)
+
+		email := brevo.SendSmtpEmail{
+			Sender: &brevo.SendSmtpEmailSender{
+				Name:  "Shifts @ " + venue.ShortName,
+				Email: strings.ToLower(venue.ShortName) + "@codeka.com",
 			},
-		})
+			To: []brevo.SendSmtpEmailTo{
+				{
+					Name:  user.Name,
+					Email: user.Email,
+				},
+			},
+			Subject:     fmt.Sprintf("Shifts @ %s login verification", venue.ShortName),
+			TextContent: "Enter confirmation code: " + code,
+			HtmlContent: html,
+			Tags:        []string{"verification_code"},
+		}
+		_, _, err = brevoClient.TransactionalEmailsApi.SendTransacEmail(context.Background(), email)
+		if err != nil {
+			return "", fmt.Errorf("error sending email: %v", err)
+		}
+		return code, nil
 	} else if util.IsPhoneNumber(request.Dest) {
-		params.SetChannel("sms")
+		user, err := store.GetUserByPhone(request.Dest)
+		if err != nil {
+			return "", err
+		}
+		if user == nil {
+			return "", fmt.Errorf("No user with given phone number")
+		}
+
+		code, err := generateConfirmationCode(user)
+		sms := brevo.SendTransacSms{
+			Sender:    venue.ShortName,
+			Recipient: user.Phone,
+			Content:   "Your confirmation code is: " + code,
+			Type_:     "transactional",
+			Tag:       "verification_code",
+			// WebUrl: TODO for tracking?
+			OrganisationPrefix: venue.ShortName,
+		}
+		resp, _, err := brevoClient.TransactionalSMSApi.SendTransacSms(context.Background(), sms)
+		if err != nil {
+			return "", err
+		}
+		log.Println("SMS sent", resp.MessageId, "used credit=", resp.UsedCredits, "remaining credit=", resp.RemainingCredits)
+		// TODO: when remaining credits get low, notifiy the admin (me) to buy more?
+
+		return code, nil
 	} else {
 		return "", fmt.Errorf("destination does not appear to be valid email or phone number")
-	}
-	params.SetTo(request.Dest)
-
-	resp, err := twilioClient.VerifyV2.CreateVerification(VerificationServiceSID, params)
-	if err != nil {
-		return "", err
-	}
-
-	return *resp.Sid, nil
-}
-
-// ConfirmVerification attempts to confirm that you've actually got the correct email.
-func ConfirmVerification(request ConfirmationRequest) (string, error) {
-	params := &verify.CreateVerificationCheckParams{}
-	params.SetTo(request.Dest)
-	params.SetCode(request.Code)
-
-	resp, err := twilioClient.VerifyV2.CreateVerificationCheck(VerificationServiceSID, params)
-	if err != nil {
-		return "", fmt.Errorf("error creating checkL %v", err)
-	}
-
-	if resp.Status != nil && *resp.Status == "approved" {
-		return *resp.Sid, nil
-	} else {
-		return "", fmt.Errorf("verification status: %v", *resp.Status)
 	}
 }

@@ -1,6 +1,8 @@
 module com.codeka/scheduler/server
 
-go 1.20
+go 1.22.3
+
+toolchain go1.23.11
 
 require github.com/gin-gonic/gin v1.9.1
 
@@ -9,9 +11,11 @@ require github.com/gin-contrib/cors v1.5.0
 require modernc.org/sqlite v1.28.0
 
 require (
+	github.com/antihax/optional v1.0.0 // indirect
+	github.com/getbrevo/brevo-go v1.1.3 // indirect
 	github.com/golang/mock v1.6.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
-	github.com/sendgrid/rest v2.6.9+incompatible // indirect
+	golang.org/x/oauth2 v0.21.0 // indirect
 )
 
 require (
@@ -35,8 +39,6 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/pelletier/go-toml/v2 v2.1.0 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
-	github.com/sendgrid/sendgrid-go v3.16.0+incompatible
-	github.com/twilio/twilio-go v1.22.3
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.11 // indirect
 	golang.org/x/arch v0.5.0 // indirect

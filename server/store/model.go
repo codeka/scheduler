@@ -21,6 +21,7 @@ type User struct {
 	Phone            string
 	ShareContactInfo bool
 	PictureName      string
+	ConfirmationCode string
 }
 
 type Event struct {

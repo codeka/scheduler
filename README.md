@@ -10,9 +10,7 @@ Requiremenst for the python build/install scripts:
 Requirements for server:
 
     $ go version
-    go version go1.21.6
-
-    $ go get modernc.org/sqlite
+    go version go1.23.11
 
 Requirements for web:
 
