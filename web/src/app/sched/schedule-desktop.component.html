@@ -2,7 +2,7 @@
   <h1>Schedule</h1>
   <div class="spacer"></div>
   <button class="button" mat-stroked-button (click)="onShowOlder()"><mat-icon>arrow_upward</mat-icon>Older</button>
-  <mat-checkbox class="show-all" (change)="onShowAllChanged($event)">Show all groups</mat-checkbox>
+  <mat-checkbox class="show-all" [checked]="showAll" (change)="onShowAllChanged($event)">Show all groups</mat-checkbox>
   <view-switcher></view-switcher>
   <button class="admin-button" mat-raised-button *ngIf="auth.isInRole('EVENT_MANAGER')" (click)="onCreateEvent()"><mat-icon>event</mat-icon>Create Event</button>
   <button class="admin-button" mat-raised-button *ngIf="auth.isInRole('ADMIN')" (click)="onCreateShift()"><mat-icon>event</mat-icon>Create Shift</button>
@@ -23,6 +23,10 @@
           <button mat-menu-item (click)="onShowMailingList(group)">
             <mat-icon>group</mat-icon>
             <span>Mailing list</span>
+          </button>
+          <button mat-menu-item (click)="hideColumn(group)">
+            <mat-icon>visibility_off</mat-icon>
+            <span>Hide column</span>
           </button>
         </mat-menu>
       </div>

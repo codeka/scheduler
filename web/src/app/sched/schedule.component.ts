@@ -80,6 +80,7 @@ export class ScheduleComponent implements OnInit {
   groups: Array<Group> = []
   groupMap = new Map<number, Group>()
   useMobileContent: Observable<boolean>
+  hiddenGroups = new Set<number>()
 
   constructor(public auth: AuthService, private dialog: MatDialog, private route: ActivatedRoute, private router: Router,
               private init: InitService, private eventsService: EventsService) {
@@ -218,7 +219,14 @@ export class ScheduleComponent implements OnInit {
   private refreshGroups() {
     const user = this.init.user()
     this.groups = this.init.groups().filter((group) => {
-      return this.showAll || group.alwaysShow || user?.groups.includes(group.id)
+      if (this.showAll) {
+        return true;
+      }
+      if (this.hiddenGroups.has(group.id)) {
+        return false
+      }
+
+      return group.alwaysShow || user?.groups.includes(group.id)
     })
     this.groupMap.clear()
     for (const group of this.groups) {
@@ -236,16 +244,34 @@ export class ScheduleComponent implements OnInit {
     })
   }
 
+  hideColumn(group: Group) {
+    this.hiddenGroups.add(group.id)
+    this.showAll = false
+    this.refreshGroups()
+  }
+
   onShowOlder() {
-    this.scheduleStartDate = new Date(
-        this.scheduleStartDate.getFullYear(),
-        this.scheduleStartDate.getMonth() - 1,
-        this.scheduleStartDate.getDate())
+    if (this.scheduleStartDate.getDate() == 1) {
+      // If we're already showing from the 1st, show the previous month's data.
+      this.scheduleStartDate = new Date(
+          this.scheduleStartDate.getFullYear(),
+          this.scheduleStartDate.getMonth() - 1,
+          this.scheduleStartDate.getDate())
+    } else {
+      // If we're in the middle of the month, go back to the start of the month.
+      this.scheduleStartDate = new Date(
+          this.scheduleStartDate.getFullYear(),
+          this.scheduleStartDate.getMonth(),
+          1)
+    }
     this.ngOnInit()
   }
 
   onShowAllChanged(event: MatCheckboxChange) {
     this.showAll = event.checked
+    if (this.showAll) {
+      this.hiddenGroups.clear()
+    }
     this.refreshGroups()
   }
 
