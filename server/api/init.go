@@ -17,7 +17,7 @@ type InitResponse struct {
 }
 
 // HandleInit handles requests for /_/init which is the first request any client must call. We'll check that they have
-// a valid logic and do some initial bookkeeping.
+// a valid login and do some initial bookkeeping.
 func HandleInit(c *gin.Context) {
 	var resp = InitResponse{}
 

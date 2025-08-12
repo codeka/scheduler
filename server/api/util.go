@@ -1,6 +1,7 @@
 package api
 
 import (
+	"log"
 	"net/http"
 	"strings"
 
@@ -19,6 +20,7 @@ func AuthMiddleware(c *gin.Context) {
 			return
 		}
 		if user == nil {
+			log.Printf("User with Bearer '%s' not found.", secretKey)
 			c.Status(http.StatusUnauthorized)
 			return
 		}
