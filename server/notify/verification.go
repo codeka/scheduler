@@ -18,7 +18,7 @@ var (
 )
 
 type VerificationRequest struct {
-	// Who to send the verification to. This will be either the user's email address or phone number.
+	// The destination (email address or phone number) to send the verification request to.
 	Dest string
 }
 
@@ -28,20 +28,18 @@ type ConfirmationRequest struct {
 }
 
 func generateConfirmationCode(user *store.User) (string, error) {
-	if user.ConfirmationCode != "" {
-		// If they already have a confirmation code, use the same one. This is easier if people
-		// repeatedly request a code, we'll give them the same one.
-		return user.ConfirmationCode, nil
-	}
-
-	code, err := util.RandomSequence(ConfirmationCodeSize, ConfirmationCodeLetters)
+	code, err := store.FindExistingConfirmationCodeForUser(user.ID)
 	if err != nil {
 		return "", err
 	}
 
-	// Save the user with the new code.
-	user.ConfirmationCode = code
-	err = store.SaveUser(user)
+	if code != "" {
+		// If they already have a confirmation code, use the same one. This is easier if people
+		// repeatedly request a code, we'll give them the same one.
+		return code, nil
+	}
+
+	code, err = util.RandomSequence(ConfirmationCodeSize, ConfirmationCodeLetters)
 	if err != nil {
 		return "", err
 	}
@@ -63,9 +61,12 @@ func SendVerificationRequest(request VerificationRequest) (string, error) {
 			return "", err
 		}
 		if user == nil {
-			return "", fmt.Errorf("No user with given email")
+			return "", fmt.Errorf("no user with given email")
 		}
 		code, err := generateConfirmationCode(user)
+		if err != nil {
+			return "", err
+		}
 
 		// TODO: do a better job of formatting the HTML here
 		buttonStyle := "background-color: #333333; border: 1px solid #333333; border-radius: 6px; border-width: 1px; color:#ffffff; display: inline-block; font-size: 14px; padding: 12px 18px; text-decoration: none;"
@@ -101,10 +102,13 @@ func SendVerificationRequest(request VerificationRequest) (string, error) {
 			return "", err
 		}
 		if user == nil {
-			return "", fmt.Errorf("No user with given phone number")
+			return "", fmt.Errorf("no user with given phone number")
 		}
 
 		code, err := generateConfirmationCode(user)
+		if err != nil {
+			return "", err
+		}
 		sms := brevo.SendTransacSms{
 			Sender:    venue.ShortName,
 			Recipient: user.Phone,

@@ -10,7 +10,7 @@ import (
 func makeUser(row *sql.Rows) (*User, error) {
 	user := &User{}
 	var pictureName sql.NullString
-	if err := row.Scan(&user.ID, &user.Name, &user.Email, &user.Phone, &user.ShareContactInfo, &pictureName, &user.ConfirmationCode); err != nil {
+	if err := row.Scan(&user.ID, &user.Name, &user.Email, &user.Phone, &user.ShareContactInfo, &pictureName); err != nil {
 		return nil, err
 	}
 
@@ -26,7 +26,7 @@ func makeUser(row *sql.Rows) (*User, error) {
 func GetUserByEmail(email string) (*User, error) {
 	rows, err := db.Query(`
 			SELECT id, name, email, phone, share_contact_info,
-				picture_name, confirmation_code
+				picture_name
 			FROM users
 			WHERE email=?`, email)
 	if err != nil {
@@ -45,7 +45,7 @@ func GetUserByEmail(email string) (*User, error) {
 func GetUserByPhone(phone string) (*User, error) {
 	rows, err := db.Query(`
 			SELECT id, name, email, phone, share_contact_info,
-				picture_name, confirmation_code
+				picture_name
 			FROM users
 			WHERE phone=?`, phone)
 	if err != nil {
@@ -59,13 +59,42 @@ func GetUserByPhone(phone string) (*User, error) {
 	return nil, nil
 }
 
+// FindExistingConfirmationCodeForUser returns a confirmation code that has already been generated for the given user, or
+// "" if there isn't one.
+func FindExistingConfirmationCodeForUser(id int64) (string, error) {
+	rows, err := db.Query(`
+			SELECT user_logins.confirmation_code
+			FROM users
+			INNER JOIN user_logins
+			   ON users.id = user_logins.user_id
+			WHERE users.id = ?
+			  AND user_logins.confirmation_code != ''
+			  AND users.deleted = 0`,
+		id)
+	if err != nil {
+		return "", err
+	}
+	defer rows.Close()
+
+	if rows.Next() {
+		var code string
+		if err := rows.Scan(&code); err != nil {
+			return "", err
+		}
+		return code, nil
+	}
+	return "", nil
+}
+
 // GetUserByConfirmationCode returns the User that matches the given confirmation code.
 func GetUserByConfirmationCode(code string) (*User, error) {
 	rows, err := db.Query(`
 			SELECT id, name, email, phone, share_contact_info,
-			       picture_name, confirmation_code
+			       picture_name
 			FROM users
-			WHERE confirmation_code = ?
+			INNER JOIN user_logins
+			   ON users.id = user_logins.user_id
+			WHERE user_logins.confirmation_code = ?
 			  AND deleted = 0`,
 		code)
 	if err != nil {
@@ -83,7 +112,7 @@ func GetUserByConfirmationCode(code string) (*User, error) {
 func GetUserBySecret(secretKey string) (*User, error) {
 	rows, err := db.Query(`
 			SELECT id, name, email, phone, share_contact_info,
-			       picture_name, users.confirmation_code
+			       picture_name
 			FROM users
 			INNER JOIN user_logins
 		       ON users.id = user_id
@@ -104,7 +133,7 @@ func GetUserBySecret(secretKey string) (*User, error) {
 func GetUsers() ([]*User, error) {
 	rows, err := db.Query(`
 			SELECT id, name, email, phone, share_contact_info,
-			       picture_name, confirmation_code
+			       picture_name
 			FROM users
 			WHERE deleted = 0`)
 	if err != nil {
@@ -143,7 +172,7 @@ func GetUsersMap() (map[int64]*User, error) {
 func GetEligibleUsers(shift *Shift, query string) ([]*User, error) {
 	rows, err := db.Query(`
 			SELECT id, name, email, phone, share_contact_info,
-			       picture_name, confirmation_code
+			       picture_name
 			FROM users
 			INNER JOIN user_groups
 			   ON users.id = user_groups.user_id
@@ -171,7 +200,7 @@ func GetEligibleUsers(shift *Shift, query string) ([]*User, error) {
 func GetGroupUsers(group *Group) ([]*User, error) {
 	rows, err := db.Query(`
 			SELECT id, name, email, phone, share_contact_info,
-			       picture_name, confirmation_code
+			       picture_name
 			FROM users
 			INNER JOIN user_groups
 			   ON users.id = user_groups.user_id
@@ -197,7 +226,7 @@ func GetGroupUsers(group *Group) ([]*User, error) {
 func GetUser(id int64) (*User, error) {
 	rows, err := db.Query(`
 	    SELECT id, name, email, phone, share_contact_info,
-		       picture_name, confirmation_code
+		       picture_name
 		FROM users
 		WHERE id = ?`, id)
 	if err != nil {
@@ -308,10 +337,10 @@ func SaveUser(user *User) error {
 	if user.ID == 0 {
 		res, err := db.Exec(`
 			INSERT INTO users
-			  (name, email, phone, share_contact_info, picture_name, confirmation_code, deleted)
+			  (name, email, phone, share_contact_info, picture_name, deleted)
 			VALUES
 			  (?, ?, ?, ?, ?, ?, 0)`,
-			user.Name, user.Email, user.Phone, user.ShareContactInfo, user.PictureName, user.ConfirmationCode)
+			user.Name, user.Email, user.Phone, user.ShareContactInfo, user.PictureName)
 		if err != nil {
 			return util.ForwardError("insert into users: %v", err)
 		}
@@ -327,10 +356,9 @@ func SaveUser(user *User) error {
 				email = ?,
 				phone = ?,
 				share_contact_info = ?,
-				picture_name = ?,
-				confirmation_code = ?
+				picture_name = ?
 			WHERE id = ?`,
-			user.Name, user.Email, user.Phone, user.ShareContactInfo, user.PictureName, user.ConfirmationCode, user.ID)
+			user.Name, user.Email, user.Phone, user.ShareContactInfo, user.PictureName, user.ID)
 		if err != nil {
 			return util.ForwardError("update users: %v", err)
 		}
@@ -418,20 +446,22 @@ func UpdateUserGroups(userID int64, groups []int64) error {
 
 // CreateUserLogin creates a new user login with the given confirmation code for the given user.
 func CreateUserLogin(user *User, code string) error {
+	// If there's an existing user_login with this confirmation code, delete it.
 	_, err := db.Exec(
+		"DELETE FROM user_logins WHERE user_id = ? AND confirmation_code = ?",
+		user.ID, code)
+	if err != nil {
+		return err
+	}
+
+	// Now, create the new user login.
+	_, err = db.Exec(
 		"INSERT INTO user_logins (user_id, confirmation_code, last_seen) VALUES (?, ?, JULIANDAY())",
 		user.ID, code)
 	return err
 }
 
 func SaveSecret(id int64, confirmationCode string, secret string) error {
-	// Reset the user's confirmation code so we won't use it again.
-	_, err := db.Exec(`
-		UPDATE users SET confirmation_code = '' WHERE id = ?`, id)
-	if err != nil {
-		return err
-	}
-
 	// Save the login with the updated secret.
 	res, err := db.Exec(`
 	    UPDATE user_logins SET
@@ -439,7 +469,8 @@ func SaveSecret(id int64, confirmationCode string, secret string) error {
 			confirmation_code = '',
 			last_seen = JULIANDAY()
 		WHERE user_id = ?
-		  AND confirmation_code = ?`,
+		  AND confirmation_code = ?
+			AND secret_key IS NULL`,
 		secret, id, confirmationCode)
 	if err != nil {
 		return err
