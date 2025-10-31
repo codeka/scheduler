@@ -339,7 +339,7 @@ func SaveUser(user *User) error {
 			INSERT INTO users
 			  (name, email, phone, share_contact_info, picture_name, deleted)
 			VALUES
-			  (?, ?, ?, ?, ?, ?, 0)`,
+			  (?, ?, ?, ?, ?, 0)`,
 			user.Name, user.Email, user.Phone, user.ShareContactInfo, user.PictureName)
 		if err != nil {
 			return util.ForwardError("insert into users: %v", err)
