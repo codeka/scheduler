@@ -32,6 +32,15 @@ div.motd .motd-msg {
   color: #444;
 }
 
+div.todays-events {
+  margin: 40pt 0;
+}
+
+div.todays-events div.event {
+    font-size: 58pt;
+    line-height: 72pt;
+}
+
 div.upcoming-events {
   width: 30%;
 }
@@ -60,21 +69,41 @@ div.month h2 {
 }
 
 div.dashboard-day {
+  display: flex;
+  flex-direction: row;
   margin-top: 20pt;
+}
+
+div.dashboard-day div.event-day {
+  display: flex;
+  flex-direction: column;
+  border: solid 2pt #ccc;
+  border-radius: 8pt;;
+  padding: 10pt;
+  align-items: center;
+  width: 60pt;
   font-size: 24pt;
   line-height: 24pt;
   color: #666;
 }
 
-div.event-day {
-  margin-bottom: 8pt;
+div.dashboard-day div.weekday {
+  font-weight: bold;
+}
+
+div.dashboard-day div.day {
+  font-size:48pt;
+  line-height: 56pt;
 }
 
 div.event {
+  margin-left: 20pt;
   margin-bottom: 8pt;
+  font-size: 24pt;
+  line-height: 24pt;
+  color: #666;
 }
 
-span.event-title {
+div.event-title {
   font-weight: bold;
-  margin-right: 10pt;
 }

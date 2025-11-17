@@ -5,9 +5,15 @@
     <div class="motd-msg" [innerHTML]="motd?.messageHtml"></div>
   </div>
   <div class="upcoming-events">
-    <!--div class="todays-event">
-      <p>TODO</p>
-    </div-->
+    <h1 *ngIf="todaysEvents.length > 0">Today's Events</h1>
+    <div class="todays-events" *ngIf="todaysEvents.length > 0">
+      <div class="event"
+          *ngFor="let event of todaysEvents">
+        <div class="event-time">{{eventTimeStr(event)}}</div>
+        <div class="event-title">{{event.title}}</div>
+        <div class="event-desc">{{event.description}}</div>
+      </div>
+    </div>
     <h1>Upcoming Meetings</h1>
     <div class="dashboard-month"
         *ngFor="let month of months">
@@ -15,13 +21,14 @@
       <div class="dashboard-day"
           *ngFor="let day of month.days">
         <div class="event-day">
-          {{day.date.toLocaleString('default', { weekday: 'short', month: 'short', day: '2-digit' }).toUpperCase()}}
+          <div class="weekday">{{day.date.toLocaleString('default', { weekday: 'short' })}}</div>
+          <div class="day">{{day.date.toLocaleString('default', { day: '2-digit' })}}</div>
         </div>
         <div class="events">
           <div *ngFor="let event of day.events" class="event">
-            <span class="event-title">{{event.title}}</span>
-            <span class="event-time">{{eventTimeStr(event)}}</span>
-            <span class="event-desc">{{event.description}}</span>
+            <div class="event-time">{{eventTimeStr(event)}}</div>
+            <div class="event-title">{{event.title}}</div>
+            <div class="event-desc">{{event.description}}</div>
           </div>
         </div>
       </div>

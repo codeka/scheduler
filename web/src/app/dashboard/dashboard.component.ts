@@ -31,6 +31,7 @@ export class DashboardComponent implements OnInit {
   today = new Date()
   dashboardStartDate = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate())
 
+  todaysEvents: Array<Event> = []
   events: Array<Event> = []
   months: Array<DashboardMonth> = []
   motd: DashboardMotd|null = null
@@ -56,12 +57,16 @@ export class DashboardComponent implements OnInit {
               months.push(currMonth)
             }
 
-            if (currDay == null || !sameDay(currDay.date, eventDate)) {
-              currDay = new DashboardDay(eventDate)
-              currMonth.days.push(currDay)
-            }
+            if (sameDay(eventDate, this.today)) {
+              this.todaysEvents.push(event)
+            } else {
+              if (currDay == null || !sameDay(currDay.date, eventDate)) {
+                currDay = new DashboardDay(eventDate)
+                currMonth.days.push(currDay)
+              }
 
-            currDay.events.push(event)
+              currDay.events.push(event)
+            }
           }
 
           this.months = months
