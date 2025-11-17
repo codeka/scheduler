@@ -104,9 +104,15 @@ func HandleEventsGet(c *gin.Context) {
 	}
 
 	for _, shift := range resp.Shifts {
-		for _, signup := range shift.Signups {
-			if authUser.ID != signup.User.ID {
-				SanitizeUser(signup.User)
+		if authUser == nil {
+			// No auth user, remove all signup info.
+			// TODO: still show Center in Charge?
+			shift.Signups = nil
+		} else {
+			for _, signup := range shift.Signups {
+				if authUser.ID != signup.User.ID {
+					SanitizeUser(signup.User)
+				}
 			}
 		}
 	}
