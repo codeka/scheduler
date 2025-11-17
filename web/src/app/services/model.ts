@@ -89,3 +89,8 @@ export interface FeatureFlag {
   enabled: boolean
   settings: any
 }
+
+export interface DashboardMotd {
+  postDate: Date|null
+  messageHtml: string
+}

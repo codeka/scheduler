@@ -8,6 +8,7 @@ import { EventsService } from './events.service';
 import { AdminService } from './admin.service';
 import { ProfileService } from './profile.service';
 import { ImageService } from './image.service';
+import { DashboardService } from './dashboard.service';
 
 @NgModule({
   declarations: [],
@@ -24,6 +25,7 @@ import { ImageService } from './image.service';
     },
     AdminService,
     AuthService,
+    DashboardService,
     EventsService,
     ImageService,
     InitService,

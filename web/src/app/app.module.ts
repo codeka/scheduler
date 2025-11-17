@@ -18,14 +18,15 @@ import { AppComponent } from './app.component';
 import { NotFoundComponent } from './not-found.component';
 import { ShiftsTitleStrategy } from './title-strategy';
 import { TitleStrategy } from '@angular/router';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 @NgModule({
   declarations: [
     AppComponent, NotFoundComponent
   ],
   imports: [
-    AdminModule, AppRoutingModule, AuthModule, BrowserModule, BrowserAnimationsModule, MatButtonModule, MatIconModule,
-    MatMenuModule, MatToolbarModule, ProfileModule, ServicesModule, SchedModule
+    AdminModule, AppRoutingModule, AuthModule, BrowserModule, BrowserAnimationsModule, DashboardModule, MatButtonModule,
+    MatIconModule, MatMenuModule, MatToolbarModule, ProfileModule, ServicesModule, SchedModule
   ],
   providers: [
     {provide: TitleStrategy, useClass: ShiftsTitleStrategy},

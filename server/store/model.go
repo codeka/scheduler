@@ -99,3 +99,9 @@ type CronJob struct {
 	Enabled  bool
 	NextRun  *time.Time
 }
+
+// DashboardMotd is a "message of the day" shown on the dashboard.
+type DashboardMotd struct {
+	PostDate    time.Time
+	MessageHTML string
+}

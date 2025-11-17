@@ -1,0 +1,80 @@
+
+div.dashboard {
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+  // The dashboard should fill the viewport height minus the header.
+  height: calc(100vh - 64px);
+}
+
+div.motd {
+  width: 70%;
+}
+
+div.motd h2 {
+  font-size: 64pt;
+  font-weight: bold;
+  line-height: 72pt;
+  margin: 100pt 200pt 0 200pt;
+}
+
+div.motd .motd-date {
+  margin: 0 200pt 20pt 200pt;
+  font-size: 36pt;
+  line-height: 40pt;
+  color: #666;
+}
+
+div.motd .motd-msg {
+  margin: 0 200pt 20pt 200pt;
+  font-size: 36pt;
+  line-height: 48pt;
+  color: #444;
+}
+
+div.upcoming-events {
+  width: 30%;
+}
+
+div.upcoming-events h1 {
+  margin: 0;
+  padding: 10pt;
+  background-color: rgb(103, 58, 183);
+  color: white;
+  font-size: 24pt;
+  line-height: 24pt;
+}
+
+div.dashboard-month {
+  margin-top: 40pt;
+}
+
+div.month h2 {
+  margin: 0;
+  padding: 0;
+  color: #444;
+  font-weight: bold;
+  font-size: 40pt;
+  line-height: 40pt;
+  border-bottom: 1px solid #444;
+}
+
+div.dashboard-day {
+  margin-top: 20pt;
+  font-size: 24pt;
+  line-height: 24pt;
+  color: #666;
+}
+
+div.event-day {
+  margin-bottom: 8pt;
+}
+
+div.event {
+  margin-bottom: 8pt;
+}
+
+span.event-title {
+  font-weight: bold;
+  margin-right: 10pt;
+}

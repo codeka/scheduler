@@ -27,6 +27,9 @@ func Setup(g *gin.Engine) error {
 	if err := setupProfile(g); err != nil {
 		return err
 	}
+	if err := setupDashboard(g); err != nil {
+		return err
+	}
 
 	return nil
 }

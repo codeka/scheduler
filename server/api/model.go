@@ -363,3 +363,18 @@ func MakeFeatureFlag(name string, flag *flags.FeatureFlag) *FeatureFlag {
 		Settings: flag.Settings,
 	}
 }
+
+type DashboardMotd struct {
+	PostDate    time.Time `json:"postDate"`
+	MessageHTML string    `json:"messageHtml"`
+}
+
+func MakeDashboardMotd(motd *store.DashboardMotd) *DashboardMotd {
+	if motd == nil {
+		return nil
+	}
+	return &DashboardMotd{
+		PostDate:    motd.PostDate,
+		MessageHTML: motd.MessageHTML,
+	}
+}

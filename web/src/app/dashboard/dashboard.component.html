@@ -1,0 +1,30 @@
+<div class="dashboard">
+  <div class="motd">
+    <h2>Towards 2030</h2>
+    <div class="motd-date" *ngIf="motd != null">{{ motdDateStr(motd) }}</div>
+    <div class="motd-msg" [innerHTML]="motd?.messageHtml"></div>
+  </div>
+  <div class="upcoming-events">
+    <!--div class="todays-event">
+      <p>TODO</p>
+    </div-->
+    <h1>Upcoming Meetings</h1>
+    <div class="dashboard-month"
+        *ngFor="let month of months">
+      <div class="month"><h2>{{month.date.toLocaleString('default', { month: 'long' })}}</h2></div>
+      <div class="dashboard-day"
+          *ngFor="let day of month.days">
+        <div class="event-day">
+          {{day.date.toLocaleString('default', { weekday: 'short', month: 'short', day: '2-digit' }).toUpperCase()}}
+        </div>
+        <div class="events">
+          <div *ngFor="let event of day.events" class="event">
+            <span class="event-title">{{event.title}}</span>
+            <span class="event-time">{{eventTimeStr(event)}}</span>
+            <span class="event-desc">{{event.description}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

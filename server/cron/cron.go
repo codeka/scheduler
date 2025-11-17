@@ -106,6 +106,7 @@ func GetCronJobNames() []string {
 func Setup() error {
 	Jobs = make(map[string]func(context.Context) error)
 	Jobs["send-reminders"] = cronSendReminders
+	Jobs["fetch-towards2030"] = cronFetchTowards2030
 
 	// Run the cron goroutine start away.
 	go runCronIterate()

@@ -19,6 +19,7 @@ import { ScheduleDesktopComponent } from './sched/schedule-desktop.component';
 import { ScheduleMobileComponent } from './sched/schedule-mobile.component';
 import { NotificationsComponent } from './admin/notifications.component';
 import { FeatureFlagsComponent } from './admin/feature-flags.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 const loggedIn: CanMatchFn = () => {
   return inject(AuthService).isLoggedIn();
@@ -49,6 +50,9 @@ const routes: Routes = [
   { path: 'week/:year/:month/:day', title: 'Weekly', canMatch: [loggedIn], component: WeekComponent },
   { path: 'month', title: 'Monthly', canMatch: [loggedIn], component: MonthComponent },
   { path: 'month/:year/:month', title: 'Monthly', canMatch: [loggedIn], component: MonthComponent },
+
+  // Note: dashboard doesn't need to be logged in.
+  { path: 'dashboard', title: 'Dashboard', component: DashboardComponent },
 
   // Paths for admins.
   { 
