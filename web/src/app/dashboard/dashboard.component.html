@@ -2,7 +2,7 @@
   <div class="motd">
     <h2>Towards 2030</h2>
     <div class="motd-date" *ngIf="motd != null">{{ motdDateStr(motd) }}</div>
-    <div class="motd-msg" [innerHTML]="motd?.messageHtml"></div>
+    <div #motdMsg class="motd-msg"></div>
   </div>
   <div class="upcoming-events">
     <h1 *ngIf="todaysEvents.length > 0">Today's Events</h1>

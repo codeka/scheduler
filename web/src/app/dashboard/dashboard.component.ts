@@ -1,12 +1,12 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { DatePipe } from '@angular/common';
 
-import { InitService } from "../services/init.service";
 import { EventsService } from "../services/events.service";
 import { DashboardMotd, Event } from '../services/model';
 
 import { formatStartEndTime, sameDay, stringToDate, stringToTime } from '../util/date.util';
 import { DashboardService } from "../services/dashboard.service";
+import { fitTextToBox } from "../util/text-fit";
 
 class DashboardDay {
   events = new Array<Event>()
@@ -35,6 +35,8 @@ export class DashboardComponent implements OnInit {
   events: Array<Event> = []
   months: Array<DashboardMonth> = []
   motd: DashboardMotd|null = null
+
+  @ViewChild('motdMsg') motdMsgElementRef!: ElementRef;
 
   constructor(private eventsService: EventsService, private dashboardService: DashboardService,
     private datePipe: DatePipe
@@ -75,7 +77,15 @@ export class DashboardComponent implements OnInit {
       // Fetch the towards-2030 content
       this.dashboardService.getDashboard()
           .then(response => {
-            this.motd = response.motd;
+            // Sometimes the response will have some extra tags that we don't want to show.
+            const brTagRegex = /(<br\s*\/?>)/gi
+            response.motd.messageHtml = response.motd.messageHtml.replace(brTagRegex, ' ')
+
+            response.motd.messageHtml = response.motd.messageHtml.replace(/(<p\s*\/?>From)/gi, '<p class="from">From')
+
+            this.motd = response.motd
+            this.motdMsgElementRef.nativeElement.innerHTML = this.motd.messageHtml;
+            fitTextToBox(this.motdMsgElementRef.nativeElement);
           })
   }
 
@@ -87,9 +97,7 @@ export class DashboardComponent implements OnInit {
   }
 
   motdDateStr(motd: DashboardMotd): string {
-    console.log(motd.postDate);
     const foo = this.datePipe.transform(motd.postDate, 'MMMM dd, yyyy')
-    console.log("foo=" + foo);
     return foo || '';
   }
 

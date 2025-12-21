@@ -9,26 +9,40 @@ div.dashboard {
 
 div.motd {
   width: 70%;
+  display: flex;
+  flex-direction: column;
 }
 
 div.motd h2 {
-  font-size: 64pt;
+  font-size: 128pt;
   font-weight: bold;
-  line-height: 72pt;
   margin: 100pt 200pt 0 200pt;
+  color: #333;
 }
+
+// Because this is inside a div that we dynmaically add via DOM manipulation, we need to use
+// ::ng-deep to target it.
+::ng-deep .motd-msg p {
+  margin: 24pt 0;
+  padding: 0;
+}
+
+::ng-deep .motd-msg p.from {
+  font-size: 75%;
+}
+
 
 div.motd .motd-date {
   margin: 0 200pt 20pt 200pt;
-  font-size: 36pt;
-  line-height: 40pt;
+  font-size: 80pt;
   color: #666;
 }
 
 div.motd .motd-msg {
-  margin: 0 200pt 20pt 200pt;
+  margin: 0 200pt 200pt 200pt;
+  flex: 1;
   font-size: 36pt;
-  line-height: 48pt;
+  line-height: 1.5;
   color: #444;
 }
 
@@ -38,7 +52,6 @@ div.todays-events {
 
 div.todays-events div.event {
     font-size: 58pt;
-    line-height: 72pt;
 }
 
 div.upcoming-events {
@@ -51,7 +64,6 @@ div.upcoming-events h1 {
   background-color: rgb(103, 58, 183);
   color: white;
   font-size: 24pt;
-  line-height: 24pt;
 }
 
 div.dashboard-month {
@@ -64,7 +76,6 @@ div.month h2 {
   color: #444;
   font-weight: bold;
   font-size: 40pt;
-  line-height: 40pt;
   border-bottom: 1px solid #444;
 }
 
@@ -83,7 +94,6 @@ div.dashboard-day div.event-day {
   align-items: center;
   width: 60pt;
   font-size: 24pt;
-  line-height: 24pt;
   color: #666;
 }
 
@@ -93,14 +103,12 @@ div.dashboard-day div.weekday {
 
 div.dashboard-day div.day {
   font-size:48pt;
-  line-height: 56pt;
 }
 
 div.event {
   margin-left: 20pt;
   margin-bottom: 8pt;
   font-size: 24pt;
-  line-height: 24pt;
   color: #666;
 }
 
