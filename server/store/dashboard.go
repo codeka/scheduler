@@ -34,7 +34,7 @@ func GetLatestDashboardMotd() (*DashboardMotd, error) {
 		return nil, err
 	}
 	var err error
-	motd.PostDate, err = time.Parse(time.DateOnly, postDateStr)
+	motd.PostDate, err = time.ParseInLocation(time.DateOnly, postDateStr, time.Local)
 	if err != nil {
 		return nil, err
 	}
