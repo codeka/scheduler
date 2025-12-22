@@ -26,8 +26,8 @@ import { DashboardComponent } from './dashboard.component';
   declarations: [
     DashboardComponent],
   imports: [
-    BrowserAnimationsModule, CommonModule, FormsModule, MatAutocompleteModule, MatButtonModule, MatCardModule,
-    MatCheckboxModule, MatChipsModule, MatDatepickerModule, MatDialogModule, MatFormFieldModule, MatIconModule,
+    BrowserAnimationsModule, CommonModule, FormsModule,  MatAutocompleteModule, MatButtonModule,
+    MatCardModule, MatCheckboxModule, MatChipsModule, MatDatepickerModule, MatDialogModule, MatFormFieldModule, MatIconModule,
     MatInputModule, MatMenuModule, MatNativeDateModule, MatSelectModule, MatToolbarModule, MatTooltipModule,
     ReactiveFormsModule, ServicesModule,
   ],

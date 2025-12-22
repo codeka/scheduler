@@ -9,6 +9,7 @@ export interface Venue {
   verificationEmailTemplateId: string
   icoPictureName: string
   svgPictureName: string
+  mapName: string
 }
 
 export interface User {

@@ -1,8 +1,14 @@
 <div class="dashboard">
-  <div class="motd">
-    <h2>Towards 2030</h2>
-    <div class="motd-date" *ngIf="motd != null">{{ motdDateStr(motd) }}</div>
-    <div #motdMsg class="motd-msg"></div>
+  <div class="left-panel">
+    <div class="motd fade" [class.visible]="showMotd">
+      <h2>Towards 2030</h2>
+      <div class="motd-date" *ngIf="motd != null">{{ motdDateStr(motd) }}</div>
+      <div #motdMsg class="motd-msg"></div>
+    </div>
+
+    <div class="map fade" [class.visible]="!showMotd" [attr.aria-hidden]="showMotd ? 'true' : 'false'">
+      <img src="{{img.imageUrl(init.venue().mapName, '.svg')}}" alt="Venue Map">
+    </div>
   </div>
   <div class="upcoming-events">
     <h1 *ngIf="todaysEvents.length > 0">Today's Events</h1>

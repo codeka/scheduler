@@ -336,6 +336,45 @@ func HandleAdminVenueSvgPicturePost(c *gin.Context) {
 	c.AbortWithStatus(http.StatusOK)
 }
 
+func HandleAdminVenueMapPost(c *gin.Context) {
+	if !IsInRole(c, "ADMIN") {
+		c.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
+
+	file, err := c.FormFile("picture")
+	if err != nil {
+		util.HandleError(c, http.StatusBadRequest, err)
+		return
+	}
+
+	name, path, err := store.MakeImageFileName("svg")
+	if err != nil {
+		util.HandleError(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	err = c.SaveUploadedFile(file, path)
+	if err != nil {
+		util.HandleError(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	venue, err := store.GetVenue()
+	if err != nil {
+		util.HandleError(c, http.StatusInternalServerError, err)
+		return
+	}
+	venue.MapName = name
+	err = store.SaveVenue(venue)
+	if err != nil {
+		util.HandleError(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	c.AbortWithStatus(http.StatusOK)
+}
+
 func HandleAdminGroupsPost(c *gin.Context) {
 	if !IsInRole(c, "ADMIN") {
 		c.AbortWithStatus(http.StatusUnauthorized)
@@ -531,6 +570,7 @@ func setupAdmin(g *gin.Engine) error {
 	g.POST("_/admin/venue/picture", HandleAdminVenuePicturePost)
 	g.POST("_/admin/venue/ico-picture", HandleAdminVenueIcoPicturePost)
 	g.POST("_/admin/venue/svg-picture", HandleAdminVenueSvgPicturePost)
+	g.POST("_/admin/venue/map", HandleAdminVenueMapPost)
 	g.POST("_/admin/groups", HandleAdminGroupsPost)
 	g.GET("_/admin/cron-jobs", HandleAdminCronJobGet)
 	g.POST("_/admin/cron-jobs", HandleAdminCronJobPost)

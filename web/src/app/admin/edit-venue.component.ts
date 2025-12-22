@@ -25,6 +25,7 @@ export class EditVenueComponent {
   fileInfo: FileInfo|null = null
   icoFileInfo: FileInfo|null = null
   svgFileInfo: FileInfo|null = null
+  mapFileInfo: FileInfo|null = null
 
   constructor(
       private admin: AdminService, private formBuilder: FormBuilder, public init: InitService,
@@ -50,6 +51,7 @@ export class EditVenueComponent {
       shiftsWebAddress: this.form.value.shiftsWebAddress ?? "",
       webAddress: this.form.value.webAddress ?? "",
       verificationEmailTemplateId: this.form.value.verificationEmailTemplateId ?? "",
+      mapName: this.init.venue().mapName,
     }
 
     this.admin.saveVenue(venue)
@@ -87,6 +89,15 @@ export class EditVenueComponent {
       return
     }
 
+    if (this.mapFileInfo != null) {
+      this.admin.saveVenueMap(this.mapFileInfo.filename, this.mapFileInfo.file)
+        .then(() => {
+          this.mapFileInfo = null
+          this.saveComplete();
+        })
+      return
+    }
+
     // Instead of navigating, we want to actually reload the page so that the init call happens again.
     window.location.reload();
   }
@@ -99,5 +110,8 @@ export class EditVenueComponent {
   }
   svgImageUpdated(file: FileInfo) {
     this.svgFileInfo = file
+  }
+  mapUpdated(file: FileInfo) {
+    this.mapFileInfo = file
   }
 }

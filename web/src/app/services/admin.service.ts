@@ -106,6 +106,15 @@ export class AdminService {
     )
   }
 
+  saveVenueMap(filename: string, file: File): Promise<boolean> {
+    const form = new FormData()
+    form.append("picture", file)
+    return firstValueFrom(
+      this.http.post<SaveVenuePictureResponse>(ENV.backend + "/_/admin/venue/map", form)
+          .pipe(map(() => true))
+    )
+  }
+
   saveGroup(group: Group): Promise<boolean> {
     return firstValueFrom(
       this.http.post<any>(ENV.backend + "/_/admin/groups", group)

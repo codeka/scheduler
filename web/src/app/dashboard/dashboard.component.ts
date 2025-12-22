@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
+import { Component, ElementRef, OnInit, OnDestroy, ViewChild } from "@angular/core";
 import { DatePipe } from '@angular/common';
 
 import { EventsService } from "../services/events.service";
@@ -7,6 +7,8 @@ import { DashboardMotd, Event } from '../services/model';
 import { formatStartEndTime, sameDay, stringToDate, stringToTime } from '../util/date.util';
 import { DashboardService } from "../services/dashboard.service";
 import { fitTextToBox } from "../util/text-fit";
+import { ImageService } from "../services/image.service";
+import { InitService } from "../services/init.service";
 
 class DashboardDay {
   events = new Array<Event>()
@@ -27,7 +29,7 @@ class DashboardMonth {
   styleUrls: ['./dashboard.component.scss'],
   providers: [DatePipe]
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   today = new Date()
   dashboardStartDate = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate())
 
@@ -39,7 +41,7 @@ export class DashboardComponent implements OnInit {
   @ViewChild('motdMsg') motdMsgElementRef!: ElementRef;
 
   constructor(private eventsService: EventsService, private dashboardService: DashboardService,
-    private datePipe: DatePipe
+    private datePipe: DatePipe, public img: ImageService, public init: InitService
   ) {}
 
   public ngOnInit(): void {
@@ -81,12 +83,20 @@ export class DashboardComponent implements OnInit {
             const brTagRegex = /(<br\s*\/?>)/gi
             response.motd.messageHtml = response.motd.messageHtml.replace(brTagRegex, ' ')
 
-            response.motd.messageHtml = response.motd.messageHtml.replace(/(<p\s*\/?>From)/gi, '<p class="from">From')
+            // In the final MODT, the last line will end with "From <source>", and we want to style
+            // that a little differently. There's no good way to select it, so let's just hack it.
+            response.motd.messageHtml =
+                response.motd.messageHtml.replace(/(<p\s*\/?>From)/gi, '<p class="from">From')
 
             this.motd = response.motd
             this.motdMsgElementRef.nativeElement.innerHTML = this.motd.messageHtml;
             fitTextToBox(this.motdMsgElementRef.nativeElement);
-          })
+
+            // Start the automatic fade between MOTD and the map.
+            this.startFadeInterval();
+            // Start hourly reload of the dashboard page.
+            this.startReloadInterval();
+          });
   }
 
   // Returns a string that represents the time the given event runs (e.g. "8-9:30am" or "11:30am-12:30pm", etc).
@@ -113,5 +123,38 @@ export class DashboardComponent implements OnInit {
       }
     }
     return null
+  }
+
+  // Controls the fade between MOTD and map.
+  showMotd: boolean = true;
+  private _fadeIntervalHandle: any = null;
+
+  // Handle for hourly page reload.
+  private _reloadIntervalHandle: any = null;
+
+  private startFadeInterval(): void {
+    // Toggle every 15 seconds.
+    this._fadeIntervalHandle = setInterval(() => {
+      this.showMotd = !this.showMotd;
+    }, 15000);
+  }
+
+  private startReloadInterval(): void {
+    // Reload the dashboard page every hour (3600000 ms).
+    this._reloadIntervalHandle = setInterval(() => {
+      window.location.reload();
+    }, 60 * 60 * 1000);
+  }
+
+  ngOnDestroy(): void {
+    if (this._fadeIntervalHandle != null) {
+      clearInterval(this._fadeIntervalHandle);
+      this._fadeIntervalHandle = null;
+    }
+
+    if (this._reloadIntervalHandle != null) {
+      clearInterval(this._reloadIntervalHandle);
+      this._reloadIntervalHandle = null;
+    }
   }
 }

@@ -48,6 +48,7 @@ export class InitService {
       shiftsWebAddress: "",
       webAddress: "",
       verificationEmailTemplateId: "",
+      mapName: "",
     }
   }
 

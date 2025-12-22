@@ -12,6 +12,7 @@ type Venue struct {
 	VerificationEmailTemplateID string
 	IcoPictureName              string
 	SvgPictureName              string
+	MapName                     string
 }
 
 type User struct {

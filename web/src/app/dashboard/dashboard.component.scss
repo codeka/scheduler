@@ -7,10 +7,38 @@ div.dashboard {
   height: calc(100vh - 64px);
 }
 
-div.motd {
+div.left-panel {
+  position: relative;
   width: 70%;
+  min-height: 100%;
+}
+
+div.motd {
   display: flex;
   flex-direction: column;
+}
+
+/* Fade utility for motd/map */
+div.left-panel .fade {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transition: opacity 0.8s ease-in-out;
+  opacity: 0;
+  pointer-events: none;
+}
+
+div.left-panel .fade.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+div.left-panel .map img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 div.motd h2 {

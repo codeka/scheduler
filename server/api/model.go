@@ -19,6 +19,7 @@ type Venue struct {
 	VerificationEmailTemplateID string `json:"verificationEmailTemplateId"`
 	IcoPictureName              string `json:"icoPictureName"`
 	SvgPictureName              string `json:"svgPictureName"`
+	MapName                     string `json:"mapName"`
 }
 
 func MakeVenue(venue *store.Venue) *Venue {
@@ -32,6 +33,7 @@ func MakeVenue(venue *store.Venue) *Venue {
 		VerificationEmailTemplateID: venue.VerificationEmailTemplateID,
 		IcoPictureName:              venue.IcoPictureName,
 		SvgPictureName:              venue.SvgPictureName,
+		MapName:                     venue.MapName,
 	}
 }
 
@@ -46,6 +48,7 @@ func VenueToStore(venue *Venue) *store.Venue {
 		VerificationEmailTemplateID: venue.VerificationEmailTemplateID,
 		IcoPictureName:              venue.IcoPictureName,
 		SvgPictureName:              venue.SvgPictureName,
+		MapName:                     venue.MapName,
 	}
 }
 
