@@ -50,10 +50,8 @@ export function fitTextToBox(el: HTMLElement): void {
     // Try the midpoint of the current range.
     const mid = Math.floor((low + high) / 2);
     innerSpan.style.fontSize = `${mid}px`;
-    console.log(`Trying font size ${mid}px`);
 
     var rect = innerSpan.getBoundingClientRect();
-    console.log(`Text size is now ${rect.width}x${rect.height}`);
     if (rect.width <= boxWidth && rect.height <= boxHeight) {
       // Fits, this is a good candidate.
       size = mid;
