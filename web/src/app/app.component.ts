@@ -16,6 +16,7 @@ export class AppComponent implements OnInit {
   venue: Venue
   user?: User
   pageTitle: string = 'Shifts'
+  toolbarVisible = true
 
   constructor(init: InitService, public auth: AuthService,
               @Inject(DOCUMENT) private doc: Document,
@@ -35,6 +36,7 @@ export class AppComponent implements OnInit {
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => {
       this.updatePageTitle();
+      this.updateToolbarVisibility();
     });
   }
 
@@ -46,6 +48,11 @@ export class AppComponent implements OnInit {
 
     const currentRoute = this.router.url.split('?')[0]; // Remove query params
     this.pageTitle = routeTitleMap[currentRoute] || 'Shifts';
+  }
+
+  private updateToolbarVisibility() {
+    const currentRoute = this.router.url.split('?')[0]; // Remove query params
+    this.toolbarVisible = (currentRoute != "/dashboard");
   }
 
   isMobile() {

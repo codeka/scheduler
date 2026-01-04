@@ -1,5 +1,5 @@
 
-<mat-toolbar class="header" color="primary">
+<mat-toolbar class="header" color="primary" *ngIf="toolbarVisible">
   <img height="40" alt="Logo" src="/assets/img/logo.svg" />
   <a [routerLink]="'/'" *ngIf="!isMobile()">{{pageTitle}} &bull; {{venue.name}}</a>
   <a [routerLink]="'/'" *ngIf="isMobile()">{{venue.shortName}}</a>
