@@ -3,48 +3,48 @@ div.dashboard {
   display: flex;
   flex-direction: row;
   overflow: hidden;
-  // The dashboard should fill the viewport height minus the header.
-  height: calc(100vh - 64px);
+  height: calc(100vh);
 }
 
 div.left-panel {
   position: relative;
-  width: 70%;
+  width: 25%;
   min-height: 100%;
-}
-
-div.motd {
   display: flex;
   flex-direction: column;
 }
 
-/* Fade utility for motd/map */
-div.left-panel .fade {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  transition: opacity 0.8s ease-in-out;
-  opacity: 0;
-  pointer-events: none;
+div.clock {
+  font-size: 128pt;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 64pt;
+  color: #333;
 }
 
-div.left-panel .fade.visible {
-  opacity: 1;
-  pointer-events: auto;
+div.middle-panel {
+  position: relative;
+  width: 50%;
+  min-height: 100%;
 }
 
-div.left-panel .map img {
-  width: 100%;
-  height: 100%;
+div.motd {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+div.middle-panel .map img {
+  width: 80%;
+  height: 80%;
   object-fit: contain;
+  margin: 10%;
 }
 
 div.motd h2 {
-  font-size: 128pt;
+  font-size: 64pt;
   font-weight: bold;
-  margin: 100pt 200pt 0 200pt;
+  margin: 100pt 50pt 0 50pt;
   color: #333;
 }
 
@@ -59,15 +59,14 @@ div.motd h2 {
   font-size: 75%;
 }
 
-
 div.motd .motd-date {
-  margin: 0 200pt 20pt 200pt;
+  margin: 0 50pt 20pt 50pt;
   font-size: 80pt;
   color: #666;
 }
 
 div.motd .motd-msg {
-  margin: 0 200pt 200pt 200pt;
+  margin: 0 50pt 200pt 50pt;
   flex: 1;
   font-size: 36pt;
   line-height: 1.5;
@@ -82,16 +81,16 @@ div.todays-events div.event {
     font-size: 58pt;
 }
 
-div.upcoming-events {
-  width: 30%;
+div.right-panel {
+  width: 25%;
 }
 
-div.upcoming-events h1 {
+div.right-panel h1 {
   margin: 0;
   padding: 10pt;
-  background-color: rgb(103, 58, 183);
+  background-color: #666;
   color: white;
-  font-size: 24pt;
+  font-size: 48pt;
 }
 
 div.dashboard-month {
@@ -103,7 +102,7 @@ div.month h2 {
   padding: 0;
   color: #444;
   font-weight: bold;
-  font-size: 40pt;
+  font-size: 60pt;
   border-bottom: 1px solid #444;
 }
 
@@ -120,8 +119,8 @@ div.dashboard-day div.event-day {
   border-radius: 8pt;;
   padding: 10pt;
   align-items: center;
-  width: 60pt;
-  font-size: 24pt;
+  width: 90pt;
+  font-size: 48pt;
   color: #666;
 }
 
@@ -130,13 +129,14 @@ div.dashboard-day div.weekday {
 }
 
 div.dashboard-day div.day {
-  font-size:48pt;
+  font-size: 64pt;
 }
 
 div.event {
   margin-left: 20pt;
   margin-bottom: 8pt;
-  font-size: 24pt;
+  margin-top: 20pt;
+  font-size: 48pt;
   color: #666;
 }
 

@@ -21,15 +21,16 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ServicesModule } from '../services/services.module';
 
 import { DashboardComponent } from './dashboard.component';
+import { SafeHtmlPipe } from '../util/safe-html-pipe';
 
 @NgModule({
   declarations: [
     DashboardComponent],
   imports: [
     BrowserAnimationsModule, CommonModule, FormsModule,  MatAutocompleteModule, MatButtonModule,
-    MatCardModule, MatCheckboxModule, MatChipsModule, MatDatepickerModule, MatDialogModule, MatFormFieldModule, MatIconModule,
-    MatInputModule, MatMenuModule, MatNativeDateModule, MatSelectModule, MatToolbarModule, MatTooltipModule,
-    ReactiveFormsModule, ServicesModule,
+    MatCardModule, MatCheckboxModule, MatChipsModule, MatDatepickerModule, MatDialogModule,
+    MatFormFieldModule, MatIconModule, MatInputModule, MatMenuModule, MatNativeDateModule,
+    MatSelectModule, MatToolbarModule, MatTooltipModule, ReactiveFormsModule, ServicesModule
   ],
   providers: [],
   bootstrap: []

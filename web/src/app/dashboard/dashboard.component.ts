@@ -30,12 +30,16 @@ class DashboardMonth {
   providers: [DatePipe]
 })
 export class DashboardComponent implements OnInit, OnDestroy {
-  today = new Date()
-  dashboardStartDate = new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate())
+  today = new Date();
+  dashboardStartDate = 
+      new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate());
+  currentTime = "00:00";
+  showColon: boolean = true;
+  private _clockIntervalHandle: any = null;
 
-  todaysEvents: Array<Event> = []
-  events: Array<Event> = []
-  months: Array<DashboardMonth> = []
+  todaysEvents: Array<Event> = [];
+  events: Array<Event> = [];
+  months: Array<DashboardMonth> = [];
   motd: DashboardMotd|null = null
 
   @ViewChild('motdMsg') motdMsgElementRef!: ElementRef;
@@ -92,10 +96,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
             this.motdMsgElementRef.nativeElement.innerHTML = this.motd.messageHtml;
             fitTextToBox(this.motdMsgElementRef.nativeElement);
 
-            // Start the automatic fade between MOTD and the map.
-            this.startFadeInterval();
             // Start hourly reload of the dashboard page.
             this.startReloadInterval();
+            // Start the per-second clock with flashing colon.
+            this.startClockInterval();
           });
   }
 
@@ -125,19 +129,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     return null
   }
 
-  // Controls the fade between MOTD and map.
-  showMotd: boolean = true;
-  private _fadeIntervalHandle: any = null;
-
   // Handle for hourly page reload.
   private _reloadIntervalHandle: any = null;
-
-  private startFadeInterval(): void {
-    // Toggle every 15 seconds.
-    this._fadeIntervalHandle = setInterval(() => {
-      this.showMotd = !this.showMotd;
-    }, 15000);
-  }
 
   private startReloadInterval(): void {
     // Reload the dashboard page every hour (3600000 ms).
@@ -146,15 +139,32 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }, 60 * 60 * 1000);
   }
 
-  ngOnDestroy(): void {
-    if (this._fadeIntervalHandle != null) {
-      clearInterval(this._fadeIntervalHandle);
-      this._fadeIntervalHandle = null;
-    }
+  private startClockInterval(): void {
+    // Initialize and toggle colon every second.
+    this.updateClock();
+    this._clockIntervalHandle = setInterval(() => {
+      this.showColon = !this.showColon;
+      this.updateClock();
+    }, 1000);
+  }
 
+  private updateClock(): void {
+    const now = new Date();
+    // Use DatePipe to format 'HH mm' then plug in ':' or ' ' for flashing effect.
+    let formatted = this.datePipe.transform(now, 'hh:mm a') || '00:00';
+    formatted = formatted.toLocaleLowerCase();
+    this.currentTime = formatted;
+  }
+
+  ngOnDestroy(): void {
     if (this._reloadIntervalHandle != null) {
       clearInterval(this._reloadIntervalHandle);
       this._reloadIntervalHandle = null;
+    }
+
+    if (this._clockIntervalHandle != null) {
+      clearInterval(this._clockIntervalHandle);
+      this._clockIntervalHandle = null;
     }
   }
 }
