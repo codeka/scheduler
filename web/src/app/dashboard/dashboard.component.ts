@@ -34,6 +34,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   dashboardStartDate = 
       new Date(this.today.getFullYear(), this.today.getMonth(), this.today.getDate());
   currentTime = "00:00";
+  currentDate = "";
   showColon: boolean = true;
   private _clockIntervalHandle: any = null;
 
@@ -110,11 +111,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     return formatStartEndTime(startTime, endTime)
   }
 
-  motdDateStr(motd: DashboardMotd): string {
-    const foo = this.datePipe.transform(motd.postDate, 'MMMM dd, yyyy')
-    return foo || '';
-  }
-
   // Finds the DashboardDay for the given date, or null if the date doesn't exist.
   findDay(months: Array<DashboardMonth>, date: Date): DashboardDay|null {
     for (const month of months) {
@@ -154,6 +150,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     let formatted = this.datePipe.transform(now, 'hh:mm a') || '00:00';
     formatted = formatted.toLocaleLowerCase();
     this.currentTime = formatted;
+    // Set currentDate to a human readable format like "January 11, 2026".
+    this.currentDate = this.datePipe.transform(now, 'MMMM d, y') || '';
   }
 
   ngOnDestroy(): void {
