@@ -69,7 +69,8 @@ func IsInGroup(c *gin.Context, groupID int64) bool {
 			return false
 		}
 
-		groups, err := store.GetUserGroups(user.ID)
+		var err error
+		groups, err = store.GetUserGroups(user.ID)
 		if err != nil {
 			return false
 		}

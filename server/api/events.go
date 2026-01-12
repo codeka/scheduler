@@ -38,8 +38,8 @@ type ShiftSignupRequest struct {
 	SendCalendarEvent bool `json:"sendCalendarEvent"`
 }
 
-// HandleEventsGet handles requests to /_/events. It returns the events in the data store, filtered by various query
-// parameters, including:
+// HandleEventsGet handles requests to /_/events. It returns the events in the data store, filtered
+// by various query parameters, including:
 // ?dateFrom={}&dateTo={} - between the given date ranges
 func HandleEventsGet(c *gin.Context) {
 	resp := EventsResponse{}
@@ -84,7 +84,8 @@ func HandleEventsGet(c *gin.Context) {
 			return
 		}
 
-		// TODO: filter user to just the IDs we need, rather than fetching them all then filtering in code.
+		// TODO: filter user to just the IDs we need, rather than fetching them all then filtering in
+		// code.
 		allUsers, err := store.GetUsersMap()
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
@@ -120,7 +121,8 @@ func HandleEventsGet(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
-// HandleEventsPosts handles POST requests to /_/events. We save the event you've posted to the data store.
+// HandleEventsPosts handles POST requests to /_/events. We save the event you've posted to the data
+// store.
 func HandleEventsPost(c *gin.Context) {
 	var req SaveShiftRequest
 	if err := c.BindJSON(&req); err != nil {
@@ -227,8 +229,8 @@ func HandleShiftDelete(c *gin.Context) {
 	c.AbortWithStatus(http.StatusOK)
 }
 
-// HandleShiftsEligibleUsersGet returns all the users that are eligible for a given shift. But only if the authenticated
-// user is a SHIFT_MANAGER.
+// HandleShiftsEligibleUsersGet returns all the users that are eligible for a given shift. But only
+// if the authenticated user is a SHIFT_MANAGER.
 func HandleShiftsEligibleUsersGet(c *gin.Context) {
 	shiftIdStr := c.Param("id")
 	shiftId, err := strconv.ParseInt(shiftIdStr, 10, 64)
