@@ -1,9 +1,13 @@
 import { Component, Inject, OnInit } from "@angular/core";
 import { FeatureFlag, Group } from "../services/model";
-import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { AdminService } from "../services/admin.service";
 import { InitService } from "../services/init.service";
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from "@angular/material/dialog";
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatDialogActions } from "@angular/material/dialog";
+import { MatFormField, MatFormFieldModule, MatLabel } from "@angular/material/form-field";
+import { MatIcon, MatIconModule } from "@angular/material/icon";
+import { MatButtonModule } from "@angular/material/button";
+import { MatInputModule } from "@angular/material/input";
 
 export interface DialogData {
   flag?: FeatureFlag
@@ -12,7 +16,10 @@ export interface DialogData {
 @Component({
   selector: 'edit-feature-flag-dialog',
   templateUrl: './edit-feature-flag-dialog.component.html',
-  styleUrls: ['./edit-feature-flag-dialog.component.scss']
+  styleUrls: ['./edit-feature-flag-dialog.component.scss'],
+  imports: [
+    ReactiveFormsModule, MatFormFieldModule, MatDialogActions, MatIconModule, MatButtonModule,
+    MatInputModule]
 })
 export class EditFeatureFlagDialogComponent implements OnInit {
   form: FormGroup<{

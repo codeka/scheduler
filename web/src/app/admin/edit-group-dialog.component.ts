@@ -1,9 +1,15 @@
 import { Component, Inject, OnInit } from "@angular/core";
 import { Group } from "../services/model";
-import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { AdminService } from "../services/admin.service";
 import { InitService } from "../services/init.service";
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from "@angular/material/dialog";
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatDialogActions, MatDialogModule } from "@angular/material/dialog";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatCheckboxModule } from "@angular/material/checkbox";
+import { CommonModule } from "@angular/common";
+import { MatIconModule } from "@angular/material/icon";
+import { MatButtonModule } from "@angular/material/button";
+import { MatInputModule } from "@angular/material/input";
 
 export interface DialogData {
   group?: Group
@@ -12,7 +18,10 @@ export interface DialogData {
 @Component({
   selector: 'edit-group-dialog',
   templateUrl: './edit-group-dialog.component.html',
-  styleUrls: ['./edit-group-dialog.component.scss']
+  styleUrls: ['./edit-group-dialog.component.scss'],
+  imports: [
+    MatFormFieldModule, MatCheckboxModule, MatDialogActions, CommonModule, MatButtonModule,
+    ReactiveFormsModule, MatIconModule, MatInputModule, MatDialogModule]
 })
 export class EditGroupDialogComponent implements OnInit {
   form: FormGroup<{

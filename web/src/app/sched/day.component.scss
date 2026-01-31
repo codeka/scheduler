@@ -1,3 +1,4 @@
+@use "sass:color";
 
 div.content {
   display: flex;
@@ -106,13 +107,13 @@ div.day-canvas .event, div.day-canvas .shift {
 div.day-canvas .event {
   border: solid 2pt blue;
   padding: 0 4pt;
-  background-color: mix(blue, white, 20%);
+  background-color: color.mix(blue, white, 20%);
 }
 
 div.day-canvas .shift {
   border: solid 2pt red;
   padding: 0 4pt;
-  background-color: mix(red, white, 20%);
+  background-color: color.mix(red, white, 20%);
 }
 
 div.event-name {

@@ -1,11 +1,15 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatDialogActions, MatDialogModule } from '@angular/material/dialog';
 
 import { NotificationType } from '../services/model';
 import { AdminService } from '../services/admin.service';
 import { InitService } from '../services/init.service';
 import { ImageService } from '../services/image.service';
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatSlideToggleModule } from "@angular/material/slide-toggle";
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
 
 export interface DialogData {
   notificationType?: NotificationType
@@ -14,7 +18,10 @@ export interface DialogData {
 @Component({
   selector: 'edit-notification-type-dialog',
   templateUrl: './edit-notification-type-dialog.component.html',
-  styleUrls: ['./edit-notification-type-dialog.component.scss']
+  styleUrls: ['./edit-notification-type-dialog.component.scss'],
+  imports: [
+    MatFormFieldModule, MatSlideToggleModule, MatDialogActions, ReactiveFormsModule,
+    MatButtonModule, MatInputModule, MatDialogModule]
 })
 export class EditNotificationTypeDialogComponent implements OnInit {
   form: FormGroup<{

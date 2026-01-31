@@ -2,11 +2,21 @@ import { Component } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
 import { AsYouType, parsePhoneNumber } from 'libphonenumber-js';
+import { MatCardModule } from "@angular/material/card";
+import { MatIcon } from "@angular/material/icon";
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
+  imports: [
+    MatCardModule, MatFormFieldModule, MatIcon, CommonModule, FormsModule, MatButtonModule,
+    MatInputModule]
 })
 export class LoginComponent {
   emailOrPhone = "";

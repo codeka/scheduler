@@ -27,8 +27,8 @@
             @if (day >= 0 && day <= monthEnd.getDate()) {
               <div class="day">
                 <div class="dayNo">{{ day + 1 }}</div>
-
-                <p>{{ findDayInfo(day + 1).date }}</p>
+                @let myDayInfo = findDayInfo(day + 1);
+                <p>{{ myDayInfo.date }}</p>
               </div>
             } @else {
               <div class="day empty-day"></div>

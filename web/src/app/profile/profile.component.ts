@@ -1,13 +1,21 @@
 import { Component } from "@angular/core";
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
+import { FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import parsePhoneNumberFromString, { AsYouType, parsePhoneNumberWithError } from "libphonenumber-js";
 
 import { InitService } from "../services/init.service";
 import { ImageService } from "../services/image.service";
-import { FileInfo } from "../widgets/image-picker.component";
+import { FileInfo, ImagePickerComponent } from "../widgets/image-picker.component";
 import { ProfileService } from "../services/profile.service";
 import { NotificationSetting, User } from "../services/model";
+import { MatCardModule } from "@angular/material/card";
+import { MatCheckboxModule } from "@angular/material/checkbox";
+import { MatSlideToggleModule } from "@angular/material/slide-toggle";
+import { MatIconModule } from "@angular/material/icon";
+import { CommonModule } from "@angular/common";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatButtonModule } from "@angular/material/button";
+import { MatInputModule } from "@angular/material/input";
 
 type NotificationSettingFormGroup = FormGroup<{
   notificationId: FormControl<string|null>,
@@ -18,7 +26,11 @@ type NotificationSettingFormGroup = FormGroup<{
 @Component({
   selector: 'profile',
   templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.scss']
+  styleUrls: ['./profile.component.scss'],
+  imports: [
+    MatCardModule, ImagePickerComponent, MatFormFieldModule, MatCheckboxModule, MatButtonModule,
+    MatSlideToggleModule, MatIconModule, FormsModule, ReactiveFormsModule, CommonModule,
+    MatInputModule]
 })
 export class ProfileComponent {
   profileForm: FormGroup<{

@@ -1,14 +1,23 @@
 import { Component, ElementRef, Inject, OnInit, ViewChild } from "@angular/core";
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from "@angular/material/dialog";
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatDialogContent, MatDialogActions, MatDialogModule } from "@angular/material/dialog";
 
 import { Group, Shift, ShiftSignup, User } from "../services/model";
 import { formatStartEndTime, stringToDate, stringToTime } from "../util/date.util";
-import { AbstractControl, AsyncValidatorFn, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from "@angular/forms";
+import { AbstractControl, AsyncValidatorFn, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from "@angular/forms";
 import { EMPTY, Observable, debounceTime, distinctUntilChanged, map, of, startWith, switchMap } from "rxjs";
 import { EventsService } from "../services/events.service";
 import { confirmAction } from "../widgets/confirm-dialog";
 import { AuthService } from "../services/auth.service";
 import { InitService } from "../services/init.service";
+import { ViewProfileComponent } from "../profile/view-profile.component";
+import { MatError } from "@angular/material/select";
+import { MatAutocompleteModule } from "@angular/material/autocomplete";
+import { MatCheckboxModule } from "@angular/material/checkbox";
+import { CommonModule } from "@angular/common";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatOptionModule } from "@angular/material/core";
+import { MatButtonModule } from "@angular/material/button";
+import { MatInputModule } from "@angular/material/input";
 
 export interface DialogData {
   group: Group
@@ -20,7 +29,11 @@ export interface DialogData {
 @Component({
   selector: 'shift-signup-dialog',
   templateUrl: './shift-signup-dialog.component.html',
-  styleUrls: ['./shift-signup-dialog.component.scss']
+  styleUrls: ['./shift-signup-dialog.component.scss'],
+  imports: [
+    MatDialogModule, ViewProfileComponent, MatFormFieldModule, MatAutocompleteModule,
+    MatOptionModule, MatError, MatCheckboxModule, MatDialogActions, ReactiveFormsModule,
+    CommonModule, MatButtonModule, MatInputModule]
 })
 export class ShiftSignupDialogComponent implements OnInit {
   form: FormGroup<{

@@ -7,11 +7,16 @@ import { AdminService } from "../services/admin.service";
 import { InitService } from "../services/init.service";
 import { CronJob } from "../services/model";
 import { confirmAction } from "../widgets/confirm-dialog";
+import { MatToolbar, MatToolbarModule } from "@angular/material/toolbar";
+import { MatIcon, MatIconModule } from "@angular/material/icon";
+import { MatTableModule } from "@angular/material/table";
+import { MatButtonModule } from "@angular/material/button";
 
 @Component({
   selector: 'cron',
   templateUrl: './cron.component.html',
-  styleUrls: ['./cron.component.scss']
+  styleUrls: ['./cron.component.scss'],
+  imports: [MatToolbarModule, MatIconModule, MatTableModule, MatButtonModule]
 })
 export class CronComponent implements OnInit {
   displayedColumns: string[] = ['id', 'name', 'schedule', 'enabled', 'nextRun', 'actions'];

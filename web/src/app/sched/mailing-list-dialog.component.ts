@@ -2,7 +2,8 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { Group } from '../services/model';
 import { EventsService } from '../services/events.service';
 import { InitService } from '../services/init.service';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatDialogActions, MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
 
 export interface DialogData {
   group: Group
@@ -11,7 +12,8 @@ export interface DialogData {
 @Component({
   selector: 'mailing-list-dialog',
   templateUrl: './mailing-list-dialog.component.html',
-  styleUrls: ['./mailing-list-dialog.component.scss']
+  styleUrls: ['./mailing-list-dialog.component.scss'],
+  imports: [MatDialogActions, MatDialogModule, MatButtonModule]
 })
 export class MailingListDialogComponent implements OnInit {
   shiftManagers = ""

@@ -1,12 +1,17 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { CommonModule } from '@angular/common';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatDialogActions, MatDialogModule } from '@angular/material/dialog';
 
 import { CronJob, Group, User } from '../services/model';
 import { AdminService } from '../services/admin.service';
 import { InitService } from '../services/init.service';
 import { ImageService } from '../services/image.service';
 import { confirmAction } from '../widgets/confirm-dialog';
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatSlideToggleModule } from "@angular/material/slide-toggle";
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
 
 export interface DialogData {
   cronJob?: CronJob
@@ -15,7 +20,9 @@ export interface DialogData {
 @Component({
   selector: 'edit-cron-job-dialog',
   templateUrl: './edit-cron-job-dialog.component.html',
-  styleUrls: ['./edit-cron-job-dialog.component.scss']
+  styleUrls: ['./edit-cron-job-dialog.component.scss'],
+  imports: [MatFormFieldModule, MatSlideToggleModule, MatDialogActions, ReactiveFormsModule,
+    CommonModule, MatButtonModule, MatInputModule, MatDialogModule]
 })
 export class EditCronJobDialogComponent implements OnInit {
   form: FormGroup<{

@@ -3,11 +3,17 @@ import { InitService } from "../services/init.service";
 import { FeatureFlag, Group } from "../services/model";
 import { MatDialog } from "@angular/material/dialog";
 import { EditFeatureFlagDialogComponent } from "./edit-feature-flag-dialog.component";
+import { MatToolbar, MatToolbarModule } from "@angular/material/toolbar";
+import { MatIcon, MatIconModule } from "@angular/material/icon";
+import { MatTableModule } from "@angular/material/table";
+import { CommonModule } from "@angular/common";
+import { MatButtonModule } from "@angular/material/button";
 
 @Component({
   selector: 'feature-flags',
   templateUrl: './feature-flags.component.html',
-  styleUrls: ['./feature-flags.component.scss']
+  styleUrls: ['./feature-flags.component.scss'],
+  imports: [MatToolbarModule, MatIconModule, MatTableModule, CommonModule, MatButtonModule]
 })
 export class FeatureFlagsComponent {
   displayedColumns: string[] = [

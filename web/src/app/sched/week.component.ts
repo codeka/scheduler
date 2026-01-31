@@ -3,14 +3,19 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, map } from 'rxjs';
 import { Event } from '../services/model';
 import { AuthService } from '../services/auth.service';
-import { dateToString, stringToDate, stringToTime } from '../util/date.util';
+import { stringToDate, stringToTime } from '../util/date.util';
 import { EventsService } from '../services/events.service';
-import { MatSelectChange } from '@angular/material/select';
+import { MatToolbar, MatToolbarModule } from "@angular/material/toolbar";
+import { ViewSwitcherComponent } from "./view-switcher.component";
+import { CommonModule } from '@angular/common';
+import { MatIcon, MatIconModule } from "@angular/material/icon";
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'week',
   templateUrl: './week.component.html',
-  styleUrls: ['./week.component.scss']
+  styleUrls: ['./week.component.scss'],
+  imports: [MatToolbarModule, ViewSwitcherComponent, CommonModule, MatIconModule, MatButtonModule]
 })
 export class WeekComponent {
   private date: Observable<Date>;

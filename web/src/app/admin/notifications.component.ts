@@ -1,17 +1,20 @@
 import { Component, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 
-import { EditCronJobDialogComponent } from "./edit-cron-job-dialog.component";
-
 import { AdminService } from "../services/admin.service";
 import { InitService } from "../services/init.service";
 import { NotificationType } from "../services/model";
 import { EditNotificationTypeDialogComponent } from "./edit-notification-type-dialog.component";
+import { MatToolbarModule } from "@angular/material/toolbar";
+import { MatIconModule } from "@angular/material/icon";
+import { MatTableModule } from "@angular/material/table";
+import { MatButtonModule } from "@angular/material/button";
 
 @Component({
   selector: 'notifications',
   templateUrl: './notifications.component.html',
-  styleUrls: ['./notifications.component.scss']
+  styleUrls: ['./notifications.component.scss'],
+  imports: [MatToolbarModule, MatIconModule, MatTableModule, MatButtonModule]
 })
 export class NotificationsComponent implements OnInit {
   displayedColumns: string[] = ['name', 'description', 'emailTemplateId', 'smsTemplate', 'actions'];

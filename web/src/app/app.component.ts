@@ -2,15 +2,22 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { InitService } from './services/init.service';
 import { User, Venue } from './services/model';
 import { AuthService } from './services/auth.service';
-import { DOCUMENT } from '@angular/common';
+import { CommonModule, DOCUMENT } from '@angular/common';
 import { ENV } from './env/environment';
-import { Router, NavigationEnd } from '@angular/router';
+import { Router, NavigationEnd, RouterOutlet, RouterModule } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { MatIconModule } from "@angular/material/icon";
+import { MatMenuModule } from "@angular/material/menu";
+import { MatToolbarModule } from "@angular/material/toolbar";
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
+  imports: [
+    MatIconModule, RouterOutlet, MatMenuModule, MatToolbarModule, RouterModule, CommonModule,
+    MatMenuModule, MatButtonModule]
 })
 export class AppComponent implements OnInit {
   venue: Venue

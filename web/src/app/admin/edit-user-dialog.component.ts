@@ -1,13 +1,20 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 import { Group, User } from '../services/model';
 import { AdminService } from '../services/admin.service';
 import { InitService } from '../services/init.service';
-import { FileInfo } from '../widgets/image-picker.component';
+import { FileInfo, ImagePickerComponent } from '../widgets/image-picker.component';
 import { ImageService } from '../services/image.service';
 import { confirmAction } from '../widgets/confirm-dialog';
+import { MatCardModule } from "@angular/material/card";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatSlideToggleModule } from "@angular/material/slide-toggle";
+import { MatIconModule } from "@angular/material/icon";
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
 
 export interface DialogData {
   user?: User
@@ -16,7 +23,10 @@ export interface DialogData {
 @Component({
   selector: 'edit-user-dialog',
   templateUrl: './edit-user-dialog.component.html',
-  styleUrls: ['./edit-user-dialog.component.scss']
+  styleUrls: ['./edit-user-dialog.component.scss'],
+  imports: [
+    MatCardModule, MatFormFieldModule, MatSlideToggleModule, MatButtonModule, MatInputModule,
+    ImagePickerComponent, MatIconModule, CommonModule, ReactiveFormsModule]
 })
 export class EditUserDialogComponent implements OnInit {
   form: FormGroup<{

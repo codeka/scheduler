@@ -6,7 +6,6 @@ import { AuthService } from '../services/auth.service';
 import {
   calculateDuration,
   calculateOverlap,
-  dateToString,
   formatStartEndTime,
   sameDay,
   stringToDate,
@@ -15,6 +14,14 @@ import {
 import { EventsService } from '../services/events.service';
 import { ShiftBucket } from './shift-bucket';
 import { InitService } from '../services/init.service';
+import { MatToolbarModule } from "@angular/material/toolbar";
+import { ViewSwitcherComponent } from "./view-switcher.component";
+import { MatIconModule } from "@angular/material/icon";
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
+import { EditEventDialogComponent } from './edit-event-dialog.component';
+import { EditShiftDialogComponent } from './edit-shift-dialog.component';
 
 
 class DayInfo {
@@ -29,7 +36,8 @@ class DayInfo {
 @Component({
   selector: 'month',
   templateUrl: './month.component.html',
-  styleUrls: ['./month.component.scss']
+  styleUrls: ['./month.component.scss'],
+  imports: [MatToolbarModule, ViewSwitcherComponent, MatIconModule, MatButtonModule, CommonModule]
 })
 export class MonthComponent {
   private month: Observable<Date>;
@@ -46,7 +54,8 @@ export class MonthComponent {
   monthly = 'monthly';
 
   constructor(private route: ActivatedRoute, private router: Router, public auth: AuthService,
-              private eventsService: EventsService, private init: InitService) {
+              private eventsService: EventsService, private init: InitService,
+              private dialog: MatDialog) {
     this.month =
         this.route.params
             .pipe(map((p) => {
@@ -172,11 +181,19 @@ export class MonthComponent {
   }
 
   onCreateEvent() {
-    this.router.navigate(['edit-event']);
+    const dialogRef = this.dialog.open(EditEventDialogComponent)
+    dialogRef.afterClosed().subscribe(() => {
+      // Refresh the page.
+      this.refresh();
+    })
   }
 
   onCreateShift() {
-    this.router.navigate(['edit-shift']);
+      const dialogRef = this.dialog.open(EditShiftDialogComponent)
+      dialogRef.afterClosed().subscribe(() => {
+        // Refresh the page.
+        this.refresh();
+      })
   }
 
   onLastMonthClick() {

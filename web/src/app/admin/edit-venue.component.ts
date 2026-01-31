@@ -1,16 +1,24 @@
-import { Component, ViewChild } from "@angular/core";
-import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
+import { Component } from "@angular/core";
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { AdminService } from "../services/admin.service";
 import { InitService } from "../services/init.service";
-import { Router } from "@angular/router";
+import { Router, RouterModule } from "@angular/router";
 import { Venue } from "../services/model";
-import { FileInfo } from "../widgets/image-picker.component";
+import { FileInfo, ImagePickerComponent } from "../widgets/image-picker.component";
 import { ImageService } from "../services/image.service";
+import { MatCardModule } from "@angular/material/card";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatButtonModule } from "@angular/material/button";
+import { MatInputModule } from "@angular/material/input";
+import { MatIconModule } from "@angular/material/icon";
 
 @Component({
   selector: 'edit-venue',
   templateUrl: './edit-venue.component.html',
-  styleUrls: ['./edit-venue.component.scss']
+  styleUrls: ['./edit-venue.component.scss'],
+  imports: [
+    MatCardModule, ImagePickerComponent, MatFormFieldModule, MatButtonModule, MatInputModule,
+    MatIconModule, ReactiveFormsModule, RouterModule]
 })
 export class EditVenueComponent {
   form: FormGroup<{

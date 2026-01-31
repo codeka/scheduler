@@ -4,11 +4,9 @@
 // $secondary: #ce5712 !default;
 // $app-palette: palette($primary, $secondary, $surface);
 
-@use "@angular/material" as mat;
+@import '@angular/material/prebuilt-themes/deeppurple-amber.css';
 
 /* autoprefixer grid: on */
-
-@include mat.core();
 
 
 body {

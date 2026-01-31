@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, OnDestroy, ViewChild } from "@angular/core";
-import { DatePipe } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 
 import { EventsService } from "../services/events.service";
 import { DashboardMotd, Event } from '../services/model';
@@ -27,7 +27,8 @@ class DashboardMonth {
   selector: 'dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
-  providers: [DatePipe]
+  providers: [DatePipe],
+  imports: [CommonModule]
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   today = new Date();

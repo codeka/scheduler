@@ -3,11 +3,16 @@ import { InitService } from "../services/init.service";
 import { Group } from "../services/model";
 import { EditGroupDialogComponent } from "./edit-group-dialog.component";
 import { MatDialog } from "@angular/material/dialog";
+import { MatToolbarModule } from "@angular/material/toolbar";
+import { MatIcon } from "@angular/material/icon";
+import { MatTableModule } from "@angular/material/table";
+import { MatButtonModule } from "@angular/material/button";
 
 @Component({
   selector: 'groups',
   templateUrl: './groups.component.html',
-  styleUrls: ['./groups.component.scss']
+  styleUrls: ['./groups.component.scss'],
+  imports: [MatToolbarModule, MatIcon, MatTableModule, MatButtonModule]
 })
 export class GroupsComponent {
   displayedColumns: string[] = [

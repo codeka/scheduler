@@ -1,6 +1,6 @@
 import { FocusMonitor } from "@angular/cdk/a11y";
 import { Component, ElementRef, Inject, Input, Optional, Self } from "@angular/core";
-import { FormBuilder, FormControl, FormGroup, FormGroupDirective, NgControl, NgForm, Validators } from "@angular/forms";
+import { FormBuilder, FormControl, FormGroup, FormGroupDirective, NgControl, NgForm, ReactiveFormsModule, Validators } from "@angular/forms";
 import { MAT_FORM_FIELD, MatFormField, MatFormFieldControl } from "@angular/material/form-field";
 import { BaseMatFormFieldControl } from "./base-mat-form-field-control";
 import { ErrorStateMatcher } from "@angular/material/core";
@@ -10,6 +10,7 @@ import { ErrorStateMatcher } from "@angular/material/core";
   templateUrl: 'time-input.component.html',
   styleUrls: ['time-input.component.scss'],
   providers: [{provide: MatFormFieldControl, useExisting: TimeInputComponent}],
+  imports: [ReactiveFormsModule],
   host: {
     '[class.time-input-floating]': 'shouldLabelFloat',
     '[id]': 'id',

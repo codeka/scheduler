@@ -1,12 +1,21 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Event, Group, Shift } from '../services/model';
 import { EventsService } from '../services/events.service';
 import { Router } from '@angular/router';
 import { dateToString, stringToDate, stringToTime, timeToString } from '../util/date.util';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatDialogContent, MatDialogActions, MatDialogModule } from '@angular/material/dialog';
 import { confirmAction } from '../widgets/confirm-dialog';
 import { InitService } from '../services/init.service';
+import { MatFormField, MatLabel, MatHint, MatSelect, MatOption, MatSelectModule } from "@angular/material/select";
+import { MatDatepickerToggle, MatDatepicker, MatDatepickerModule } from "@angular/material/datepicker";
+import { TimeInputComponent } from "../widgets/time-input.component";
+import { MatIcon, MatIconModule } from "@angular/material/icon";
+import { DateAdapter, MatNativeDateModule, MatOptionModule } from '@angular/material/core';
+import { CommonModule } from '@angular/common';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
 
 export interface DialogData {
   event?: Event
@@ -30,7 +39,12 @@ type EventFormGroup = FormGroup<{
 @Component({
   selector: 'edit-event-dialog',
   templateUrl: './edit-event-dialog.component.html',
-  styleUrls: ['./edit-event-dialog.component.scss']
+  styleUrls: ['./edit-event-dialog.component.scss'],
+  imports: [
+    MatDialogModule, MatFormFieldModule, MatDatepickerModule, TimeInputComponent, MatSelectModule,
+    MatOptionModule, MatIconModule, ReactiveFormsModule, MatNativeDateModule, MatButtonModule,
+    MatInputModule, FormsModule, CommonModule,  MatDialogActions
+]
 })
 export class EditEventDialogComponent implements OnInit {
   form: EventFormGroup

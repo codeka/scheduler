@@ -7,11 +7,16 @@ import { User } from "../services/model";
 import { AdminService } from "../services/admin.service";
 import { InitService } from "../services/init.service";
 import { ImageService } from "../services/image.service";
+import { MatToolbar, MatToolbarModule } from "@angular/material/toolbar";
+import { MatIcon, MatIconModule } from "@angular/material/icon";
+import { MatTableModule } from "@angular/material/table";
+import { MatButtonModule } from "@angular/material/button";
 
 @Component({
   selector: 'user-list',
   templateUrl: './user-list.component.html',
-  styleUrls: ['./user-list.component.scss']
+  styleUrls: ['./user-list.component.scss'],
+  imports: [MatToolbarModule, MatIconModule, MatTableModule, MatButtonModule]
 })
 export class UserListComponent implements OnInit {
   displayedColumns: string[] = ['picture', 'name', 'mail', 'phone', 'roles', 'groups', 'actions'];

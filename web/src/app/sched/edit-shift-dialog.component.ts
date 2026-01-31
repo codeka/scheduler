@@ -1,11 +1,19 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Group, Shift } from '../services/model';
 import { EventsService } from '../services/events.service';
 import { dateToString, stringToDate, stringToTime, timeToString } from '../util/date.util';
 import { InitService } from '../services/init.service';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatDialogActions, MatDialogModule } from '@angular/material/dialog';
 import { confirmAction } from '../widgets/confirm-dialog';
+import { MatSelectModule } from "@angular/material/select";
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { TimeInputComponent } from "../widgets/time-input.component";
+import { CommonModule } from '@angular/common';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatOptionModule } from '@angular/material/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
 
 export interface DialogData {
   shift?: Shift
@@ -14,7 +22,11 @@ export interface DialogData {
 @Component({
   selector: 'edit-shift-dialog',
   templateUrl: './edit-shift-dialog.component.html',
-  styleUrls: ['./edit-shift-dialog.component.scss']
+  styleUrls: ['./edit-shift-dialog.component.scss'],
+  imports: [
+    MatDialogModule, MatFormFieldModule, MatSelectModule, MatOptionModule, MatButtonModule,
+    MatDatepickerModule, TimeInputComponent, MatDialogActions, ReactiveFormsModule, CommonModule,
+    MatInputModule]
 })
 export class EditShiftDialogComponent implements OnInit {
   form: FormGroup<{

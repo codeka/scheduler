@@ -2,7 +2,7 @@ import { FocusMonitor } from "@angular/cdk/a11y"
 import { coerceBooleanProperty } from "@angular/cdk/coercion"
 import { Directive, DoCheck, ElementRef, HostBinding, HostListener, Input, OnDestroy } from "@angular/core"
 import { ControlValueAccessor, FormGroupDirective, NgControl, NgForm } from "@angular/forms"
-import { ErrorStateMatcher, mixinErrorState } from "@angular/material/core"
+import { ErrorStateMatcher, _ErrorStateTracker  } from "@angular/material/core"
 import { MatFormFieldControl } from "@angular/material/form-field"
 import { Subject } from "rxjs"
 
@@ -19,8 +19,25 @@ class _BaseMatFormField {
 
 @Directive()
 export abstract class BaseMatFormFieldControl<T>
-    extends mixinErrorState(_BaseMatFormField)
+    extends _BaseMatFormField
     implements MatFormFieldControl<T>, DoCheck, OnDestroy, ControlValueAccessor {
+
+  readonly errorStateTracker = new _ErrorStateTracker(
+    this._defaultErrorStateMatcher,
+    this.ngControl,
+    this._parentFormGroup,
+    this._parentForm,
+    this.stateChanges
+  );
+
+  get errorState() {
+    return this.errorStateTracker.errorState;
+  }
+
+  updateErrorState() {
+    this.errorStateTracker.updateErrorState();
+  }
+
   protected onChange?: (value: T) => void;
   protected onTouched?: () => void;
 

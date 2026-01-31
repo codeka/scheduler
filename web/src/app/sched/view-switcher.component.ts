@@ -1,25 +1,27 @@
 import { Component, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { DayComponent } from './day.component';
-import { WeekComponent } from './week.component';
-import { MonthComponent } from './month.component';
+//import { DayComponent } from './day.component';
+//import { WeekComponent } from './week.component';
+//import { MonthComponent } from './month.component';
+import { MatFormField, MatSelect, MatOption } from "@angular/material/select";
 
 @Component({
   selector: 'view-switcher',
   templateUrl: './view-switcher.component.html',
-  styleUrls: ['./view-switcher.component.scss']
+  styleUrls: ['./view-switcher.component.scss'],
+  imports: [MatFormField, MatSelect, MatOption]
 })
 export class ViewSwitcherComponent {
   currView = 'schedule';
   @Input() date = new Date();
 
   constructor(route: ActivatedRoute, private router: Router) {
-    if (route.component == DayComponent) {
+    if (route.component?.name == 'DayComponent') {
       this.currView = 'daily'
-    } else if (route.component == WeekComponent) {
+    } else if (route.component?.name == 'WeekComponent') {
       this.currView = 'weekly'
-    } else if (route.component == MonthComponent) {
+    } else if (route.component?.name == 'MonthComponent') {
       this.currView = 'monthly'
     } else {
       this.currView = 'schedule'

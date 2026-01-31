@@ -16,6 +16,7 @@ export class MyTel {
   templateUrl: 'phone-no.component.html',
   styleUrls: ['phone-no.component.scss'],
   providers: [{provide: MatFormFieldControl, useExisting: PhoneNoComponent}],
+  imports: [ReactiveFormsModule],
   host: {
     '[class.example-floating]': 'shouldLabelFloat',
     '[id]': 'id',

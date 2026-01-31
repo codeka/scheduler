@@ -7,11 +7,21 @@ import { formatStartEndTime, stringToTime } from '../util/date.util';
 import { EventsService, GetEventsResponse } from '../services/events.service';
 import { InitService } from '../services/init.service';
 import { ImageService } from '../services/image.service';
+import { MatToolbar, MatToolbarModule } from "@angular/material/toolbar";
+import { ViewSwitcherComponent } from "./view-switcher.component";
+import { MatChipSet, MatChip, MatChipsModule } from "@angular/material/chips";
+import { CommonModule } from '@angular/common';
+import { MatIcon, MatIconModule } from "@angular/material/icon";
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'day',
   templateUrl: './day.component.html',
-  styleUrls: ['./day.component.scss']
+  styleUrls: ['./day.component.scss'],
+  imports: [
+    MatToolbarModule, ViewSwitcherComponent, MatChipsModule, CommonModule, MatIconModule,
+    MatButtonModule
+  ]
 })
 export class DayComponent {
   private date: Observable<Date>;

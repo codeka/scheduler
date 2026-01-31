@@ -3,11 +3,21 @@ import { AuthService } from '../services/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs';
 import { AsYouType, parsePhoneNumber } from 'libphonenumber-js';
+import { MatCardHeader, MatCard, MatCardContent, MatCardTitle, MatCardActions } from "@angular/material/card";
+import { MatFormField, MatLabel } from "@angular/material/select";
+import { MatIcon } from "@angular/material/icon";
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'confirm',
   templateUrl: './confirm.component.html',
-  styleUrls: ['./confirm.component.scss']
+  styleUrls: ['./confirm.component.scss'],
+  imports: [
+    MatCardHeader, MatCard, MatCardContent, MatFormField, MatCardTitle, MatLabel, MatCardActions,
+    MatIcon, CommonModule, FormsModule, MatButtonModule, MatInputModule]
 })
 export class ConfirmComponent implements OnInit {
   code = "";
