@@ -2,7 +2,14 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Event, Group, Shift, ShiftSignup } from '../services/model';
 import { AuthService } from '../services/auth.service';
-import { calculateDuration, calculateOverlap, formatStartEndTime, sameDay, stringToDate, stringToTime } from '../util/date.util';
+import {
+  calculateDuration,
+  calculateOverlap,
+  formatStartEndTime,
+  sameDay,
+  stringToDate,
+  stringToTime
+} from '../util/date.util';
 import { EventsService } from '../services/events.service';
 import { InitService } from '../services/init.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -16,37 +23,8 @@ import { map } from 'rxjs/internal/operators/map';
 import { Observable, startWith } from 'rxjs';
 import { ViewProfileDialogComponent } from '../profile/view-profile-dialog.component';
 import { MailingListDialogComponent } from './mailing-list-dialog.component';
+import { ShiftBucket } from './shift-bucket';
 
-// A shift "bucket" is a collection of shifts that overlap and consitite one set of people. For example, it's common
-// to have a bunch of shifts in the morning, then a bunch more in the afternoon. Because shifts are not really
-// "associated" with meetings directly (i.e. one shift could cover 2 meetings, etc), this is a way we can group
-// associated shifts together.
-class ShiftBucket {
-  shifts = new Map<number, Array<Shift>>()
-
-  startTime: Date
-  endTime: Date
-
-  constructor(initialShift: Shift) {
-    this.shifts.set(initialShift.groupId, [initialShift])
-    this.startTime = stringToTime(initialShift.startTime)
-    this.endTime = stringToTime(initialShift.endTime)
-  }
-
-  public addShift(shift: Shift) {
-    var shifts = this.shifts.get(shift.groupId)
-    if (!shifts) {
-      shifts = [shift]
-    } else {
-      shifts.push(shift)
-    }
-    this.shifts.set(shift.groupId, shifts)
-    const shiftStart = stringToTime(shift.startTime)
-    const shiftEnd = stringToTime(shift.endTime)
-    this.startTime = (this.startTime.valueOf() < shiftStart.valueOf()) ? this.startTime : shiftStart
-    this.endTime = (this.endTime.valueOf() > shiftEnd.valueOf()) ? this.endTime : shiftEnd
-  }
-}
 
 class ScheduleDay {
   events = new Array<Event>()
@@ -65,8 +43,8 @@ class ScheduleMonth {
 }
 
 /**
- * Base class for ScheduleMobileComponent and ScheduleDesktopComponent. We want quite different HTML/layout for the
- * different sized browsers.
+ * Base class for ScheduleMobileComponent and ScheduleDesktopComponent. We want quite different
+ * HTML/layout for the different sized browsers.
  */
 @Component({template:''})
 export class ScheduleComponent implements OnInit {
@@ -82,19 +60,23 @@ export class ScheduleComponent implements OnInit {
   useMobileContent: Observable<boolean>
   hiddenGroups = new Set<number>()
 
-  constructor(public auth: AuthService, private dialog: MatDialog, private route: ActivatedRoute, private router: Router,
-              private init: InitService, private eventsService: EventsService) {
+  constructor(public auth: AuthService, private dialog: MatDialog, private route: ActivatedRoute,
+              private router: Router, private init: InitService,
+              private eventsService: EventsService) {
     this.refreshGroups();
 
     // TODO: should this be in some common component?
     const checkScreenSize = () => document.body.offsetWidth < 800;
-    const screenSizeChanged = fromEvent(window, 'resize').pipe(throttleTime(500)).pipe(map(checkScreenSize));
+    const screenSizeChanged =
+        fromEvent(window, 'resize').pipe(throttleTime(500)).pipe(map(checkScreenSize));
     this.useMobileContent = screenSizeChanged.pipe(startWith(checkScreenSize()));
   }
 
   public ngOnInit(): void {
     // Get all events into the next year, just to make sure we cover ~everything in the future.
-    this.eventsService.getEvents(this.scheduleStartDate, new Date(this.today.getFullYear() + 1, 1, 1))
+    this.eventsService.getEvents(
+        this.scheduleStartDate,
+        new Date(this.today.getFullYear() + 1, 1, 1))
         .then((resp) => {
           this.events = resp.events;
 
@@ -139,8 +121,10 @@ export class ScheduleComponent implements OnInit {
             // Figure out if this shift belongs to an existing bucket or not.
             var existingBucket = false
             for (const bucket of day.shiftBuckets) {
-              // If the shift overlaps the bucket by more than 3/4 of the shift, then it belongs in this bucket.
-              const overlap = calculateOverlap(bucket.startTime, bucket.endTime, shiftStart, shiftEnd)
+              // If the shift overlaps the bucket by more than 3/4 of the shift, then it belongs in
+              // this bucket.
+              const overlap =
+                  calculateOverlap(bucket.startTime, bucket.endTime, shiftStart, shiftEnd)
               const shiftDuration = calculateDuration(shiftStart, shiftEnd)
               if (overlap > shiftDuration * 0.75) {
                 existingBucket = true
@@ -171,7 +155,8 @@ export class ScheduleComponent implements OnInit {
     return null
   }
 
-  // Returns a string that represents the time the given event runs (e.g. "8-9:30am" or "11:30am-12:30pm", etc).
+  // Returns a string that represents the time the given event runs (e.g. "8-9:30am" or
+  // "11:30am-12:30pm", etc).
   eventTimeStr(event: Event): string {
     const startTime = stringToTime(event.startTime);
     const endTime = stringToTime(event.endTime);
@@ -199,8 +184,8 @@ export class ScheduleComponent implements OnInit {
   }
 
   /**
-   * Given a shift, returns a class name that will ensure the shift is colored based on whether the shift is filled
-   * or not.
+   * Given a shift, returns a class name that will ensure the shift is colored based on whether th
+   * shift is filled or not.
    */
   shiftClass(shift: Shift, group: Group): string {
     if (shift.signups == null) {

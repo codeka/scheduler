@@ -17,21 +17,25 @@
     </mat-toolbar>
     <div class="container">
       <div class="week week-header">
-        <div class="day day-header" *ngFor="let day of ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']">{{ day }}</div>
+        @for (day of ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'] ; track day) {
+          <div class="day day-header">{{ day }}</div>
+        }
       </div>
-      <div class="week"
-           *ngFor="let weekStart of weeks">
-        <ng-container *ngFor="let day of [weekStart, weekStart+1, weekStart+2, weekStart+3, weekStart+4, weekStart+5, weekStart+6]">
-          <div *ngIf="day >= 0 && day <= monthEnd.getDate(); else blankEntry" class="day">
-            <div class="dayNo">{{ day + 1 }}</div>
-            <div class="event"
-                 *ngFor="let event of eventsForDay(day + 1)">
-              <div class="event-header"><span class="title">{{event.title}}</span> {{eventTimeStr(event)}}</div>
-            </div>
-          </div>
-          <ng-template #blankEntry><div class="day empty-day"></div></ng-template>
-        </ng-container>
-      </div>
+      @for (weekStart of weeks ; track weekStart) {
+        <div class="week">
+          @for (day of [weekStart, weekStart+1, weekStart+2, weekStart+3, weekStart+4, weekStart+5, weekStart+6] ; track day) {
+            @if (day >= 0 && day <= monthEnd.getDate()) {
+              <div class="day">
+                <div class="dayNo">{{ day + 1 }}</div>
+
+                <p>{{ findDayInfo(day + 1).date }}</p>
+              </div>
+            } @else {
+              <div class="day empty-day"></div>
+            }
+          }
+        </div>
+      }
     </div>
   </div>
 </div>
