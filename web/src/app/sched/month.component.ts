@@ -4,15 +4,12 @@ import { Observable, map, mergeMap } from 'rxjs';
 import { Event, Group, Shift, ShiftSignup } from '../services/model';
 import { AuthService } from '../services/auth.service';
 import {
-  calculateDuration,
-  calculateOverlap,
   formatStartEndTime,
   sameDay,
   stringToDate,
   stringToTime
 } from '../util/date.util';
 import { EventsService } from '../services/events.service';
-import { ShiftBucket } from './shift-bucket';
 import { InitService } from '../services/init.service';
 import { MatToolbarModule } from "@angular/material/toolbar";
 import { ViewSwitcherComponent } from "./view-switcher.component";
@@ -26,6 +23,8 @@ import { MatChipsModule } from "@angular/material/chips";
 import { ShiftSignupDialogComponent } from './shift-signup-dialog.component';
 import { ViewProfileDialogComponent } from '../profile/view-profile-dialog.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { ImageService } from '../services/image.service';
+import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 
 
 class DayInfo {
@@ -62,8 +61,10 @@ class DayInfo {
   templateUrl: './month.component.html',
   styleUrls: ['./month.component.scss'],
   imports: [
-      MatToolbarModule, ViewSwitcherComponent, MatIconModule, MatButtonModule, CommonModule,
-      MatChipsModule, MatTooltipModule]
+    MatToolbarModule, ViewSwitcherComponent, MatIconModule, MatButtonModule, CommonModule,
+    MatChipsModule, MatTooltipModule,
+    MatSlideToggleModule
+]
 })
 export class MonthComponent {
   private month: Observable<Date>;
@@ -73,15 +74,18 @@ export class MonthComponent {
   // This array contains the date each week starts. The first one might be negative, 
   weeks: Array<number> = []
 
-  events: Array<Event> = [];
+  events: Array<Event> = []
   days: Array<DayInfo> = []
+
+  groups: Array<Group> = []
+  hiddenGroups = new Set<number>()
 
   // Used to make the dropdown to select the style default to "daily"
   monthly = 'monthly';
 
   constructor(private route: ActivatedRoute, private router: Router, public auth: AuthService,
-              private eventsService: EventsService, private init: InitService,
-              private dialog: MatDialog) {
+              private eventsService: EventsService, public init: InitService,
+              private dialog: MatDialog, public img: ImageService) {
     this.month =
         this.route.params
             .pipe(map((p) => {
@@ -108,6 +112,11 @@ export class MonthComponent {
               return this.monthStart;
             }));
     this.month.subscribe()
+
+    // To make the view a little cleaner, hide all groups by default.
+    this.init.groups().forEach((group) => {
+      this.hiddenGroups.add(group.id)
+    })
   }
 
   public refresh(): void {
@@ -150,6 +159,35 @@ export class MonthComponent {
 
         this.days = days
       });
+  }
+
+  refreshGroups() {
+    const user = this.init.user()
+    this.groups = this.init.groups().filter((group) => {
+      if (this.hiddenGroups.has(group.id)) {
+        console.log("Hiding group ", group.id)
+        return false
+      }
+
+      return group.alwaysShow || user?.groups.includes(group.id)
+    })
+    console.log("Showing groups: ", this.groups)
+  }
+
+  onGroupToggle(groupId: number, visible: boolean) {
+    console.log("Toggling group ", groupId, " to ", visible)
+    if (visible) {
+      this.hiddenGroups.delete(groupId)
+    } else {
+      this.hiddenGroups.add(groupId)
+    }
+    this.refreshGroups()
+    this.refresh()
+  }
+
+  isGroupVisible(groupId: number): boolean {
+    console.log("Checking visibility for group ", groupId, ": ", !this.hiddenGroups.has(groupId), !!this.groups.find(g => g.id === groupId))
+    return !!this.groups.find(g => g.id === groupId)
   }
 
   // We want to pass this to the keyvalue pipe so that it doesn't sort our dates.
