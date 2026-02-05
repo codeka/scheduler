@@ -37,13 +37,16 @@ export class LeaderboardComponent implements OnInit {
       this.numMonths = 0
     } else if (newPeriod === 'lastYear') {
       this.numMonths = 12
+    } else if (newPeriod === 'last6Months') {
+      this.numMonths = 6
+    } else if (newPeriod === 'last3Months') {
+      this.numMonths = 3
     } else if (newPeriod === 'lastMonth') {
       this.numMonths = 1
     }
     this.selectedPeriod = newPeriod
     this.refresh()
   }
-
 
   ngOnInit(): void {
     this.adminService.getUsers().then((users) => {

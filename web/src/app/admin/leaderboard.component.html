@@ -5,6 +5,8 @@
     <div class="spacer"></div>
     <mat-select [value]="selectedPeriod" (selectionChange)="onPeriodChange($event.value)">
       <mat-option value="lastMonth">Last Month</mat-option>
+      <mat-option value="last3Months">Last 3 Months</mat-option>
+      <mat-option value="last6Months">Last 6 Months</mat-option>
       <mat-option value="lastYear">Last Year</mat-option>
       <mat-option value="allTime">All Time</mat-option>
     </mat-select>
