@@ -8,6 +8,7 @@ import { MatFormField, MatFormFieldModule, MatLabel } from "@angular/material/fo
 import { MatIcon, MatIconModule } from "@angular/material/icon";
 import { MatButtonModule } from "@angular/material/button";
 import { MatInputModule } from "@angular/material/input";
+import { MatCheckboxModule } from "@angular/material/checkbox";
 
 export interface DialogData {
   flag?: FeatureFlag
@@ -19,7 +20,7 @@ export interface DialogData {
   styleUrls: ['./edit-feature-flag-dialog.component.scss'],
   imports: [
     ReactiveFormsModule, MatFormFieldModule, MatDialogActions, MatIconModule, MatButtonModule,
-    MatInputModule]
+    MatInputModule, MatCheckboxModule]
 })
 export class EditFeatureFlagDialogComponent implements OnInit {
   form: FormGroup<{

@@ -93,6 +93,33 @@ func HandleAdminUserGet(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
+func HandleAdminLeaderboardGet(c *gin.Context) {
+	if !IsInRole(c, "ADMIN") {
+		c.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
+
+	numMonthsStr := c.DefaultQuery("numMonths", "0")
+	numMonths, err := strconv.Atoi(numMonthsStr)
+	if err != nil {
+		util.HandleError(c, http.StatusBadRequest, err)
+		return
+	}
+
+	leaderboard, err := store.GetLeaderboard(numMonths)
+	if err != nil {
+		util.HandleError(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	var entries []LeaderboardEntry
+	for _, entry := range leaderboard {
+		entries = append(entries, MakeLeaderboardEntry(entry))
+	}
+
+	c.JSON(http.StatusOK, entries)
+}
+
 func HandleAdminUserDelete(c *gin.Context) {
 	if !IsInRole(c, "ADMIN") {
 		c.AbortWithStatus(http.StatusUnauthorized)
@@ -566,6 +593,7 @@ func setupAdmin(g *gin.Engine) error {
 	g.DELETE("_/admin/users/:id", HandleAdminUserDelete)
 	g.POST("_/admin/users/:id/picture", HandleAdminUserPicturePost)
 	g.POST("_/admin/users", HandleAdminUsersPost)
+	g.GET("_/admin/leaderboard", HandleAdminLeaderboardGet)
 	g.POST("_/admin/venue", HandleAdminVenuePost)
 	g.POST("_/admin/venue/picture", HandleAdminVenuePicturePost)
 	g.POST("_/admin/venue/ico-picture", HandleAdminVenueIcoPicturePost)

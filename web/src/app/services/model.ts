@@ -95,3 +95,9 @@ export interface DashboardMotd {
   postDate: Date|null
   messageHtml: string
 }
+
+export interface LeaderboardEntry {
+  userId: number
+  groupId: number
+  numShifts: number
+}

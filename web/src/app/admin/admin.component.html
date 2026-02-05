@@ -13,6 +13,10 @@
          <mat-icon matListItemIcon>group</mat-icon>
          <div matListItemLine>Users</div>
       </mat-list-item>
+      <mat-list-item [routerLink]="'/admin/leaderboard'" *ngIf="init.flag('ShowLeaderboard').enabled">
+         <mat-icon matListItemIcon>leaderboard</mat-icon>
+         <div matListItemLine>Leaderboard</div>
+      </mat-list-item>
       <mat-list-item [routerLink]="'/admin/notifications'">
          <mat-icon matListItemIcon>notifications</mat-icon>
          <div matListItemLine>Notifications</div>

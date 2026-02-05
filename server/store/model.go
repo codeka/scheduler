@@ -106,3 +106,10 @@ type DashboardMotd struct {
 	PostDate    time.Time
 	MessageHTML string
 }
+
+// LeaderboardEntry represents a single entry in the leaderboard.
+type LeaderboardEntry struct {
+	UserID    int64
+	GroupID   int64
+	NumShifts int64
+}

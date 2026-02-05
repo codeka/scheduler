@@ -25,9 +25,16 @@ var EnableNotifications = FeatureFlag{
 	Settings: nil,
 }
 
+// ShowLeaderboard, if true, we'll show the leaderboard feature in the admin section.
+var ShowLeaderboard = FeatureFlag{
+	Enabled:  false,
+	Settings: nil,
+}
+
 var AllFlags = map[string]*FeatureFlag{
 	"SendCalendarEvents":  &SendCalendarEvents,
 	"EnableNotifications": &EnableNotifications,
+	"ShowLeaderboard":     &ShowLeaderboard,
 }
 
 func UpdateFlag(flagName string, enabled bool, settings map[string]interface{}) error {

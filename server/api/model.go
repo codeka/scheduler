@@ -381,3 +381,17 @@ func MakeDashboardMotd(motd *store.DashboardMotd) *DashboardMotd {
 		MessageHTML: motd.MessageHTML,
 	}
 }
+
+type LeaderboardEntry struct {
+	UserID    int64 `json:"userId"`
+	GroupID   int64 `json:"groupId"`
+	NumShifts int64 `json:"numShifts"`
+}
+
+func MakeLeaderboardEntry(entry store.LeaderboardEntry) LeaderboardEntry {
+	return LeaderboardEntry{
+		UserID:    entry.UserID,
+		GroupID:   entry.GroupID,
+		NumShifts: entry.NumShifts,
+	}
+}

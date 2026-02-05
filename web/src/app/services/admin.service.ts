@@ -1,8 +1,17 @@
-import { HttpClient, HttpParams } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { CronJob, FeatureFlag, Group, NotificationType, User, Venue } from "./model";
 import { firstValueFrom, map } from "rxjs";
 import { ENV } from "../env/environment";
+
+import {
+  CronJob,
+  FeatureFlag,
+  Group,
+  LeaderboardEntry,
+  NotificationType,
+  User,
+  Venue
+} from "./model";
 
 interface SaveUserResponse {
   success: boolean
@@ -168,6 +177,12 @@ export class AdminService {
     return firstValueFrom(
       this.http.post<any>(ENV.backend + "/_/admin/feature-flags", flag)
           .pipe(map(() => true))
+    )
+  }
+
+  getLeaderboard(numMonths: number): Promise<LeaderboardEntry[]> {
+    return firstValueFrom(
+      this.http.get<LeaderboardEntry[]>(ENV.backend + "/_/admin/leaderboard?numMonths=" + numMonths)
     )
   }
 }

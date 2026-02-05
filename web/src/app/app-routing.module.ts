@@ -20,6 +20,7 @@ import { ScheduleMobileComponent } from './sched/schedule-mobile.component';
 import { NotificationsComponent } from './admin/notifications.component';
 import { FeatureFlagsComponent } from './admin/feature-flags.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { LeaderboardComponent } from './admin/leaderboard.component';
 
 const loggedIn: CanMatchFn = () => {
   return inject(AuthService).isLoggedIn();
@@ -61,6 +62,7 @@ const routes: Routes = [
       { path: 'edit-venue', title: 'Admin - Edit Venue', component: EditVenueComponent },
       { path: 'groups', title: 'Admin - Groups', component: GroupsComponent },
       { path: 'users', title: 'Admin - Users', component: UserListComponent },
+      { path: 'leaderboard', title: 'Admin - Leaderboard', component: LeaderboardComponent },
       { path: 'cron', title: 'Admin - Cron', component: CronComponent },
       { path: 'notifications', title: 'Notifications', component: NotificationsComponent },
       { path: 'flags', title: 'Flags', component: FeatureFlagsComponent },

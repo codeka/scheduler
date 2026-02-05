@@ -1,0 +1,32 @@
+  <mat-toolbar class="header">
+    <h1>
+      Leaderboard
+    </h1>
+    <div class="spacer"></div>
+    <mat-select [value]="selectedPeriod" (selectionChange)="onPeriodChange($event.value)">
+      <mat-option value="lastMonth">Last Month</mat-option>
+      <mat-option value="lastYear">Last Year</mat-option>
+      <mat-option value="allTime">All Time</mat-option>
+    </mat-select>
+  </mat-toolbar>
+
+  @for (group of groups ; track group.id) {
+    <h2>{{group.name}}</h2>
+    <table mat-table [dataSource]="leaders.get(group.id)!" class="mat-elevation-z8">
+      <ng-container matColumnDef="rank">
+        <th mat-header-cell *matHeaderCellDef>Rank</th>
+        <td mat-cell *matCellDef="let entry; let i = index">{{i + 1}}</td>
+      </ng-container>
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Name</th>
+        <td mat-cell *matCellDef="let entry">{{userMap.get(entry.userId)}}</td>
+      </ng-container>
+      <ng-container matColumnDef="numShifts">
+        <th mat-header-cell *matHeaderCellDef>Shifts</th>
+        <td mat-cell *matCellDef="let entry">{{entry.numShifts}}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="['rank', 'name', 'numShifts']"></tr>
+      <tr mat-row *matRowDef="let row; columns: ['rank', 'name', 'numShifts'];"></tr>
+    </table>
+  }
