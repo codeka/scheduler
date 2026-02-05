@@ -41,26 +41,6 @@ h3 {
   margin-left: 10pt;
 }
 
-div.events {
-  flex: 1;
-  position: relative;
-  margin-top: 8pt;
-}
-
-div.events .event {
-  position: absolute;
-  left: 4pt;
-  right: 8pt;
-  border-radius: 4pt;
-  border: solid 2pt blue;
-  padding: 0 4pt;
-  background-color: mix(blue, white, 20%);
-}
-
-div.event-header .title {
-  font-weight: bold;
-}
-
 div.container {
   flex: 1;
   display: flex;
@@ -77,16 +57,25 @@ div.week {
 div.day {
   border: dotted 1px #ccc;
   flex: 1;
-  height: 150pt;
+  min-height: 150pt;
 }
 
-div.day-header {
+div.day.day-header {
   border: none;
   height: 15pt;
+  min-height: unset;
   text-align: center;
   font-weight: bold;
 }
 
 div.empty-day {
   border: solid 1px transparent;
+}
+
+div.event .title {
+  font-weight: bold;
+}
+
+div.shift {
+  margin-left: 8pt;
 }

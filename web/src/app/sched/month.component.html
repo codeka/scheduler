@@ -27,8 +27,43 @@
             @if (day >= 0 && day <= monthEnd.getDate()) {
               <div class="day">
                 <div class="dayNo">{{ day + 1 }}</div>
-                @let myDayInfo = findDayInfo(day + 1);
-                <p>{{ myDayInfo.date }}</p>
+                @let dayInfo = findDayInfo(day + 1);
+                @for (eventOrShift of dayInfo.getEventsAndShifts() ; track eventOrShift) {
+                  @if (isEvent(eventOrShift)) {
+                    <div class="event" (click)="onEventClick(eventOrShift)">
+                      <span class="title">{{eventOrShift.title}}</span> &nbsp;
+                      <span class="time">{{ eventTimeStr(eventOrShift) }}</span>
+                    </div>
+                  } @else {
+                    @let shift = eventOrShift;
+                    @let group = getGroup(shift.groupId);
+                    <div class="shift" (click)="onShiftClick(shift)">
+                      <div class="shift-name">
+                        {{ group?.name }}
+                        <button mat-icon-button class="icon-small" (click)="onShiftSignup(group, shift)"
+                                matTooltip="Sign up for {{shiftTimeStr(shift)}} shift"
+                                *ngIf="isInGroup(group)">
+                          <mat-icon>edit_calendar</mat-icon>
+                        </button>
+                        <button mat-icon-button class="icon-small" (click)="onEditShift(shift)" matTooltip="Edit shift"
+                                *ngIf="auth.isInRole('EVENT_MANAGER') || auth.isInRole('SHIFT_MANAGER')">
+                          <mat-icon>edit</mat-icon>
+                        </button>
+                      </div>
+                      <mat-chip-set role="list">
+                        <mat-chip role="listitem" class="shift-signup" (click)="onSignupClick(group, shift, signup)"
+                            *ngFor="let signup of shift.signups">
+                          {{ signup.user.name }}
+                        </mat-chip>
+                      </mat-chip-set>
+                      @for (signup of shift.signups ; track signup.user.id) {
+                        <div class="signup-note" *ngIf="signup.notes != ''">
+                          <strong>{{ signup.user.name }}:</strong> {{ signup.notes }}
+                        </div>
+                      }
+                    </div>
+                  }
+                }
               </div>
             } @else {
               <div class="day empty-day"></div>

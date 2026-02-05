@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, map, mergeMap } from 'rxjs';
-import { Event, Group, Shift } from '../services/model';
+import { Event, Group, Shift, ShiftSignup } from '../services/model';
 import { AuthService } from '../services/auth.service';
 import {
   calculateDuration,
@@ -22,22 +22,48 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { EditEventDialogComponent } from './edit-event-dialog.component';
 import { EditShiftDialogComponent } from './edit-shift-dialog.component';
+import { MatChipsModule } from "@angular/material/chips";
+import { ShiftSignupDialogComponent } from './shift-signup-dialog.component';
+import { ViewProfileDialogComponent } from '../profile/view-profile-dialog.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 
 class DayInfo {
   constructor(public date: Date) {}
 
   events = new Array<Event>()
-  groups = new Array<Group>()
-  shifts = new Map<number, Array<Shift>>() // map of string group ID to list of shifts for that group
-  shiftBuckets = new Array<ShiftBucket>()
+  shifts = new Map<number, Array<Shift>>() // map of group ID to list of shifts for that group
+
+  private calculateEndTime(eventOrShift: Event|Shift): Date {
+    return stringToTime(eventOrShift.endTime)
+  }
+
+  // Returns a combined list of events and shifts for this day, sorted by time.
+  getEventsAndShifts(): Array<Event|Shift> {
+    const combined = new Array<Event|Shift>()
+    for (const event of this.events) {
+      combined.push(event)
+    }
+    for (const shiftList of this.shifts.values()) {
+      for (const shift of shiftList) {
+        combined.push(shift)
+      }
+    }
+    return combined.sort((a, b) => {
+      const aEnd = this.calculateEndTime(a)
+      const bEnd = this.calculateEndTime(b)
+      return aEnd.getTime() - bEnd.getTime()
+    })
+  }
 }
 
 @Component({
   selector: 'month',
   templateUrl: './month.component.html',
   styleUrls: ['./month.component.scss'],
-  imports: [MatToolbarModule, ViewSwitcherComponent, MatIconModule, MatButtonModule, CommonModule]
+  imports: [
+      MatToolbarModule, ViewSwitcherComponent, MatIconModule, MatButtonModule, CommonModule,
+      MatChipsModule, MatTooltipModule]
 })
 export class MonthComponent {
   private month: Observable<Date>;
@@ -92,16 +118,12 @@ export class MonthComponent {
         var days = new Array<DayInfo>()
         var currDay: DayInfo|null = null
         if (resp.events) for (const event of resp.events) {
+          console.log("got event: ", event);
           const eventDate = stringToDate(event.date)
-          const eventMonth = new Date(eventDate.getFullYear(), eventDate.getMonth(), 1)
-          if (!sameDay(this.monthStart, eventMonth)) {
-            currDay = new DayInfo(eventMonth)
-            days.push(currDay)
-          }
-
           if (currDay == null || !sameDay(currDay.date, eventDate)) {
+            console.log("new day for event: ", eventDate);
             currDay = new DayInfo(eventDate)
-            currDay.groups = new Array<Group>(...this.init.groups())
+            days.push(currDay)
           }
 
           currDay.events.push(event)
@@ -124,27 +146,9 @@ export class MonthComponent {
             day.shifts.set(shift.groupId, shifts)
           }
           shifts.push(shift)
-
-          // Figure out if this shift belongs to an existing bucket or not.
-          var existingBucket = false
-          for (const bucket of day.shiftBuckets) {
-            // If the shift overlaps the bucket by more than 3/4 of the shift, then it belongs in
-            // this bucket.
-            const overlap =
-                calculateOverlap(bucket.startTime, bucket.endTime, shiftStart, shiftEnd)
-            const shiftDuration = calculateDuration(shiftStart, shiftEnd)
-            if (overlap > shiftDuration * 0.75) {
-              existingBucket = true
-              bucket.addShift(shift)
-              break
-            }
-          }
-          if (!existingBucket) {
-            // Make a new bucket
-            day.shiftBuckets.push(new ShiftBucket(shift))
-          }
-          this.days = days
         }
+
+        this.days = days
       });
   }
 
@@ -166,6 +170,12 @@ export class MonthComponent {
   eventTimeStr(event: Event): string {
     const startTime = stringToTime(event.startTime);
     const endTime = stringToTime(event.endTime);
+    return formatStartEndTime(startTime, endTime)
+  }
+
+  shiftTimeStr(shift: Shift): string {
+    const startTime = stringToTime(shift.startTime)
+    const endTime = stringToTime(shift.endTime)
     return formatStartEndTime(startTime, endTime)
   }
 
@@ -194,6 +204,70 @@ export class MonthComponent {
         // Refresh the page.
         this.refresh();
       })
+  }
+
+  onEditShift(shift: Shift) {
+    const dialogRef = this.dialog.open(EditShiftDialogComponent, {
+      data: { shift: shift },
+    })
+    dialogRef.afterClosed().subscribe(() => {
+      // Refresh the page.
+      this.refresh();
+    })
+  }
+
+  getGroup(groupId: number): Group {
+    return this.init.groups().find(g => g.id === groupId)!!;
+  }
+
+  isEvent(eventOrShift: Event|Shift): eventOrShift is Event {
+    return (eventOrShift as Event).title !== undefined;
+  }
+
+  isShift(eventOrShift: Event|Shift): eventOrShift is Shift {
+    return (eventOrShift as Shift).groupId !== undefined;
+  }
+
+  onEventClick(event: Event) {
+    // TODO
+  }
+  onShiftClick(shift: Shift) {
+    // TODO
+  }
+
+  onShiftSignup(group: Group, shift: Shift) {
+    const dialogRef = this.dialog.open(ShiftSignupDialogComponent, {
+      data: { group: group, shift: shift },
+    })
+    dialogRef.afterClosed().subscribe(result => {
+      // Refresh the page.
+      this.refresh();
+    })
+  }
+
+  onSignupClick(group: Group, shift: Shift, signup: ShiftSignup) {
+    var canEditSignup = (signup.user.id == this.init.user()?.id)
+    canEditSignup ||= this.auth.isInRole("SHIFT_MANAGER") && this.isInGroup(group)
+    canEditSignup ||= this.auth.isInRole("ADMIN")
+    if (canEditSignup) {
+      // If you're allowed to manage this signup, show the signup dialog.
+      const dialogRef = this.dialog.open(ShiftSignupDialogComponent, {
+        data: { group: group, shift: shift, signup: signup },
+      })
+      dialogRef.afterClosed().subscribe(result => {
+        // Refresh the page.
+        this.refresh();
+      })
+    } else {
+      // You cannot edit this sign up, so show the user's profile info instead.
+      this.dialog.open(ViewProfileDialogComponent, {
+        data: { user: signup.user },
+      })
+    }
+  }
+
+  isInGroup(group: Group) {
+    return this.init.user()?.groups.includes(group.id) || false
   }
 
   onLastMonthClick() {
