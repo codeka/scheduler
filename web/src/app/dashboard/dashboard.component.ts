@@ -61,22 +61,23 @@ export class DashboardComponent implements OnInit, OnDestroy {
           var currDay: DashboardDay|null = null
           if (resp.events) for (const event of resp.events) {
             const eventDate = stringToDate(event.date)
+            if (sameDay(eventDate, this.today)) {
+              this.todaysEvents.push(event)
+              continue
+            }
+
             const eventMonth = new Date(eventDate.getFullYear(), eventDate.getMonth(), 1)
             if (currMonth == null || !sameDay(currMonth.date, eventMonth)) {
               currMonth = new DashboardMonth(eventMonth)
               months.push(currMonth)
             }
 
-            if (sameDay(eventDate, this.today)) {
-              this.todaysEvents.push(event)
-            } else {
-              if (currDay == null || !sameDay(currDay.date, eventDate)) {
-                currDay = new DashboardDay(eventDate)
-                currMonth.days.push(currDay)
-              }
-
-              currDay.events.push(event)
+            if (currDay == null || !sameDay(currDay.date, eventDate)) {
+              currDay = new DashboardDay(eventDate)
+              currMonth.days.push(currDay)
             }
+
+            currDay.events.push(event)
           }
 
           this.months = months
